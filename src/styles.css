@@ -91,20 +91,22 @@
 
 @layer base {
   * { border-color: var(--color-border); }
-  html { font-family: var(--font-sans); }
+  html, body, button, input, select, textarea, label, a, p, span, div, li, td, th, small {
+    font-family: "Fredoka", ui-sans-serif, system-ui, sans-serif;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-sans);
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: -0.005em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
-  input, select, textarea, button {
-    font-family: var(--font-sans);
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Bagel Fat One", "Fredoka", system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0;
   }
-  h1, h2, h3, h4 { letter-spacing: -0.005em; }
   ::selection { background: var(--coral); color: var(--green-deep); }
 }
 

@@ -40,28 +40,28 @@ function Home() {
     <div className="">
       {/* ───────────── HERO (green) — centered, asymmetric illustrations ───────────── */}
       <section className="hero-green relative overflow-hidden -mt-px">
-        {/* Asymmetric floating illustrations — varied sizes, rotations, offsets */}
+        {/* Asymmetric floating illustrations — varied sizes, rotations, organic offsets */}
         <FloatingIllustration
           src={microscope}
-          className="hidden lg:block absolute right-6 top-6 w-44 xl:w-52 z-0 opacity-95"
-          rotate={10}
+          className="hidden lg:block absolute right-4 top-4 w-40 xl:w-48 z-0 opacity-95"
+          rotate={12}
           variant="drift"
         />
         <FloatingIllustration
           src={helix}
-          className="hidden lg:block absolute left-10 top-16 w-20 xl:w-24 z-0 opacity-90"
-          rotate={-18}
+          className="hidden lg:block absolute left-6 top-10 w-16 xl:w-20 z-0 opacity-85"
+          rotate={-24}
         />
         <FloatingIllustration
           src={dnaStrand}
-          className="hidden lg:block absolute left-4 bottom-10 w-28 xl:w-32 z-0 opacity-95"
-          rotate={-8}
+          className="hidden lg:block absolute left-2 bottom-4 w-24 xl:w-28 z-0 opacity-90"
+          rotate={-14}
           variant="drift"
         />
         <FloatingIllustration
           src={testTube}
-          className="hidden lg:block absolute right-32 bottom-6 w-16 xl:w-20 z-0 opacity-90"
-          rotate={14}
+          className="hidden lg:block absolute right-44 bottom-12 w-14 xl:w-16 z-0 opacity-85"
+          rotate={22}
         />
 
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-8 md:pt-12 pb-14 md:pb-20 relative">
@@ -163,8 +163,8 @@ function Home() {
               </Link>
               <FloatingIllustration
                 src={labFlask}
-                className="hidden lg:block absolute -right-10 top-1/2 w-44"
-                rotate={-8}
+                className="hidden 2xl:block absolute -left-24 bottom-0 w-28 opacity-85"
+                rotate={-14}
               />
             </div>
 
@@ -262,14 +262,14 @@ function Home() {
       <section className="slab-cream relative overflow-hidden">
         <FloatingIllustration
           src={petriDish}
-          className="hidden lg:block absolute left-4 top-24 w-24 z-0 opacity-90"
-          rotate={-12}
+          className="hidden 2xl:block absolute left-2 top-32 w-20 z-0 opacity-80"
+          rotate={-18}
           variant="drift"
         />
         <FloatingIllustration
           src={pillCap}
-          className="hidden lg:block absolute right-8 bottom-40 w-20 z-0 opacity-90"
-          rotate={18}
+          className="hidden 2xl:block absolute right-4 bottom-24 w-16 z-0 opacity-75"
+          rotate={24}
         />
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pb-32 relative">
           <div className="grid lg:grid-cols-[1fr_1.3fr] gap-12 lg:gap-20 items-start">

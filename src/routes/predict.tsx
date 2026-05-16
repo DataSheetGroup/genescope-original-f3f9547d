@@ -179,17 +179,17 @@ function PredictPage() {
       {/* Decorative corner illustrations — kept clear of text columns */}
       <FloatingIllustration
         src={dnaStrand}
-        className="hidden xl:block absolute left-4 top-32 w-24 z-0 opacity-90"
-        rotate={-12}
+        className="hidden 2xl:block absolute left-3 top-40 w-16 z-0 opacity-75"
+        rotate={-18}
       />
       <FloatingIllustration
         src={labFlask}
-        className="hidden xl:block absolute right-4 top-40 w-24 z-0 opacity-90"
-        rotate={10}
+        className="hidden 2xl:block absolute right-4 top-56 w-24 z-0 opacity-80"
+        rotate={12}
         variant="drift"
       />
 
-      <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10 py-16">
+      <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10 py-16 z-10">
         {/* ── Centered hero ── */}
         <div className="text-center max-w-3xl mx-auto mb-14">
           <div className="eyebrow text-coral mb-4">Prediction</div>
