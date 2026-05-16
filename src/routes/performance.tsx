@@ -166,14 +166,17 @@ function PerformancePage() {
         <div className="flex items-start gap-6">
           <div className="flex-1">
             <div className="eyebrow text-coral mb-4">Evaluation</div>
-        <h1 className="display-lg">
-          Three models,
-          <br />
-          <span className="text-coral">one chosen for the job.</span>
-        </h1>
-        <p className="mt-5 text-foreground/75">
-          Comparative evaluation of Binary Logistic Regression, Decision Tree, and Random Forest.
-        </p>
+            <h1 className="display-lg">
+              Three models,
+              <br />
+              <span className="text-coral">one chosen for the job.</span>
+            </h1>
+            <p className="mt-5 text-foreground/75">
+              Comparative evaluation of Binary Logistic Regression, Decision Tree, and Random Forest.
+            </p>
+          </div>
+          <img src={helixCheck} alt="" className="hidden md:block w-24 lg:w-28 shrink-0 object-contain -mt-2" />
+        </div>
       </div>
 
       {/* Primary model hero */}
