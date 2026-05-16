@@ -1,11 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Download, Lock, Trash2 } from "lucide-react";
+import { Download, Trash2 } from "lucide-react";
 import { useHistory, type HistoryItem } from "@/hooks/useHistory";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { FloatingIllustration } from "@/components/FloatingIllustration";
 import clipboard from "@/assets/illustrations/clipboard.png";
+import pillCap from "@/assets/illustrations/pill-capsule.png";
+import magnifier from "@/assets/illustrations/magnifier-strand.png";
+import chromosome from "@/assets/illustrations/chromosome.png";
 
 export const Route = createFileRoute("/history")({
   head: () => ({
@@ -54,7 +58,10 @@ function HistoryPage() {
 
   return (
     <div className="relative overflow-hidden">
-      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16">
+      <FloatingIllustration src={pillCap} className="hidden xl:block absolute right-6 top-24 w-20 opacity-85 z-0" rotate={18} />
+      <FloatingIllustration src={magnifier} className="hidden xl:block absolute left-4 top-[40%] w-24 opacity-80 z-0" rotate={-14} variant="drift" />
+      <FloatingIllustration src={chromosome} className="hidden xl:block absolute right-3 bottom-32 w-20 opacity-80 z-0" rotate={-22} />
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 z-10">
       <div className="mb-10 max-w-3xl">
         <div className="flex items-start gap-6">
           <div className="flex-1">
@@ -66,10 +73,6 @@ function HistoryPage() {
             </h1>
           </div>
           <img src={clipboard} alt="" className="hidden md:block w-24 lg:w-28 shrink-0 object-contain -mt-2" />
-        </div>
-        <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-cream text-card-foreground px-4 py-2 text-xs font-semibold">
-          <Lock className="h-3.5 w-3.5" />
-          No personally identifiable information stored. RA 10173 compliant.
         </div>
       </div>
 

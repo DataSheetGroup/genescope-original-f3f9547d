@@ -40,28 +40,34 @@ function Home() {
     <div className="">
       {/* ───────────── HERO (green) — centered, asymmetric illustrations ───────────── */}
       <section className="hero-green relative overflow-hidden -mt-px">
-        {/* Asymmetric floating illustrations — varied sizes, rotations, organic offsets */}
+        {/* Hero sticker pack — varied sizes, organic placements */}
         <FloatingIllustration
-          src={microscope}
-          className="hidden lg:block absolute right-4 top-4 w-40 xl:w-48 z-0 opacity-95"
-          rotate={12}
+          src={helixCheck}
+          className="hidden lg:block absolute right-6 top-6 w-32 xl:w-40 z-0 opacity-95"
+          rotate={10}
           variant="drift"
         />
         <FloatingIllustration
-          src={helix}
-          className="hidden lg:block absolute left-6 top-10 w-16 xl:w-20 z-0 opacity-85"
-          rotate={-24}
+          src={chromosome}
+          className="hidden lg:block absolute left-6 top-12 w-20 xl:w-24 z-0 opacity-90"
+          rotate={-18}
         />
         <FloatingIllustration
           src={dnaStrand}
-          className="hidden lg:block absolute left-2 bottom-4 w-24 xl:w-28 z-0 opacity-90"
-          rotate={-14}
+          className="hidden lg:block absolute left-3 bottom-6 w-24 xl:w-28 z-0 opacity-90"
+          rotate={-12}
           variant="drift"
         />
         <FloatingIllustration
           src={testTube}
-          className="hidden lg:block absolute right-44 bottom-12 w-14 xl:w-16 z-0 opacity-85"
-          rotate={22}
+          className="hidden lg:block absolute right-40 bottom-10 w-14 xl:w-16 z-0 opacity-90"
+          rotate={20}
+        />
+        <FloatingIllustration
+          src={petriDish}
+          className="hidden xl:block absolute right-2 bottom-16 w-20 z-0 opacity-85"
+          rotate={-8}
+          variant="drift"
         />
 
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-8 md:pt-12 pb-14 md:pb-20 relative">
@@ -163,7 +169,7 @@ function Home() {
               </Link>
               <FloatingIllustration
                 src={labFlask}
-                className="hidden 2xl:block absolute -left-24 bottom-0 w-28 opacity-85"
+                className="hidden xl:block absolute -left-24 bottom-0 w-28 opacity-85"
                 rotate={-14}
               />
             </div>
@@ -262,13 +268,13 @@ function Home() {
       <section className="slab-cream relative overflow-hidden">
         <FloatingIllustration
           src={petriDish}
-          className="hidden 2xl:block absolute left-2 top-32 w-20 z-0 opacity-80"
+          className="hidden xl:block absolute left-2 top-32 w-20 z-0 opacity-80"
           rotate={-18}
           variant="drift"
         />
         <FloatingIllustration
           src={pillCap}
-          className="hidden 2xl:block absolute right-4 bottom-24 w-16 z-0 opacity-75"
+          className="hidden xl:block absolute right-4 bottom-24 w-16 z-0 opacity-75"
           rotate={24}
         />
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pb-32 relative">

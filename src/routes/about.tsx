@@ -4,6 +4,10 @@ import { FloatingIllustration } from "@/components/FloatingIllustration";
 import helix from "@/assets/illustrations/helix-doodle.png";
 import heartPulse from "@/assets/illustrations/heart-pulse.png";
 import clipboard from "@/assets/illustrations/clipboard.png";
+import testTube from "@/assets/illustrations/test-tube.png";
+import petriDish from "@/assets/illustrations/petri-dish.png";
+import magnifier from "@/assets/illustrations/magnifier-strand.png";
+import pillCap from "@/assets/illustrations/pill-capsule.png";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -43,13 +47,17 @@ function AboutPage() {
       />
       <FloatingIllustration
         src={heartPulse}
-        className="hidden 2xl:block absolute left-3 top-[42%] w-16 opacity-75 z-0"
+        className="hidden xl:block absolute left-3 top-[42%] w-16 opacity-75 z-0"
         rotate={-14}
         variant="drift"
       />
+      <FloatingIllustration src={testTube} className="hidden xl:block absolute left-6 top-[25%] w-14 opacity-80 z-0" rotate={18} />
+      <FloatingIllustration src={petriDish} className="hidden xl:block absolute right-6 top-[60%] w-20 opacity-80 z-0" rotate={-10} variant="drift" />
+      <FloatingIllustration src={magnifier} className="hidden xl:block absolute left-4 bottom-32 w-20 opacity-80 z-0" rotate={16} />
+      <FloatingIllustration src={pillCap} className="hidden xl:block absolute left-5 bottom-8 w-16 opacity-80 z-0" rotate={-22} variant="drift" />
       <FloatingIllustration
         src={clipboard}
-        className="hidden 2xl:block absolute right-4 bottom-32 w-24 opacity-80 z-0"
+        className="hidden xl:block absolute right-4 bottom-32 w-24 opacity-80 z-0"
         rotate={-7}
       />
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-10 py-16 space-y-10 z-10">
