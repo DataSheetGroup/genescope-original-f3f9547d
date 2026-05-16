@@ -126,6 +126,7 @@ function Home() {
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pb-32">
           <div className="grid lg:grid-cols-[1fr_1.2fr] gap-16 items-start">
             <div className="lg:sticky lg:top-28 relative">
+              <img src={labFlask} alt="" className="w-20 md:w-24 object-contain mb-5" />
               <div className="font-display text-base md:text-lg mb-6" style={{ color: "var(--green-deep)" }}>
                 Your needs, our solution
               </div>
