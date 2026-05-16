@@ -38,21 +38,21 @@ function AboutPage() {
     <div className="relative overflow-hidden">
       <FloatingIllustration
         src={helix}
-        className="hidden md:block absolute right-4 top-12 w-24 opacity-90 z-0"
-        rotate={18}
+        className="hidden xl:block absolute right-3 top-20 w-20 opacity-80 z-0"
+        rotate={22}
       />
       <FloatingIllustration
         src={heartPulse}
-        className="hidden lg:block absolute left-4 top-1/3 w-20 opacity-90 z-0"
-        rotate={-10}
+        className="hidden 2xl:block absolute left-3 top-[42%] w-16 opacity-75 z-0"
+        rotate={-14}
         variant="drift"
       />
       <FloatingIllustration
         src={clipboard}
-        className="hidden lg:block absolute right-6 bottom-20 w-24 opacity-90 z-0"
-        rotate={8}
+        className="hidden 2xl:block absolute right-4 bottom-32 w-24 opacity-80 z-0"
+        rotate={-7}
       />
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-10 py-16 space-y-10">
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-10 py-16 space-y-10 z-10">
         <div className="max-w-3xl">
           <div className="eyebrow text-coral mb-4">About</div>
           <h1 className="display-lg">
