@@ -113,9 +113,12 @@ function Dashboard() {
 
   return (
     <div className="relative overflow-hidden">
-      <img src="/src/assets/illustrations/petri-dish.png" alt="" className="hidden xl:block absolute right-6 top-24 w-24 opacity-85 z-0 pointer-events-none" />
-      <img src="/src/assets/illustrations/lab-flask.png" alt="" className="hidden xl:block absolute left-6 top-40 w-20 opacity-85 z-0 pointer-events-none" />
-      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16">
+      <FloatingIllustration src={petriDish} className="hidden xl:block absolute right-6 top-24 w-24 opacity-85 z-0" rotate={14} variant="drift" />
+      <FloatingIllustration src={labFlask} className="hidden xl:block absolute left-4 top-40 w-20 opacity-80 z-0" rotate={-10} />
+      <FloatingIllustration src={testTube} className="hidden xl:block absolute right-3 top-[55%] w-16 opacity-80 z-0" rotate={22} />
+      <FloatingIllustration src={heartPulse} className="hidden xl:block absolute left-5 bottom-40 w-20 opacity-80 z-0" rotate={-16} variant="drift" />
+      <FloatingIllustration src={helixCheck} className="hidden xl:block absolute right-6 bottom-24 w-24 opacity-85 z-0" rotate={8} />
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 z-10">
       <div className="mb-12 max-w-3xl">
         <div className="eyebrow text-coral mb-4">Analytics</div>
         <h1 className="display-lg">
