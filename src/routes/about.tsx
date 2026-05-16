@@ -51,6 +51,10 @@ function AboutPage() {
         rotate={-14}
         variant="drift"
       />
+      <FloatingIllustration src={testTube} className="hidden xl:block absolute left-6 top-[25%] w-14 opacity-80 z-0" rotate={18} />
+      <FloatingIllustration src={petriDish} className="hidden xl:block absolute right-6 top-[60%] w-20 opacity-80 z-0" rotate={-10} variant="drift" />
+      <FloatingIllustration src={magnifier} className="hidden xl:block absolute left-4 bottom-32 w-20 opacity-80 z-0" rotate={16} />
+      <FloatingIllustration src={pillCap} className="hidden xl:block absolute left-5 bottom-8 w-16 opacity-80 z-0" rotate={-22} variant="drift" />
       <FloatingIllustration
         src={clipboard}
         className="hidden xl:block absolute right-4 bottom-32 w-24 opacity-80 z-0"
