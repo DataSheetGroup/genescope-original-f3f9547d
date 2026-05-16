@@ -1,89 +1,32 @@
-# Plan: Illustration library expansion + typography softening + Predict redesign
+## Goals
+1. Make every illustration match the quality of the helix/microscope used in "Stay up to date" and "And your case?" cards (no cropping/trimming, generous padding, full sticker look).
+2. Stop illustrations from overlapping text on every page (especially history).
+3. Break the symmetry of the hero — both layout and illustration placement — and shrink content so it fits the initial viewport.
 
-## 1. Expand illustration library (same sticker style)
+## 1. Regenerate illustrations (consistent style)
 
-Generate 8 new PNGs in `src/assets/illustrations/` with the established style: bold deep-green outlines, flat cream/coral/teal fills, cartoon sticker look, transparent background.
+Re-render all 8 newer assets with a unified prompt so they look like the "helix-doodle / microscope-doodle" reference:
+- Same bold deep-green outline (#0F3D2E), flat cream/coral/teal fills, transparent PNG.
+- 1024x1024, subject centered, generous ~15% padding on all sides (prevents the "cut/trimmed" look).
+- Friendly cartoon sticker, slightly thicker outline, soft rounded corners.
 
-New assets:
-- `dna-strand.png` — vertical DNA helix
-- `test-tube.png` — labeled test tube with bubbles
-- `clipboard.png` — clipboard with checklist
-- `pill-capsule.png` — two-tone capsule
-- `heart-pulse.png` — heart with EKG line
-- `lab-flask.png` — round-bottom flask
-- `chromosome.png` — X chromosome doodle
-- `petri-dish.png` — petri dish top view
+Files to regenerate (same paths, overwrite):
+`dna-strand.png`, `test-tube.png`, `clipboard.png`, `pill-capsule.png`, `heart-pulse.png`, `lab-flask.png`, `chromosome.png`, `petri-dish.png`.
 
-Keep existing 4 (`helix-doodle`, `microscope-doodle`, `magnifier-strand`, `helix-check`).
+## 2. Fix collisions
 
-## 2. Fix hero collisions
+- **history.tsx**: remove the two floating illustrations on top of the heading/table; move them OUT of overlap. Put one tucked bottom-right of the page (below the table), one as a small inline mark inside the heading block — not absolutely positioned over content. Keep both `hidden lg:block` so mobile is clean.
+- **Audit other pages** (`about.tsx`, `dashboard.tsx`, `performance.tsx`, `predict.tsx`, `index.tsx`) for any FloatingIllustration whose absolute position lands over a text container; nudge each into true safe-zones (outside max-w-3xl content column, or only on xl+ screens with `opacity-90 z-0` and confirmed clearance).
 
-`src/routes/index.tsx` hero:
-- Move floating illustrations OUT of the headline text bounds: confine them to corner zones (`top-4 right-4`, `bottom-8 left-4`) with `max-w-[110px]` on mobile, hidden under `sm`.
-- Add `z-0` to illustrations, `z-10` to text content, and `pointer-events-none`.
-- Add right-side padding reservation on the headline container (`pr-0 md:pr-40 lg:pr-56`) so text never sits beneath an illustration.
-- Apply same pattern to `predict.tsx`, `dashboard.tsx`, `about.tsx`, `performance.tsx`, `history.tsx` — illustrations only in margins/corners, never overlapping a text column.
+## 3. Hero asymmetry + viewport fit (`src/routes/index.tsx`)
 
-Sprinkle 2–4 new illustrations per page in safe corner/margin zones for visual richness.
+Current hero: text dead-center, illustrations mirrored left/right top + left/right bottom, `min-h-[78vh]` plus large `display-xl` clamp → overflow on 634px viewport.
 
-## 3. Rounder, fluffier fonts
+Changes:
+- **Layout**: switch from centered single column to an asymmetric 2-column grid on `lg+`: headline + CTAs left-aligned (cols 1-7), a single illustration cluster offset to the right (cols 8-12). On mobile, single column, left-aligned.
+- **Illustration placement (asymmetric)**: keep only 2 illustrations in the hero, both on the right side at different sizes/rotations (e.g. large microscope upper-right, smaller dna-strand lower-right offset inward). Remove the 4-corner mirrored setup.
+- **Fit initial viewport**: drop `min-h-[78vh]`, tighten paddings (`pt-8 md:pt-14 pb-16 md:pb-24`), shrink `display-xl` clamp to `clamp(2rem, 6vw, 4.75rem)`, reduce body paragraph max-width and margin-top, and reduce CTA top margin. Goal: full hero (eyebrow, headline, paragraph, CTAs) visible within ~600px tall viewport without scroll.
+- Headline copy stays the same; alignment becomes left (not center) to support the asymmetric grid.
 
-`src/styles.css`:
-- Swap body font from **Inter** → **Nunito** (rounded humanist sans, weights 400/600/700/800) via Google Fonts import.
-- Keep **Titan One** for display.
-- Bump base body weight from 400 → 500 for a softer, plumper feel.
-- Increase border-radius scale: `--radius` from `0.875rem` → `1.25rem` so all cards/inputs feel rounder.
-
-## 4. Predict page redesign (clarity + symmetry)
-
-Current issues: asymmetric `1fr_1.1fr` grid, dense form, result stack feels random.
-
-New layout (`src/routes/predict.tsx`):
-
-```text
-┌─────────────────────────────────────────────────┐
-│  Centered hero: eyebrow + headline + subtitle   │
-└─────────────────────────────────────────────────┘
-┌──────────────────────┬──────────────────────────┐
-│  STEP 1 — Inputs     │  STEP 2 — Result         │
-│  (cream card)        │  (cream card)            │
-│                      │                          │
-│  6 fields in 2×3     │  Big prediction label    │
-│  symmetric grid      │  Confidence ring center  │
-│                      │  Probability bar         │
-│  [Generate] [Reset]  │  [Save] [New]            │
-└──────────────────────┴──────────────────────────┘
-┌─────────────────────────────────────────────────┐
-│  STEP 3 — What this means (full-width card)     │
-│  Definition + examples in 2-column layout       │
-└─────────────────────────────────────────────────┘
-┌─────────────────────────────────────────────────┐
-│  STEP 4 — Indicator influence (full-width)      │
-│  Horizontal bar chart, centered, max-w-3xl      │
-└─────────────────────────────────────────────────┘
-```
-
-Key changes:
-- Symmetric `lg:grid-cols-2` (equal columns) for the input/result row.
-- Numbered "STEP 1/2/3/4" eyebrows on each card for guided flow.
-- Empty-state for result panel shows a friendly illustration + "Fill the form to see your result" — never blank.
-- Form: 2-column grid on desktop, 1-column on mobile, consistent field height (`h-12`), labels above with optional helper text below.
-- Move definition + indicator influence BELOW the fold as full-width sections (so result + form stay aligned at top).
-- Add 1 illustration in each empty corner.
-
-## 5. Other pages — light symmetry pass
-
-- `dashboard.tsx`, `performance.tsx`: ensure chart cards use uniform `grid-cols-1 md:grid-cols-2` with equal gaps.
-- `history.tsx`: card grid `md:grid-cols-2 lg:grid-cols-3` symmetric.
-- `about.tsx`: ensure content max-width and section padding match other pages.
-
-## Files touched
-
-- New: 8 illustration PNGs in `src/assets/illustrations/`
-- Edit: `src/styles.css` (fonts, radius)
-- Edit: `src/routes/index.tsx` (hero collision fix + more illustrations)
-- Edit: `src/routes/predict.tsx` (full redesign)
-- Edit: `src/routes/dashboard.tsx`, `performance.tsx`, `history.tsx`, `about.tsx` (illustrations + symmetry)
-- Edit: `src/components/FloatingIllustration.tsx` (add safer positioning defaults if needed)
-
-No backend, no API, no hook changes.
+## Out of scope
+No backend, routing, data, or component-API changes. Pure visual + asset work.

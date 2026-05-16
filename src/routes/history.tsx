@@ -5,9 +5,7 @@ import { useHistory, type HistoryItem } from "@/hooks/useHistory";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { FloatingIllustration } from "@/components/FloatingIllustration";
 import clipboard from "@/assets/illustrations/clipboard.png";
-import pillCap from "@/assets/illustrations/pill-capsule.png";
 
 export const Route = createFileRoute("/history")({
   head: () => ({
@@ -56,16 +54,19 @@ function HistoryPage() {
 
   return (
     <div className="relative overflow-hidden">
-      <FloatingIllustration src={clipboard} className="hidden xl:block absolute right-6 top-20 w-24 opacity-90 z-0" rotate={10} />
-      <FloatingIllustration src={pillCap} className="hidden xl:block absolute left-6 top-40 w-24 opacity-90 z-0" rotate={-8} variant="drift" />
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 animate-fade-up">
       <div className="mb-10 max-w-3xl">
-        <div className="eyebrow text-coral mb-4">Audit log</div>
-        <h1 className="display-lg">
-          Every prediction,
-          <br />
-          <span className="text-coral">accountable.</span>
-        </h1>
+        <div className="flex items-start gap-6">
+          <div className="flex-1">
+            <div className="eyebrow text-coral mb-4">Audit log</div>
+            <h1 className="display-lg">
+              Every prediction,
+              <br />
+              <span className="text-coral">accountable.</span>
+            </h1>
+          </div>
+          <img src={clipboard} alt="" className="hidden md:block w-24 lg:w-28 shrink-0 object-contain -mt-2" />
+        </div>
         <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-cream text-card-foreground px-4 py-2 text-xs font-semibold">
           <Lock className="h-3.5 w-3.5" />
           No personally identifiable information stored. RA 10173 compliant.

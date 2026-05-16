@@ -38,57 +38,57 @@ function Home() {
 
   return (
     <div className="animate-fade-up">
-      {/* ───────────── HERO (green) ───────────── */}
+      {/* ───────────── HERO (green) — asymmetric ───────────── */}
       <section className="hero-green relative overflow-hidden -mt-px">
-        {/* Corner illustrations — kept in safe margins, never under text */}
-        <FloatingIllustration
-          src={dnaStrand}
-          className="hidden lg:block absolute left-4 xl:left-10 top-24 w-28 xl:w-36 z-0 opacity-95"
-          rotate={-12}
-        />
-        <FloatingIllustration
-          src={microscope}
-          className="hidden lg:block absolute right-4 xl:right-10 top-24 w-32 xl:w-40 z-0 opacity-95"
-          rotate={10}
-          variant="drift"
-        />
-        <FloatingIllustration
-          src={testTube}
-          className="hidden xl:block absolute left-10 bottom-16 w-24 z-0"
-          rotate={8}
-          variant="drift"
-        />
-        <FloatingIllustration
-          src={chromosome}
-          className="hidden xl:block absolute right-10 bottom-16 w-28 z-0"
-          rotate={-6}
-        />
-
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-10 md:pt-20 pb-28 md:pb-40 min-h-[78vh] flex flex-col justify-center relative">
-          <div className="relative z-10 mx-auto max-w-3xl text-center">
-            <div className="font-display text-base md:text-lg mb-8">
-              A confident clinical decision
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-8 md:pt-14 pb-16 md:pb-24 relative">
+          <div className="grid lg:grid-cols-12 gap-8 items-center">
+            {/* Text — left, asymmetric */}
+            <div className="relative z-10 lg:col-span-7 text-left">
+              <div className="font-display text-sm md:text-base mb-5">
+                A confident clinical decision
+              </div>
+              <h1 className="display-xl uppercase">
+                Genetic testing
+                <br />
+                decisions{" "}
+                <span className="hl">without</span>
+                <br />
+                the <span className="hl">guesswork</span>
+              </h1>
+              <p className="mt-6 max-w-xl text-sm md:text-base leading-relaxed">
+                GeneScope pairs every result with plain-language context, calibrated
+                probabilities, and feature attribution — so clinicians decide with
+                clarity, not guesswork.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <Link to="/predict" className="pill pill-coral">
+                  Start a prediction
+                </Link>
+                <Link to="/dashboard" className="pill pill-cream">
+                  View the dashboard
+                </Link>
+              </div>
             </div>
-            <h1 className="display-xl uppercase">
-              Genetic testing
-              <br />
-              decisions{" "}
-              <span className="hl">without the</span>
-              <br />
-              <span className="hl">guesswork</span>
-            </h1>
-            <p className="mt-10 mx-auto max-w-2xl text-base md:text-lg leading-relaxed">
-              GeneScope does more than return a single prediction. We pair every result
-              with plain-language context, calibrated probabilities, and feature
-              attribution — so clinicians decide with clarity, not guesswork.
-            </p>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Link to="/predict" className="pill pill-coral">
-                Start a prediction
-              </Link>
-              <Link to="/dashboard" className="pill pill-cream">
-                View the dashboard
-              </Link>
+
+            {/* Illustrations — right cluster, intentionally off-balance */}
+            <div className="hidden lg:block lg:col-span-5 relative h-[420px]">
+              <FloatingIllustration
+                src={microscope}
+                className="absolute right-2 top-0 w-56 xl:w-64 z-0"
+                rotate={8}
+                variant="drift"
+              />
+              <FloatingIllustration
+                src={dnaStrand}
+                className="absolute left-4 bottom-4 w-32 xl:w-40 z-0"
+                rotate={-14}
+              />
+              <FloatingIllustration
+                src={testTube}
+                className="absolute right-24 bottom-0 w-20 xl:w-24 z-0"
+                rotate={12}
+                variant="drift"
+              />
             </div>
           </div>
         </div>
