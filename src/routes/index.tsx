@@ -235,26 +235,10 @@ function Home() {
       {/* ───────────── HIGHLIGHTS / STATS (cream) ───────────── */}
       <section className="slab-cream relative overflow-hidden">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pb-32 relative">
-          <FloatingIllustration
-            src={petriDish}
-            className="hidden 2xl:block absolute -left-20 top-32 w-24 z-0 opacity-90"
-            rotate={-18}
-            variant="drift"
-          />
-          <FloatingIllustration
-            src={pillCap}
-            className="hidden 2xl:block absolute -right-16 bottom-32 w-20 z-0 opacity-90"
-            rotate={24}
-          />
-          <FloatingIllustration
-            src={magnifier}
-            className="hidden 2xl:block absolute -right-20 top-40 w-24 z-0 opacity-90"
-            rotate={14}
-            variant="drift"
-          />
           <div className="grid lg:grid-cols-[1fr_1.3fr] gap-12 lg:gap-20 items-start">
             {/* Left intro */}
             <div className="lg:sticky lg:top-28">
+              <img src={petriDish} alt="" className="w-20 md:w-24 object-contain mb-5" />
               <div className="font-display text-base md:text-lg" style={{ color: "var(--green-deep)" }}>
                 The dataset behind the model
               </div>
