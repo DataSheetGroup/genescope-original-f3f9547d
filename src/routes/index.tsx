@@ -40,34 +40,33 @@ function Home() {
     <div className="">
       {/* ───────────── HERO (green) — centered, asymmetric illustrations ───────────── */}
       <section className="hero-green relative overflow-hidden -mt-px">
-        {/* Hero sticker pack — varied sizes, organic placements */}
+        {/* Hero stickers — anchored in outer corners, sized to fit gutters, never crossing text column */}
+        <FloatingIllustration
+          src={chromosome}
+          className="hidden lg:block absolute left-2 top-6 w-16 xl:w-24 z-0 opacity-90"
+          rotate={-16}
+        />
         <FloatingIllustration
           src={helixCheck}
-          className="hidden lg:block absolute right-6 top-6 w-32 xl:w-40 z-0 opacity-95"
+          className="hidden lg:block absolute right-2 top-4 w-24 xl:w-36 z-0 opacity-95"
           rotate={10}
           variant="drift"
         />
         <FloatingIllustration
-          src={chromosome}
-          className="hidden lg:block absolute left-6 top-12 w-20 xl:w-24 z-0 opacity-90"
-          rotate={-18}
-        />
-        <FloatingIllustration
           src={dnaStrand}
-          className="hidden lg:block absolute left-3 bottom-6 w-24 xl:w-28 z-0 opacity-90"
-          rotate={-12}
+          className="hidden lg:block absolute left-2 bottom-6 w-20 xl:w-28 z-0 opacity-90"
+          rotate={-22}
           variant="drift"
-        />
-        <FloatingIllustration
-          src={testTube}
-          className="hidden lg:block absolute right-40 bottom-10 w-14 xl:w-16 z-0 opacity-90"
-          rotate={20}
         />
         <FloatingIllustration
           src={petriDish}
-          className="hidden xl:block absolute right-2 bottom-16 w-20 z-0 opacity-85"
-          rotate={-8}
-          variant="drift"
+          className="hidden lg:block absolute right-3 bottom-8 w-20 xl:w-28 z-0 opacity-90"
+          rotate={12}
+        />
+        <FloatingIllustration
+          src={testTube}
+          className="hidden xl:block absolute right-6 top-1/2 -translate-y-1/2 w-12 z-0 opacity-85"
+          rotate={22}
         />
 
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-8 md:pt-12 pb-14 md:pb-20 relative">
@@ -266,18 +265,24 @@ function Home() {
 
       {/* ───────────── HIGHLIGHTS / STATS (cream) ───────────── */}
       <section className="slab-cream relative overflow-hidden">
-        <FloatingIllustration
-          src={petriDish}
-          className="hidden xl:block absolute left-2 top-32 w-20 z-0 opacity-80"
-          rotate={-18}
-          variant="drift"
-        />
-        <FloatingIllustration
-          src={pillCap}
-          className="hidden xl:block absolute right-4 bottom-24 w-16 z-0 opacity-75"
-          rotate={24}
-        />
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pb-32 relative">
+          <FloatingIllustration
+            src={petriDish}
+            className="hidden 2xl:block absolute -left-20 top-32 w-24 z-0 opacity-90"
+            rotate={-18}
+            variant="drift"
+          />
+          <FloatingIllustration
+            src={pillCap}
+            className="hidden 2xl:block absolute -right-16 bottom-32 w-20 z-0 opacity-90"
+            rotate={24}
+          />
+          <FloatingIllustration
+            src={magnifier}
+            className="hidden 2xl:block absolute -right-20 top-40 w-24 z-0 opacity-90"
+            rotate={14}
+            variant="drift"
+          />
           <div className="grid lg:grid-cols-[1fr_1.3fr] gap-12 lg:gap-20 items-start">
             {/* Left intro */}
             <div className="lg:sticky lg:top-28">
