@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check } from "lucide-react";
-import helix from "@/assets/illustrations/helix-doodle.png";
 import heartPulse from "@/assets/illustrations/heart-pulse.png";
 import clipboard from "@/assets/illustrations/clipboard.png";
 import testTube from "@/assets/illustrations/test-tube.png";

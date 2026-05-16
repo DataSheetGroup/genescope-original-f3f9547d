@@ -5,7 +5,6 @@ import { useHistory, type HistoryItem } from "@/hooks/useHistory";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import clipboard from "@/assets/illustrations/clipboard.png";
 import pillCap from "@/assets/illustrations/pill-capsule.png";
 import magnifier from "@/assets/illustrations/magnifier-strand.png";
 import chromosome from "@/assets/illustrations/chromosome.png";
