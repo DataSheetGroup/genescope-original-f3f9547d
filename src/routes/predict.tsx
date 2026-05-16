@@ -181,7 +181,7 @@ function PredictPage() {
       {/* Decorative corner illustrations — kept clear of text columns */}
       <FloatingIllustration
         src={dnaStrand}
-        className="hidden xl:block absolute left-3 top-40 w-16 z-0 opacity-75"
+        className="hidden xl:block absolute left-3 top-40 w-16 z-0 opacity-80"
         rotate={-18}
       />
       <FloatingIllustration
@@ -190,6 +190,11 @@ function PredictPage() {
         rotate={12}
         variant="drift"
       />
+      <FloatingIllustration src={clipboard} className="hidden xl:block absolute right-3 top-[42%] w-20 z-0 opacity-80" rotate={-8} />
+      <FloatingIllustration src={chromosome} className="hidden xl:block absolute left-5 top-[60%] w-20 z-0 opacity-80" rotate={20} variant="drift" />
+      <FloatingIllustration src={testTube} className="hidden xl:block absolute right-6 bottom-32 w-14 z-0 opacity-85" rotate={24} />
+      <FloatingIllustration src={pillCap} className="hidden xl:block absolute left-4 bottom-24 w-16 z-0 opacity-80" rotate={-14} />
+      <FloatingIllustration src={petriDish} className="hidden xl:block absolute right-5 bottom-12 w-20 z-0 opacity-80" rotate={10} variant="drift" />
 
       <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10 py-16 z-10">
         {/* ── Centered hero ── */}
