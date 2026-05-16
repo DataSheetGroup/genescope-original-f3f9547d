@@ -114,25 +114,24 @@ function Dashboard() {
   return (
     <div className="relative overflow-hidden">
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 z-10">
-        {/* Dashboard stickers — data/lab themed, gutter-only, only on very wide screens */}
-        <FloatingIllustration src={petriDish} className="hidden 2xl:block absolute -right-20 top-24 w-24 opacity-90 z-0" rotate={14} variant="drift" />
-        <FloatingIllustration src={labFlask} className="hidden 2xl:block absolute -left-20 top-40 w-24 opacity-90 z-0" rotate={-10} />
-        <FloatingIllustration src={testTube} className="hidden 2xl:block absolute -right-12 top-[45%] w-14 opacity-90 z-0" rotate={22} />
-        <FloatingIllustration src={heartPulse} className="hidden 2xl:block absolute -left-16 top-[65%] w-20 opacity-90 z-0" rotate={-16} variant="drift" />
-        <FloatingIllustration src={helixCheck} className="hidden 2xl:block absolute -right-20 bottom-24 w-24 opacity-90 z-0" rotate={8} />
       <div className="mb-12 max-w-3xl">
-        <div className="eyebrow text-coral mb-4">Analytics</div>
-        <h1 className="display-lg">
-          The dataset, at
-          <br />
-          <span className="text-coral">a glance.</span>
-        </h1>
-        <p className="mt-5 text-foreground/75">
-          Exploratory data analysis on anonymized Molave Trading Inc. patient records (2021–2025).
-        </p>
-        <p className="mt-3 text-xs text-foreground/55">
-          Derived from data under MOA &amp; NDA — Confidential.
-        </p>
+        <div className="flex items-start gap-6">
+          <div className="flex-1">
+            <div className="eyebrow text-coral mb-4">Analytics</div>
+            <h1 className="display-lg">
+              The dataset, at
+              <br />
+              <span className="text-coral">a glance.</span>
+            </h1>
+            <p className="mt-5 text-foreground/75">
+              Exploratory data analysis on anonymized Molave Trading Inc. patient records (2021–2025).
+            </p>
+            <p className="mt-3 text-xs text-foreground/55">
+              Derived from data under MOA &amp; NDA — Confidential.
+            </p>
+          </div>
+          <img src={petriDish} alt="" className="hidden md:block w-24 lg:w-28 shrink-0 object-contain -mt-2" />
+        </div>
       </div>
 
       {isLoading && <Skeleton />}
