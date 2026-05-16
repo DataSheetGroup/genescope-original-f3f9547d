@@ -20,7 +20,7 @@ const allLinks = [{ to: "/", label: "Home" }, ...leftLinks, ...rightLinks] as co
 function Wordmark() {
   return (
     <Link to="/" className="font-display text-2xl md:text-[28px] tracking-tight text-foreground hover:opacity-90 transition-opacity">
-      GE<span className="relative">N<span className="absolute -top-[0.35em] left-1/2 -translate-x-1/2 text-[0.4em]">••</span></span>ESC<span className="relative">O<span className="absolute -top-[0.35em] left-1/2 -translate-x-1/2 text-[0.4em]">••</span></span>PE
+      GENESCOPE
     </Link>
   );
 }
@@ -31,9 +31,9 @@ function NavLink({ to, label, onClick }: { to: string; label: string; onClick?: 
       to={to}
       onClick={onClick}
       activeOptions={{ exact: to === "/" }}
-      activeProps={{ className: "text-foreground after:scale-x-100" }}
-      inactiveProps={{ className: "text-foreground/70 hover:text-foreground after:scale-x-0 hover:after:scale-x-100" }}
-      className="relative text-sm font-semibold uppercase tracking-wider px-1 py-1 transition-colors after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-[3px] after:rounded-full after:bg-coral after:transition-transform after:origin-center"
+      activeProps={{ className: "bg-cream text-green-deep" }}
+      inactiveProps={{ className: "text-cream/85 hover:bg-cream hover:text-green-deep" }}
+      className="rounded-full px-4 py-2 text-[13px] font-semibold uppercase tracking-wider transition-colors"
     >
       {label}
     </Link>
