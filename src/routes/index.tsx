@@ -119,7 +119,7 @@ function Home() {
                 offset: "md:-translate-y-6 md:-rotate-2",
               },
               {
-                img: magnifier,
+                img: clipboard,
                 title: "Streamlined indicators",
                 body: "Six structured fields and a calibrated probability in milliseconds — built for the realities of busy Philippine practice today.",
                 rotate: -2,
@@ -164,7 +164,7 @@ function Home() {
                 Discover the concept
               </Link>
               <FloatingIllustration
-                src={helix}
+                src={labFlask}
                 className="hidden lg:block absolute -right-10 top-1/2 w-44"
                 rotate={-8}
               />
@@ -234,7 +234,7 @@ function Home() {
                 cta: "Open the predictor",
               },
               {
-                img: helixCheck,
+                img: heartPulse,
                 eyebrow: "Explore the model",
                 title: (<>Curious about <br /> performance?</>),
                 to: "/performance",
@@ -261,8 +261,18 @@ function Home() {
       </section>
 
       {/* ───────────── HIGHLIGHTS / STATS (cream) ───────────── */}
-      <section className="slab-cream">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pb-32">
+      <section className="slab-cream relative">
+        <FloatingIllustration
+          src={petriDish}
+          className="hidden lg:block absolute left-6 top-10 w-24 z-0"
+          rotate={-8}
+          variant="drift"
+        />
+        <FloatingIllustration
+          src={pillCap}
+          className="hidden lg:block absolute right-6 top-16 w-24 z-0"
+          rotate={12}
+        />
           <div className="text-center mb-14">
             <div className="font-display text-base md:text-lg" style={{ color: "var(--green-deep)" }}>
               The dataset behind the model
