@@ -109,7 +109,7 @@ function Dashboard() {
     <div className="relative overflow-hidden">
       <img src="/src/assets/illustrations/petri-dish.png" alt="" className="hidden xl:block absolute right-6 top-24 w-24 opacity-85 z-0 pointer-events-none" />
       <img src="/src/assets/illustrations/lab-flask.png" alt="" className="hidden xl:block absolute left-6 top-40 w-20 opacity-85 z-0 pointer-events-none" />
-      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 animate-fade-up">
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16">
       <div className="mb-12 max-w-3xl">
         <div className="eyebrow text-coral mb-4">Analytics</div>
         <h1 className="display-lg">

@@ -189,7 +189,7 @@ function PredictPage() {
         variant="drift"
       />
 
-      <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10 py-16 animate-fade-up">
+      <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10 py-16">
         {/* ── Centered hero ── */}
         <div className="text-center max-w-3xl mx-auto mb-14">
           <div className="eyebrow text-coral mb-4">Prediction</div>

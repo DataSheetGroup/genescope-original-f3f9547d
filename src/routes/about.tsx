@@ -52,7 +52,7 @@ function AboutPage() {
         className="hidden lg:block absolute right-6 bottom-20 w-24 opacity-90 z-0"
         rotate={8}
       />
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-10 py-16 animate-fade-up space-y-10">
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-10 py-16 space-y-10">
         <div className="max-w-3xl">
           <div className="eyebrow text-coral mb-4">About</div>
           <h1 className="display-lg">

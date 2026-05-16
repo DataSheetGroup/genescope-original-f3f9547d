@@ -37,7 +37,7 @@ function Home() {
   const totalRecords = data?.total_records ?? "—";
 
   return (
-    <div className="animate-fade-up">
+    <div className="">
       {/* ───────────── HERO (green) — centered, asymmetric illustrations ───────────── */}
       <section className="hero-green relative overflow-hidden -mt-px">
         {/* Asymmetric floating illustrations — varied sizes, rotations, offsets */}

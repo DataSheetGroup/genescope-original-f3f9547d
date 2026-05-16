@@ -1,13 +1,13 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Fredoka:wght@400;500;600;700&family=Titan+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Fredoka:wght@400;500;600;700&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Nunito", "Fredoka", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Titan One", "Fredoka", "Nunito", system-ui, sans-serif;
+  --font-sans: "Fredoka", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bagel Fat One", "Fredoka", system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -97,10 +97,14 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-weight: 500;
+    letter-spacing: -0.005em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
-  h1, h2, h3, h4 { letter-spacing: -0.01em; }
+  input, select, textarea, button {
+    font-family: var(--font-sans);
+  }
+  h1, h2, h3, h4 { letter-spacing: -0.005em; }
   ::selection { background: var(--coral); color: var(--green-deep); }
 }
 
@@ -195,10 +199,16 @@ h1:has(.hl), h2:has(.hl), h3:has(.hl) { line-height: 1.15; }
 
 /* Animations */
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.animate-fade-up { animation: fade-up 0.6s ease-out both; }
+.animate-fade-up { animation: fade-up 0.32s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-page-in { animation: page-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
 @keyframes float-slow {
   0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }

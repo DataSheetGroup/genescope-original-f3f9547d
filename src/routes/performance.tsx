@@ -161,7 +161,7 @@ function PerformancePage() {
       <FloatingIllustration src={heartPulse} className="hidden xl:block absolute right-6 top-24 w-24 opacity-90 z-0" rotate={10} />
       <FloatingIllustration src={chromosome} className="hidden xl:block absolute left-6 top-1/3 w-20 opacity-90 z-0" rotate={-12} variant="drift" />
       <FloatingIllustration src={labFlask} className="hidden xl:block absolute right-8 bottom-24 w-24 opacity-90 z-0" rotate={6} />
-      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 animate-fade-up space-y-14">
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 space-y-14">
       <div className="max-w-3xl">
         <div className="eyebrow text-coral mb-4">Evaluation</div>
         <h1 className="display-lg">

@@ -54,7 +54,7 @@ function HistoryPage() {
 
   return (
     <div className="relative overflow-hidden">
-      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 animate-fade-up">
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16">
       <div className="mb-10 max-w-3xl">
         <div className="flex items-start gap-6">
           <div className="flex-1">

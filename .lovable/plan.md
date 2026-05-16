@@ -1,23 +1,30 @@
-## 1. Hero section — restore previous layout, fit viewport, asymmetric
+## 1. Replace all fonts with puffy cartoon fonts
 
-Revert `src/routes/index.tsx` hero from the 2-column asymmetric grid back to the **previous centered single-column layout** (eyebrow, headline, paragraph, CTA pills all centered), but:
+In `src/styles.css`:
+- Swap the Google Fonts import to: **Bagel Fat One** (display) + **Fredoka** wght 300–700 (body + small text). Drop Titan One and Nunito.
+- Update CSS variables:
+  - `--font-display: "Bagel Fat One", "Fredoka", system-ui, sans-serif;`
+  - `--font-sans: "Fredoka", system-ui, sans-serif;`
+- Apply `font-family: var(--font-sans)` to `html, body` and **all** form controls (`input, select, textarea, button`) so labels, inputs, badges, tables, footers, pills, and small text inherit Fredoka (puffy rounded).
+- Keep `.font-display`, `.display-xl/lg/md` on Bagel Fat One for big headings.
+- Loosen `letter-spacing` slightly (`-0.005em`) and bump body weight to 500 so Fredoka reads as "puffy" rather than thin.
 
-- Keep it sized so the entire hero fits in ~600px tall viewport: `pt-8 md:pt-12 pb-14 md:pb-20`, no `min-h-[78vh]`.
-- Keep `display-xl` clamp small: `clamp(2rem, 5.5vw, 4.5rem)`.
-- Trim paragraph `mt-5`, CTAs `mt-6`.
-- Re-add the **floating illustrations around the centered text** but in **asymmetric, non-mirrored placements** (different sizes, rotations, vertical offsets — NOT 4 mirrored corners). Example: microscope top-right large, dna-strand mid-left small lower, test-tube bottom-right tiny, helix top-left tiny higher. All `hidden lg:block` with `z-0` behind text container.
+Result: every piece of text on the site — headings, paragraphs, navbar, buttons, form labels, table cells, footer, tooltips — uses a puffy rounded cartoon font.
 
-## 2. Regenerate all non-matching illustrations to match microscope/helix style
+## 2. Smooth route/tab transitions
 
-The "reference" look = `microscope-doodle.png` and `helix-doodle.png`: clean cartoon sticker with a **thick white outline trim** (sticker border) around a flat-color illustration, transparent background, generous padding, no cropping.
+Currently each route mounts with `animate-fade-up` but there's no exit animation and no consistent timing, which causes the "delay/pop" feel between nav clicks.
 
-Regenerate these 8 with one unified prompt emphasizing the **white sticker outline** + matching palette + thick outer trim + transparent bg + 15% padding:
+In `src/routes/__root.tsx`:
+- Wrap the `<Outlet />` in a `RouteTransition` component keyed by `useRouterState().location.pathname`.
+- Use a lightweight CSS approach (no new deps): on key change, the wrapper applies a `animate-page-in` class (fade + 6px upward translate, 220ms, ease-out). No exit blocker — instant swap with smooth spawn-in, so navigation feels immediate.
 
-`dna-strand.png`, `test-tube.png`, `clipboard.png`, `pill-capsule.png`, `heart-pulse.png`, `lab-flask.png`, `chromosome.png`, `petri-dish.png`.
+In `src/styles.css`:
+- Add a single keyframe `page-in` (opacity 0→1, translateY 8px→0, 220ms cubic-bezier(0.22, 1, 0.36, 1)) and the `.animate-page-in` utility.
+- Update existing `.animate-fade-up` to the same shorter curve so internal sections feel consistent.
 
-Unified prompt: "Flat cartoon sticker illustration of a {subject}, thick white sticker outline border around the entire shape (die-cut sticker look), deep green inner linework (#0F3D2E), flat cream / coral / teal fills matching the GeneScope palette, friendly rounded shapes, centered with ~15% padding on all sides, transparent background, 1024x1024, consistent style with microscope and DNA helix reference."
-
-Also leave `helix-check.png` and `magnifier-strand.png` as-is (already match).
+In each route file:
+- Remove the per-route `animate-fade-up` wrapper div (the root now handles it) to avoid double animation / stagger delays.
 
 ## Out of scope
-No routing, data, component-API, or other-page changes. Pure hero layout + asset regeneration.
+No component/library changes, no router restructure, no content edits.
