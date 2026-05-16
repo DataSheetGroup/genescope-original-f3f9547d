@@ -12,11 +12,11 @@ export function ChartCard({
   className?: string;
 }) {
   return (
-    <div className={`rounded-2xl border bg-card p-5 shadow-sm ${className}`}>
+    <div className={`rounded-2xl bg-card text-card-foreground p-6 ${className}`}>
       <div className="mb-4">
-        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wider">{title}</h3>
         {description && (
-          <p className="mt-1 text-xs text-muted-foreground">{description}</p>
+          <p className="mt-1 text-xs text-card-foreground/65">{description}</p>
         )}
       </div>
       <div className="h-64 w-full">{children}</div>

@@ -1,21 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle2 } from "lucide-react";
+import { Check } from "lucide-react";
 import { getFeatureImportance, getMetrics, type ModelMetrics } from "@/lib/api";
 import { BackendOfflineNotice } from "@/components/BackendOfflineNotice";
 import { ChartCard } from "@/components/ChartCard";
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
+  Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart,
+  ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 
 export const Route = createFileRoute("/performance")({
@@ -37,6 +28,16 @@ const METRIC_LABELS: Record<(typeof METRIC_KEYS)[number], string> = {
   roc_auc: "ROC-AUC",
 };
 
+const tooltipStyle = {
+  background: "var(--green-deep)",
+  color: "var(--cream)",
+  border: "none",
+  borderRadius: 12,
+  fontSize: 12,
+};
+const axisTick = { fontSize: 11, fill: "var(--green-deep)" };
+const gridStroke = "rgba(15,61,46,0.12)";
+
 function pct(v: number) {
   return v <= 1 ? (v * 100).toFixed(1) + "%" : v.toFixed(1) + "%";
 }
@@ -47,38 +48,38 @@ function asNum(v: number) {
 function ConfusionMatrix({ name, matrix }: { name: string; matrix?: number[][] }) {
   if (!matrix || matrix.length !== 2) {
     return (
-      <div className="rounded-2xl border bg-card p-5 shadow-sm">
-        <h3 className="text-sm font-semibold">{name}</h3>
-        <p className="mt-2 text-xs text-muted-foreground">No confusion matrix data.</p>
+      <div className="rounded-2xl bg-card text-card-foreground p-6">
+        <h3 className="font-display text-lg">{name}</h3>
+        <p className="mt-2 text-xs text-card-foreground/65">No confusion matrix data.</p>
       </div>
     );
   }
   const max = Math.max(...matrix.flat());
   const labels = ["Targeted", "Comprehensive"];
   return (
-    <div className="rounded-2xl border bg-card p-5 shadow-sm">
-      <h3 className="text-sm font-semibold mb-3">{name} — Confusion Matrix</h3>
+    <div className="rounded-2xl bg-card text-card-foreground p-6">
+      <h3 className="font-display text-lg mb-4">{name}</h3>
       <div className="grid grid-cols-[auto_1fr_1fr] gap-1.5 text-xs">
         <div />
         {labels.map((l) => (
-          <div key={l} className="text-center font-medium text-muted-foreground">Pred {l}</div>
+          <div key={l} className="text-center font-semibold text-card-foreground/65 uppercase tracking-wider text-[10px]">Pred {l}</div>
         ))}
         {matrix.map((row, i) => (
-          <>
-            <div key={`l-${i}`} className="flex items-center font-medium text-muted-foreground">{labels[i]}</div>
+          <div key={`row-${i}`} className="contents">
+            <div className="flex items-center font-semibold text-card-foreground/65 uppercase tracking-wider text-[10px]">{labels[i]}</div>
             {row.map((v, j) => {
               const a = max ? v / max : 0;
               return (
                 <div
                   key={`c-${i}-${j}`}
-                  className="h-16 rounded-lg flex items-center justify-center font-semibold text-foreground"
-                  style={{ background: `rgba(13, 148, 136, ${0.08 + a * 0.55})` }}
+                  className="h-16 rounded-lg flex items-center justify-center font-display text-lg"
+                  style={{ background: `color-mix(in oklab, var(--coral) ${10 + a * 70}%, transparent)` }}
                 >
                   {v}
                 </div>
               );
             })}
-          </>
+          </div>
         ))}
       </div>
     </div>
@@ -87,17 +88,17 @@ function ConfusionMatrix({ name, matrix }: { name: string; matrix?: number[][] }
 
 function ModelCard({ m }: { m: ModelMetrics }) {
   return (
-    <div className="rounded-2xl border bg-card p-5 shadow-sm">
-      <h3 className="text-sm font-semibold">{m.name}</h3>
-      <div className="mt-4 space-y-3">
+    <div className="rounded-2xl bg-card text-card-foreground p-6">
+      <h3 className="font-display text-xl">{m.name}</h3>
+      <div className="mt-5 space-y-3.5">
         {METRIC_KEYS.map((k) => (
           <div key={k}>
-            <div className="flex justify-between text-xs mb-1">
-              <span className="text-muted-foreground">{METRIC_LABELS[k]}</span>
-              <span className="font-medium tabular-nums">{pct(m[k] as number)}</span>
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="uppercase tracking-wider font-semibold text-card-foreground/65">{METRIC_LABELS[k]}</span>
+              <span className="font-display tabular-nums">{pct(m[k] as number)}</span>
             </div>
-            <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-              <div className="h-full bg-primary" style={{ width: `${asNum(m[k] as number)}%` }} />
+            <div className="h-2 rounded-full bg-green-deep/10 overflow-hidden">
+              <div className="h-full bg-coral rounded-full" style={{ width: `${asNum(m[k] as number)}%` }} />
             </div>
           </div>
         ))}
@@ -112,7 +113,7 @@ function PerformancePage() {
 
   if (metricsQ.isError && fiQ.isError) {
     return (
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16">
         <BackendOfflineNotice onRetry={() => { metricsQ.refetch(); fiQ.refetch(); }} />
       </div>
     );
@@ -128,7 +129,6 @@ function PerformancePage() {
     return row;
   });
 
-  // ROC overlay (line per model)
   const rocData: Record<string, number | undefined>[] = [];
   if (models.length) {
     const steps = 50;
@@ -137,10 +137,8 @@ function PerformancePage() {
       const row: Record<string, number | undefined> = { fpr: x };
       models.forEach((m) => {
         if (m.roc_curve?.fpr?.length && m.roc_curve?.tpr?.length) {
-          // nearest neighbor lookup
           const fprs = m.roc_curve.fpr;
-          let bestIdx = 0;
-          let bestDiff = Infinity;
+          let bestIdx = 0, bestDiff = Infinity;
           for (let j = 0; j < fprs.length; j++) {
             const d = Math.abs(fprs[j] - x);
             if (d < bestDiff) { bestDiff = d; bestIdx = j; }
@@ -152,86 +150,89 @@ function PerformancePage() {
     }
   }
 
-  const colors = ["var(--color-chart-1)", "var(--color-chart-2)", "var(--color-chart-5)"];
+  const colors = ["var(--coral)", "var(--green-deep)", "var(--teal-soft)"];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 animate-fade-up space-y-10">
-      <div>
-        <div className="text-xs font-semibold tracking-[0.18em] uppercase text-primary mb-2">
-          Evaluation
-        </div>
-        <h1 className="text-3xl md:text-4xl font-semibold">Model Performance</h1>
-        <p className="mt-2 text-muted-foreground max-w-2xl">
+    <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 animate-fade-up space-y-14">
+      <div className="max-w-3xl">
+        <div className="eyebrow text-coral mb-4">Evaluation</div>
+        <h1 className="display-lg">
+          Three models,
+          <br />
+          <span className="text-coral">one chosen for the job.</span>
+        </h1>
+        <p className="mt-5 text-foreground/75">
           Comparative evaluation of Binary Logistic Regression, Decision Tree, and Random Forest.
         </p>
       </div>
 
-      {/* Primary model card */}
-      <div className="rounded-2xl border-2 border-primary/30 bg-card p-6 shadow-sm">
-        <div className="text-xs font-semibold uppercase tracking-wider text-primary mb-2">
-          Primary Model
-        </div>
-        <h2 className="text-xl font-semibold">Binary Logistic Regression</h2>
-        <p className="mt-2 text-sm text-foreground/85 leading-relaxed max-w-3xl">
-          Binary Logistic Regression is the primary prediction model of this
-          study. It estimates the probability that a patient undergoes
-          Comprehensive Profiling versus Targeted Testing based on the six input
-          indicators.
-        </p>
-        <div className="mt-5 rounded-xl bg-muted/60 p-5 font-mono text-sm overflow-x-auto">
-          log( P(Y=1) / 1 − P(Y=1) ) = β₀ + β₁X₁ + β₂X₂ + … + β<sub>k</sub>X<sub>k</sub>
+      {/* Primary model hero */}
+      <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-12 relative overflow-hidden">
+        <div className="absolute inset-0 rounded-3xl ring-4 ring-coral pointer-events-none" />
+        <div className="relative">
+          <div className="eyebrow text-coral mb-3">Primary model</div>
+          <h2 className="display-md">
+            Binary <span className="text-coral">Logistic Regression</span>
+          </h2>
+          <p className="mt-5 max-w-3xl leading-relaxed">
+            Binary Logistic Regression is the primary prediction model of this study.
+            It estimates the probability that a patient undergoes Comprehensive Profiling
+            versus Targeted Testing based on the six input indicators.
+          </p>
+          <div className="mt-6 rounded-2xl bg-green-deep text-cream p-6 font-mono text-sm md:text-base overflow-x-auto">
+            log( P(Y=1) / 1 − P(Y=1) ) = β₀ + β₁X₁ + β₂X₂ + … + β<sub>k</sub>X<sub>k</sub>
+          </div>
         </div>
       </div>
 
       {/* Comparison table */}
-      <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b">
-          <h2 className="text-sm font-semibold">Comparison Table</h2>
+      <div className="rounded-3xl bg-card text-card-foreground overflow-hidden">
+        <div className="px-7 py-5 border-b border-card-foreground/10">
+          <div className="eyebrow text-coral mb-1">Comparison</div>
+          <h2 className="font-display text-2xl">All five metrics, side by side</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
+            <thead className="bg-cream-dim text-xs uppercase tracking-wider text-card-foreground/65">
               <tr>
-                <th className="text-left px-6 py-3">Model</th>
+                <th className="text-left px-7 py-4 font-semibold">Model</th>
                 {METRIC_KEYS.map((k) => (
-                  <th key={k} className="text-right px-6 py-3">{METRIC_LABELS[k]}</th>
+                  <th key={k} className="text-right px-7 py-4 font-semibold">{METRIC_LABELS[k]}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {models.map((m) => (
-                <tr key={m.name} className="border-t">
-                  <td className="px-6 py-3 font-medium">{m.name}</td>
+                <tr key={m.name} className="border-t border-card-foreground/10">
+                  <td className="px-7 py-4 font-display text-base">{m.name}</td>
                   {METRIC_KEYS.map((k) => (
-                    <td key={k} className="px-6 py-3 text-right tabular-nums">{pct(m[k] as number)}</td>
+                    <td key={k} className="px-7 py-4 text-right tabular-nums">{pct(m[k] as number)}</td>
                   ))}
                 </tr>
               ))}
               {!models.length && (
-                <tr><td colSpan={6} className="px-6 py-10 text-center text-muted-foreground text-sm">Loading metrics…</td></tr>
+                <tr><td colSpan={6} className="px-7 py-12 text-center text-card-foreground/65 text-sm">Loading metrics…</td></tr>
               )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Three model cards */}
       {models.length > 0 && (
         <div className="grid md:grid-cols-3 gap-5">
           {models.map((m) => <ModelCard key={m.name} m={m} />)}
         </div>
       )}
 
-      {/* Grouped bar across all metrics */}
       {models.length > 0 && (
         <ChartCard title="Metrics across all models" description="All five metrics, side-by-side per model">
           <ResponsiveContainer>
             <BarChart data={comparisonData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-              <XAxis dataKey="metric" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} domain={[0, 100]} />
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+              <XAxis dataKey="metric" tick={axisTick} />
+              <YAxis tick={axisTick} domain={[0, 100]} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "var(--green-deep)" }} />
               {models.map((m, i) => (
                 <Bar key={m.name} dataKey={m.name} fill={colors[i % colors.length]} radius={[4, 4, 0, 0]} />
               ))}
@@ -240,29 +241,21 @@ function PerformancePage() {
         </ChartCard>
       )}
 
-      {/* Confusion matrices */}
       {models.length > 0 && (
         <div className="grid md:grid-cols-3 gap-5">
           {models.map((m) => <ConfusionMatrix key={m.name} name={m.name} matrix={m.confusion_matrix} />)}
         </div>
       )}
 
-      {/* ROC overlay */}
       {models.length > 0 && rocData.length > 0 && (
         <ChartCard title="ROC Curve" description="True positive rate vs false positive rate">
           <ResponsiveContainer>
             <LineChart data={rocData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-              <XAxis
-                dataKey="fpr"
-                tick={{ fontSize: 11 }}
-                type="number"
-                domain={[0, 1]}
-                tickFormatter={(v) => v.toFixed(1)}
-              />
-              <YAxis tick={{ fontSize: 11 }} domain={[0, 1]} tickFormatter={(v) => v.toFixed(1)} />
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+              <XAxis dataKey="fpr" tick={axisTick} type="number" domain={[0, 1]} tickFormatter={(v) => v.toFixed(1)} />
+              <YAxis tick={axisTick} domain={[0, 1]} tickFormatter={(v) => v.toFixed(1)} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "var(--green-deep)" }} />
               {models.map((m, i) => (
                 <Line
                   key={m.name}
@@ -279,44 +272,43 @@ function PerformancePage() {
         </ChartCard>
       )}
 
-      {/* Feature importance */}
       {fiQ.data && (
         <ChartCard title="Feature Importance" description="From the trained primary model">
           <ResponsiveContainer>
             <BarChart data={fiQ.data} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-              <XAxis type="number" tick={{ fontSize: 11 }} />
-              <YAxis dataKey="feature" type="category" tick={{ fontSize: 11 }} width={140} />
-              <Tooltip />
-              <Bar dataKey="importance" radius={[0, 6, 6, 0]}>
-                {fiQ.data.map((_, i) => <Cell key={i} fill="var(--color-primary)" />)}
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+              <XAxis type="number" tick={axisTick} />
+              <YAxis dataKey="feature" type="category" tick={axisTick} width={140} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Bar dataKey="importance" radius={[0, 999, 999, 0]}>
+                {fiQ.data.map((_, i) => <Cell key={i} fill="var(--coral)" />)}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
       )}
 
-      {/* CV + Testing */}
       <div className="grid md:grid-cols-2 gap-5">
-        <div className="rounded-2xl border bg-card p-6 shadow-sm">
-          <h2 className="text-sm font-semibold">5-Fold Cross Validation</h2>
-          <p className="text-xs text-muted-foreground mt-1">Mean accuracy ± standard deviation</p>
-          <div className="mt-4 space-y-3">
+        <div className="rounded-3xl bg-card text-card-foreground p-7">
+          <div className="eyebrow text-coral mb-2">Cross validation</div>
+          <h2 className="font-display text-2xl">5-Fold Mean ± SD</h2>
+          <div className="mt-5 space-y-2.5">
             {models.map((m) => (
-              <div key={m.name} className="flex items-center justify-between rounded-lg bg-muted/40 px-4 py-3">
-                <span className="text-sm font-medium">{m.name}</span>
-                <span className="text-sm tabular-nums">
+              <div key={m.name} className="flex items-center justify-between rounded-2xl bg-cream-dim px-5 py-4">
+                <span className="text-sm font-semibold">{m.name}</span>
+                <span className="text-sm tabular-nums font-display">
                   {m.cv_mean != null ? `${pct(m.cv_mean)} ± ${m.cv_std != null ? pct(m.cv_std) : "—"}` : "—"}
                 </span>
               </div>
             ))}
-            {!models.length && <p className="text-xs text-muted-foreground">No CV data.</p>}
+            {!models.length && <p className="text-xs text-card-foreground/65">No CV data.</p>}
           </div>
         </div>
 
-        <div className="rounded-2xl border bg-card p-6 shadow-sm">
-          <h2 className="text-sm font-semibold">Testing Methods</h2>
-          <ul className="mt-4 space-y-2.5">
+        <div className="rounded-3xl bg-card text-card-foreground p-7">
+          <div className="eyebrow text-coral mb-2">Quality assurance</div>
+          <h2 className="font-display text-2xl">Testing methods</h2>
+          <ul className="mt-5 space-y-2.5">
             {[
               "White Box Testing",
               "Integration Testing",
@@ -324,8 +316,11 @@ function PerformancePage() {
               "Performance & Accuracy Validation",
               "Alpha/Beta Acceptance Testing",
             ].map((t) => (
-              <li key={t} className="flex items-center gap-2 text-sm">
-                <CheckCircle2 className="h-4 w-4 text-primary" /> {t}
+              <li key={t} className="flex items-center gap-3 text-sm rounded-2xl bg-cream-dim px-5 py-3">
+                <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-coral">
+                  <Check className="h-3.5 w-3.5 text-card-foreground" />
+                </span>
+                {t}
               </li>
             ))}
           </ul>

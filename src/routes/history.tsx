@@ -3,11 +3,7 @@ import { useMemo, useState } from "react";
 import { Download, Lock, Trash2 } from "lucide-react";
 import { useHistory, type HistoryItem } from "@/hooks/useHistory";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 
 export const Route = createFileRoute("/history")({
@@ -23,16 +19,9 @@ export const Route = createFileRoute("/history")({
 function toCsv(items: HistoryItem[]) {
   const header = ["No.", "Timestamp", "Sex", "Region", "Location", "Disease", "Facility", "Year", "Result", "Confidence"];
   const rows = items.map((it, i) => [
-    String(i + 1),
-    it.timestamp,
-    it.input.Sex,
-    it.input.Geographic_Region,
-    it.input.Location_Type,
-    it.input.Disease_Category,
-    it.input.Facility_Type,
-    String(it.input.Year),
-    it.result.prediction,
-    it.result.confidence.toFixed(1) + "%",
+    String(i + 1), it.timestamp, it.input.Sex, it.input.Geographic_Region,
+    it.input.Location_Type, it.input.Disease_Category, it.input.Facility_Type,
+    String(it.input.Year), it.result.prediction, it.result.confidence.toFixed(1) + "%",
   ]);
   return [header, ...rows].map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
 }
@@ -43,14 +32,12 @@ function HistoryPage() {
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [diseaseFilter, setDiseaseFilter] = useState<string>("all");
 
-  const filtered = useMemo(() => {
-    return items.filter((it) => {
-      if (resultFilter !== "all" && it.result.prediction !== resultFilter) return false;
-      if (yearFilter !== "all" && String(it.input.Year) !== yearFilter) return false;
-      if (diseaseFilter !== "all" && it.input.Disease_Category !== diseaseFilter) return false;
-      return true;
-    });
-  }, [items, resultFilter, yearFilter, diseaseFilter]);
+  const filtered = useMemo(() => items.filter((it) => {
+    if (resultFilter !== "all" && it.result.prediction !== resultFilter) return false;
+    if (yearFilter !== "all" && String(it.input.Year) !== yearFilter) return false;
+    if (diseaseFilter !== "all" && it.input.Disease_Category !== diseaseFilter) return false;
+    return true;
+  }), [items, resultFilter, yearFilter, diseaseFilter]);
 
   const handleExport = () => {
     const blob = new Blob([toCsv(filtered)], { type: "text/csv" });
@@ -62,22 +49,28 @@ function HistoryPage() {
     URL.revokeObjectURL(url);
   };
 
+  const pillSelect = "rounded-full bg-cream text-card-foreground border-0 h-10 px-5";
+
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 animate-fade-up">
-      <div className="mb-8">
-        <div className="text-xs font-semibold tracking-[0.18em] uppercase text-primary mb-2">Audit Log</div>
-        <h1 className="text-3xl md:text-4xl font-semibold">Prediction Audit Log</h1>
-        <div className="mt-3 inline-flex items-center gap-2 rounded-lg bg-muted px-3 py-1.5 text-xs text-muted-foreground">
+    <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 animate-fade-up">
+      <div className="mb-10 max-w-3xl">
+        <div className="eyebrow text-coral mb-4">Audit log</div>
+        <h1 className="display-lg">
+          Every prediction,
+          <br />
+          <span className="text-coral">accountable.</span>
+        </h1>
+        <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-cream text-card-foreground px-4 py-2 text-xs font-semibold">
           <Lock className="h-3.5 w-3.5" />
-          No personally identifiable information is stored. Compliant with RA 10173.
+          No personally identifiable information stored. RA 10173 compliant.
         </div>
       </div>
 
-      <div className="rounded-2xl border bg-card shadow-sm">
-        <div className="p-4 md:p-5 border-b flex flex-wrap items-center gap-3">
+      <div className="rounded-3xl bg-card text-card-foreground overflow-hidden">
+        <div className="p-5 md:p-6 border-b border-card-foreground/10 flex flex-wrap items-center gap-3">
           <div className="flex flex-wrap gap-2 flex-1">
             <Select value={resultFilter} onValueChange={setResultFilter}>
-              <SelectTrigger className="w-[200px]"><SelectValue placeholder="Result" /></SelectTrigger>
+              <SelectTrigger className={`${pillSelect} w-[220px]`}><SelectValue placeholder="Result" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Results</SelectItem>
                 <SelectItem value="Comprehensive Profiling">Comprehensive Profiling</SelectItem>
@@ -85,14 +78,14 @@ function HistoryPage() {
               </SelectContent>
             </Select>
             <Select value={yearFilter} onValueChange={setYearFilter}>
-              <SelectTrigger className="w-[140px]"><SelectValue placeholder="Year" /></SelectTrigger>
+              <SelectTrigger className={`${pillSelect} w-[140px]`}><SelectValue placeholder="Year" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Years</SelectItem>
                 {["2021","2022","2023","2024","2025"].map((y) => <SelectItem key={y} value={y}>{y}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={diseaseFilter} onValueChange={setDiseaseFilter}>
-              <SelectTrigger className="w-[180px]"><SelectValue placeholder="Disease" /></SelectTrigger>
+              <SelectTrigger className={`${pillSelect} w-[200px]`}><SelectValue placeholder="Disease" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Disease Categories</SelectItem>
                 {["Pediatrics","Neurology","Metabolic","Others"].map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
@@ -103,14 +96,14 @@ function HistoryPage() {
             <button
               onClick={handleExport}
               disabled={!filtered.length}
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
+              className="pill pill-coral text-xs px-4 py-2 disabled:opacity-50"
             >
               <Download className="h-3.5 w-3.5" /> Export CSV
             </button>
             <button
               onClick={() => { if (confirm("Clear all history?")) clear(); }}
               disabled={!items.length}
-              className="inline-flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-xs font-medium hover:bg-muted disabled:opacity-50 transition-colors"
+              className="pill text-xs px-4 py-2 bg-green-deep text-cream hover:bg-green-deep/85 disabled:opacity-50"
             >
               <Trash2 className="h-3.5 w-3.5" /> Clear
             </button>
@@ -119,10 +112,10 @@ function HistoryPage() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-muted/30 text-xs uppercase tracking-wider text-muted-foreground">
+            <thead className="bg-cream-dim text-xs uppercase tracking-wider text-card-foreground/65">
               <tr>
                 {["No.","Timestamp","Sex","Region","Disease","Facility","Year","Result","Confidence"].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 font-medium">{h}</th>
+                  <th key={h} className="text-left px-5 py-3.5 font-semibold">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -130,33 +123,35 @@ function HistoryPage() {
               {filtered.map((it, i) => {
                 const isComp = it.result.prediction === "Comprehensive Profiling";
                 return (
-                  <tr key={it.id} className="border-t hover:bg-muted/20">
-                    <td className="px-4 py-3 tabular-nums text-muted-foreground">{i + 1}</td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
+                  <tr key={it.id} className="border-t border-card-foreground/10 hover:bg-cream-dim/60">
+                    <td className="px-5 py-3.5 tabular-nums text-card-foreground/60">{i + 1}</td>
+                    <td className="px-5 py-3.5 text-xs text-card-foreground/65 whitespace-nowrap">
                       {new Date(it.timestamp).toLocaleString()}
                     </td>
-                    <td className="px-4 py-3">{it.input.Sex}</td>
-                    <td className="px-4 py-3">{it.input.Geographic_Region}</td>
-                    <td className="px-4 py-3">{it.input.Disease_Category}</td>
-                    <td className="px-4 py-3">{it.input.Facility_Type}</td>
-                    <td className="px-4 py-3 tabular-nums">{it.input.Year}</td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        isComp ? "bg-success/10 text-success" : "bg-accent/10 text-accent"
+                    <td className="px-5 py-3.5">{it.input.Sex}</td>
+                    <td className="px-5 py-3.5">{it.input.Geographic_Region}</td>
+                    <td className="px-5 py-3.5">{it.input.Disease_Category}</td>
+                    <td className="px-5 py-3.5">{it.input.Facility_Type}</td>
+                    <td className="px-5 py-3.5 tabular-nums">{it.input.Year}</td>
+                    <td className="px-5 py-3.5">
+                      <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                        isComp
+                          ? "bg-green-deep text-cream"
+                          : "bg-coral text-card-foreground"
                       }`}>
                         {it.result.prediction}
                       </span>
                     </td>
-                    <td className="px-4 py-3 tabular-nums">{it.result.confidence.toFixed(1)}%</td>
+                    <td className="px-5 py-3.5 tabular-nums font-display">{it.result.confidence.toFixed(1)}%</td>
                   </tr>
                 );
               })}
               {!filtered.length && (
                 <tr>
-                  <td colSpan={9} className="px-4 py-16 text-center text-sm text-muted-foreground">
+                  <td colSpan={9} className="px-5 py-20 text-center text-sm text-card-foreground/60">
                     {items.length
                       ? "No records match the current filters."
-                      : "No predictions recorded yet. Go to Predict to get started."}
+                      : "No predictions recorded yet. Head to Predict to get started."}
                   </td>
                 </tr>
               )}

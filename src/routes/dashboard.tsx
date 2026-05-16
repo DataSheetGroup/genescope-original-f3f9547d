@@ -4,19 +4,8 @@ import { getEdaData } from "@/lib/api";
 import { ChartCard } from "@/components/ChartCard";
 import { BackendOfflineNotice } from "@/components/BackendOfflineNotice";
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  ComposedChart,
-  Legend,
-  Line,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
+  Bar, BarChart, CartesianGrid, Cell, ComposedChart, Legend, Line, Pie,
+  PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 
 export const Route = createFileRoute("/dashboard")({
@@ -29,13 +18,25 @@ export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
 });
 
-const PALETTE = ["var(--color-chart-1)", "var(--color-chart-2)", "var(--color-chart-3)", "var(--color-chart-4)", "var(--color-chart-5)"];
+const PALETTE = ["var(--coral)", "var(--teal-soft)", "var(--mustard)", "var(--green-mid)", "var(--cream-dim)"];
+
+const tooltipStyle = {
+  background: "var(--green-deep)",
+  color: "var(--cream)",
+  border: "none",
+  borderRadius: 12,
+  fontSize: 12,
+};
+const axisTick = { fontSize: 11, fill: "var(--green-deep)" };
+const gridStroke = "rgba(15,61,46,0.12)";
 
 function Heatmap({ labels, values }: { labels: string[]; values: number[][] }) {
   const cell = (v: number) => {
     const a = Math.max(0, Math.min(1, Math.abs(v)));
-    const color = v >= 0 ? "13, 148, 136" : "37, 99, 235";
-    return `rgba(${color}, ${a * 0.85 + 0.05})`;
+    // coral for positive, teal for negative
+    return v >= 0
+      ? `color-mix(in oklab, var(--coral) ${a * 80 + 5}%, transparent)`
+      : `color-mix(in oklab, var(--teal-soft) ${a * 80 + 5}%, transparent)`;
   };
   return (
     <div className="overflow-auto">
@@ -44,18 +45,18 @@ function Heatmap({ labels, values }: { labels: string[]; values: number[][] }) {
           <tr>
             <th></th>
             {labels.map((l) => (
-              <th key={l} className="px-2 py-1 font-medium text-muted-foreground whitespace-nowrap">{l}</th>
+              <th key={l} className="px-2 py-1 font-semibold text-card-foreground/65 whitespace-nowrap">{l}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {values.map((row, i) => (
             <tr key={i}>
-              <th className="px-2 py-1 text-right font-medium text-muted-foreground whitespace-nowrap">{labels[i]}</th>
+              <th className="px-2 py-1 text-right font-semibold text-card-foreground/65 whitespace-nowrap">{labels[i]}</th>
               {row.map((v, j) => (
                 <td
                   key={j}
-                  className="w-12 h-9 text-center rounded text-foreground"
+                  className="w-12 h-9 text-center rounded-md text-card-foreground"
                   style={{ background: cell(v) }}
                   title={`${labels[i]} × ${labels[j]} = ${v.toFixed(2)}`}
                 >
@@ -74,8 +75,17 @@ function Skeleton() {
   return (
     <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-5">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="h-80 rounded-2xl border bg-muted/30 animate-pulse" />
+        <div key={i} className="h-80 rounded-2xl bg-card/40 animate-pulse" />
       ))}
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h2 className="eyebrow text-coral mb-5">{title}</h2>
+      {children}
     </div>
   );
 }
@@ -89,31 +99,33 @@ function Dashboard() {
 
   if (isError) {
     return (
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16">
         <BackendOfflineNotice onRetry={() => refetch()} />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 animate-fade-up">
-      <div className="mb-8">
-        <div className="text-xs font-semibold tracking-[0.18em] uppercase text-primary mb-2">
-          Analytics
-        </div>
-        <h1 className="text-3xl md:text-4xl font-semibold">Dataset Analytics Dashboard</h1>
-        <p className="mt-2 text-muted-foreground">
-          Exploratory Data Analysis — Molave Trading Inc. patient records (2021–2025)
+    <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 animate-fade-up">
+      <div className="mb-12 max-w-3xl">
+        <div className="eyebrow text-coral mb-4">Analytics</div>
+        <h1 className="display-lg">
+          The dataset, at
+          <br />
+          <span className="text-coral">a glance.</span>
+        </h1>
+        <p className="mt-5 text-foreground/75">
+          Exploratory data analysis on anonymized Molave Trading Inc. patient records (2021–2025).
         </p>
-        <p className="mt-2 text-xs text-muted-foreground">
-          Derived from anonymized data under MOA &amp; NDA with Molave Trading Inc. — Confidential
+        <p className="mt-3 text-xs text-foreground/55">
+          Derived from data under MOA &amp; NDA — Confidential.
         </p>
       </div>
 
       {isLoading && <Skeleton />}
 
       {data && (
-        <div className="space-y-10">
+        <div className="space-y-12">
           <Section title="Descriptive">
             <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-5">
               <ChartCard title="Type of Genetic Test" description="Overall distribution">
@@ -124,8 +136,8 @@ function Dashboard() {
                         <Cell key={i} fill={PALETTE[i % PALETTE.length]} />
                       ))}
                     </Pie>
-                    <Tooltip />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Legend wrapperStyle={{ fontSize: 11, color: "var(--green-deep)" }} />
                   </PieChart>
                 </ResponsiveContainer>
               </ChartCard>
@@ -133,12 +145,12 @@ function Dashboard() {
               <ChartCard title="Annual Testing Volume" description="2021–2025">
                 <ResponsiveContainer>
                   <ComposedChart data={data.annual_volume ?? []}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                    <XAxis dataKey="year" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
-                    <Line type="monotone" dataKey="cumulative" stroke="var(--color-chart-2)" strokeWidth={2} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                    <XAxis dataKey="year" tick={axisTick} />
+                    <YAxis tick={axisTick} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Bar dataKey="count" fill="var(--coral)" radius={[6, 6, 0, 0]} />
+                    <Line type="monotone" dataKey="cumulative" stroke="var(--green-deep)" strokeWidth={2} />
                   </ComposedChart>
                 </ResponsiveContainer>
               </ChartCard>
@@ -146,13 +158,13 @@ function Dashboard() {
               <ChartCard title="Yearly Targeted vs Comprehensive">
                 <ResponsiveContainer>
                   <ComposedChart data={data.yearly_by_test_type ?? []}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                    <XAxis dataKey="year" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Line type="monotone" dataKey="Targeted" stroke="var(--color-chart-2)" strokeWidth={2} />
-                    <Line type="monotone" dataKey="Comprehensive" stroke="var(--color-chart-1)" strokeWidth={2} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                    <XAxis dataKey="year" tick={axisTick} />
+                    <YAxis tick={axisTick} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Legend wrapperStyle={{ fontSize: 11, color: "var(--green-deep)" }} />
+                    <Line type="monotone" dataKey="Targeted" stroke="var(--coral)" strokeWidth={2} />
+                    <Line type="monotone" dataKey="Comprehensive" stroke="var(--green-deep)" strokeWidth={2} />
                   </ComposedChart>
                 </ResponsiveContainer>
               </ChartCard>
@@ -160,10 +172,10 @@ function Dashboard() {
               <ChartCard title="Disease Category Frequency">
                 <ResponsiveContainer>
                   <BarChart data={data.disease_category ?? []} layout="vertical">
-                    <XAxis type="number" tick={{ fontSize: 11 }} />
-                    <YAxis dataKey="name" type="category" tick={{ fontSize: 11 }} width={90} />
-                    <Tooltip />
-                    <Bar dataKey="value" fill="var(--color-chart-1)" radius={[0, 6, 6, 0]} />
+                    <XAxis type="number" tick={axisTick} />
+                    <YAxis dataKey="name" type="category" tick={axisTick} width={90} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Bar dataKey="value" fill="var(--coral)" radius={[0, 999, 999, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </ChartCard>
@@ -176,8 +188,8 @@ function Dashboard() {
                         <Cell key={i} fill={PALETTE[i % PALETTE.length]} />
                       ))}
                     </Pie>
-                    <Tooltip />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Legend wrapperStyle={{ fontSize: 11, color: "var(--green-deep)" }} />
                   </PieChart>
                 </ResponsiveContainer>
               </ChartCard>
@@ -185,11 +197,11 @@ function Dashboard() {
               <ChartCard title="Sex Distribution">
                 <ResponsiveContainer>
                   <BarChart data={data.sex_distribution ?? []}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                    <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Bar dataKey="value" fill="var(--color-chart-2)" radius={[6, 6, 0, 0]} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                    <XAxis dataKey="name" tick={axisTick} />
+                    <YAxis tick={axisTick} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Bar dataKey="value" fill="var(--green-deep)" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </ChartCard>
@@ -197,11 +209,11 @@ function Dashboard() {
               <ChartCard title="Facility Type">
                 <ResponsiveContainer>
                   <BarChart data={data.facility_distribution ?? []}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                    <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Bar dataKey="value" fill="var(--color-chart-3)" radius={[6, 6, 0, 0]} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                    <XAxis dataKey="name" tick={axisTick} />
+                    <YAxis tick={axisTick} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Bar dataKey="value" fill="var(--coral)" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </ChartCard>
@@ -219,13 +231,13 @@ function Dashboard() {
                 <ChartCard key={c.title} title={c.title}>
                   <ResponsiveContainer>
                     <BarChart data={c.d ?? []}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                      <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                      <YAxis tick={{ fontSize: 11 }} />
-                      <Tooltip />
-                      <Legend wrapperStyle={{ fontSize: 12 }} />
-                      <Bar dataKey="Targeted" fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="Comprehensive" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
+                      <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                      <XAxis dataKey="name" tick={axisTick} />
+                      <YAxis tick={axisTick} />
+                      <Tooltip contentStyle={tooltipStyle} />
+                      <Legend wrapperStyle={{ fontSize: 11, color: "var(--green-deep)" }} />
+                      <Bar dataKey="Targeted" fill="var(--coral)" radius={[6, 6, 0, 0]} />
+                      <Bar dataKey="Comprehensive" fill="var(--green-deep)" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </ChartCard>
@@ -237,7 +249,7 @@ function Dashboard() {
                 {data.correlation_matrix ? (
                   <Heatmap labels={data.correlation_matrix.labels} values={data.correlation_matrix.values} />
                 ) : (
-                  <div className="text-xs text-muted-foreground">No correlation data available.</div>
+                  <div className="text-xs text-card-foreground/65">No correlation data available.</div>
                 )}
               </ChartCard>
             </div>
@@ -253,13 +265,13 @@ function Dashboard() {
                 <ChartCard key={c.title} title={c.title}>
                   <ResponsiveContainer>
                     <BarChart data={c.d ?? []}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                      <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                      <YAxis tick={{ fontSize: 11 }} />
-                      <Tooltip />
-                      <Legend wrapperStyle={{ fontSize: 12 }} />
-                      <Bar dataKey="Targeted" stackId="a" fill="var(--color-chart-2)" />
-                      <Bar dataKey="Comprehensive" stackId="a" fill="var(--color-chart-1)" />
+                      <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                      <XAxis dataKey="name" tick={axisTick} />
+                      <YAxis tick={axisTick} />
+                      <Tooltip contentStyle={tooltipStyle} />
+                      <Legend wrapperStyle={{ fontSize: 11, color: "var(--green-deep)" }} />
+                      <Bar dataKey="Targeted" stackId="a" fill="var(--coral)" />
+                      <Bar dataKey="Comprehensive" stackId="a" fill="var(--green-deep)" />
                     </BarChart>
                   </ResponsiveContainer>
                 </ChartCard>
@@ -268,15 +280,6 @@ function Dashboard() {
           </Section>
         </div>
       )}
-    </div>
-  );
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h2 className="text-sm font-semibold tracking-[0.18em] uppercase text-muted-foreground mb-4">{title}</h2>
-      {children}
     </div>
   );
 }

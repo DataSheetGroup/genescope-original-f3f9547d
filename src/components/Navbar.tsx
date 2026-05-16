@@ -1,18 +1,44 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Lock, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { getHealth } from "@/lib/api";
-import logo from "@/assets/genescope-logo.png";
 
-const links = [
-  { to: "/", label: "Home" },
+const leftLinks = [
   { to: "/predict", label: "Predict" },
   { to: "/dashboard", label: "Dashboard" },
-  { to: "/performance", label: "Performance" },
   { to: "/history", label: "History" },
+] as const;
+
+const rightLinks = [
+  { to: "/performance", label: "Performance" },
   { to: "/about", label: "About" },
 ] as const;
+
+const allLinks = [{ to: "/", label: "Home" }, ...leftLinks, ...rightLinks] as const;
+
+function Wordmark() {
+  return (
+    <Link to="/" className="font-display text-2xl md:text-[28px] tracking-tight text-foreground hover:opacity-90 transition-opacity">
+      GE<span className="relative">N<span className="absolute -top-[0.35em] left-1/2 -translate-x-1/2 text-[0.4em]">••</span></span>ESC<span className="relative">O<span className="absolute -top-[0.35em] left-1/2 -translate-x-1/2 text-[0.4em]">••</span></span>PE
+    </Link>
+  );
+}
+
+function NavLink({ to, label, onClick }: { to: string; label: string; onClick?: () => void }) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      activeOptions={{ exact: to === "/" }}
+      activeProps={{ className: "text-foreground after:scale-x-100" }}
+      inactiveProps={{ className: "text-foreground/70 hover:text-foreground after:scale-x-0 hover:after:scale-x-100" }}
+      className="relative text-sm font-semibold uppercase tracking-wider px-1 py-1 transition-colors after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-[3px] after:rounded-full after:bg-coral after:transition-transform after:origin-center"
+    >
+      {label}
+    </Link>
+  );
+}
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -25,55 +51,35 @@ export function Navbar() {
   const online = !!data && !isError;
 
   return (
-    <header className="sticky top-0 z-40 bg-background/80 backdrop-blur border-b">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group">
-            <img src={logo} alt="GeneScope" className="h-9 w-9" />
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-semibold tracking-tight text-foreground">
-                GeneScope
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                <Lock className="h-2.5 w-2.5" /> Local
-              </span>
-            </div>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-1">
-            {links.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                activeOptions={{ exact: l.to === "/" }}
-                activeProps={{ className: "text-primary bg-primary/10" }}
-                inactiveProps={{ className: "text-muted-foreground hover:text-foreground" }}
-                className="rounded-md px-3 py-2 text-sm font-medium transition-colors"
-              >
-                {l.label}
-              </Link>
-            ))}
+    <header className="sticky top-0 z-40 bg-background/90 backdrop-blur">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center h-20 gap-6">
+          {/* Left */}
+          <nav className="hidden md:flex items-center gap-7 justify-start">
+            {leftLinks.map((l) => <NavLink key={l.to} {...l} />)}
           </nav>
 
-          <div className="hidden md:flex items-center gap-2">
+          {/* Center wordmark */}
+          <div className="flex justify-center">
+            <Wordmark />
+          </div>
+
+          {/* Right */}
+          <div className="hidden md:flex items-center gap-7 justify-end">
+            {rightLinks.map((l) => <NavLink key={l.to} {...l} />)}
             <span
-              className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${
-                online
-                  ? "bg-success/10 text-success"
-                  : "bg-destructive/10 text-destructive"
+              className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider ${
+                online ? "bg-cream text-green-deep" : "bg-coral text-green-deep"
               }`}
             >
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${
-                  online ? "bg-success animate-pulse" : "bg-destructive"
-                }`}
-              />
-              {online ? "Model Online" : "Server Offline"}
+              <span className={`h-1.5 w-1.5 rounded-full ${online ? "bg-green-deep" : "bg-green-deep"} ${online ? "animate-pulse" : ""}`} />
+              {online ? "Online" : "Offline"}
             </span>
           </div>
 
+          {/* Mobile hamburger placed across grid */}
           <button
-            className="md:hidden p-2 rounded-md hover:bg-muted"
+            className="md:hidden p-2 rounded-full hover:bg-muted text-foreground col-start-3 justify-self-end"
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle menu"
           >
@@ -82,33 +88,27 @@ export function Navbar() {
         </div>
 
         {open && (
-          <div className="md:hidden pb-4 space-y-1">
-            {links.map((l) => (
+          <div className="md:hidden pb-5 space-y-1 border-t border-foreground/15 pt-3">
+            {allLinks.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
                 onClick={() => setOpen(false)}
                 activeOptions={{ exact: l.to === "/" }}
-                activeProps={{ className: "text-primary bg-primary/10" }}
-                inactiveProps={{ className: "text-muted-foreground" }}
-                className="block rounded-md px-3 py-2 text-sm font-medium"
+                activeProps={{ className: "text-foreground bg-foreground/10" }}
+                inactiveProps={{ className: "text-foreground/75" }}
+                className="block rounded-full px-4 py-2.5 text-sm font-semibold uppercase tracking-wider"
               >
                 {l.label}
               </Link>
             ))}
-            <div className="px-3 pt-2">
+            <div className="px-4 pt-3">
               <span
-                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${
-                  online
-                    ? "bg-success/10 text-success"
-                    : "bg-destructive/10 text-destructive"
+                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider ${
+                  online ? "bg-cream text-green-deep" : "bg-coral text-green-deep"
                 }`}
               >
-                <span
-                  className={`h-1.5 w-1.5 rounded-full ${
-                    online ? "bg-success" : "bg-destructive"
-                  }`}
-                />
+                <span className={`h-1.5 w-1.5 rounded-full bg-green-deep`} />
                 {online ? "Model Online" : "Server Offline"}
               </span>
             </div>

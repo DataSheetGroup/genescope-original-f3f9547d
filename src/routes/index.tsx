@@ -1,8 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, BarChart3, ShieldCheck, Database, Microscope } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getEdaData } from "@/lib/api";
-import logo from "@/assets/genescope-logo.png";
+import { FloatingIllustration } from "@/components/FloatingIllustration";
+import helix from "@/assets/illustrations/helix-doodle.png";
+import microscope from "@/assets/illustrations/microscope-doodle.png";
+import magnifier from "@/assets/illustrations/magnifier-strand.png";
+import helixCheck from "@/assets/illustrations/helix-check.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,125 +24,142 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-function StatItem({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div className="text-center md:text-left">
-      <div className="text-3xl md:text-4xl font-semibold text-foreground tabular-nums">{value}</div>
-      <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{label}</div>
-    </div>
-  );
-}
-
 function Home() {
   const { data } = useQuery({ queryKey: ["eda"], queryFn: getEdaData, retry: 0 });
-
   const totalRecords = data?.total_records ?? "—";
 
   return (
     <div className="animate-fade-up">
-      {/* Hero */}
+      {/* ───────────── HERO ───────────── */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-20 md:pt-24 md:pb-28">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 text-xs font-medium text-muted-foreground mb-6">
-                <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-                FEU Institute of Technology · Thesis Research
-              </div>
-              <h1 className="text-5xl md:text-6xl font-semibold tracking-tight text-foreground">
-                GeneScope
-              </h1>
-              <p className="mt-4 text-lg md:text-xl text-foreground/80 font-medium">
-                Predicting Genetic Testing Utilization in the Philippines Using
-                Binary Logistic Regression Through Indicators
-              </p>
-              <p className="mt-5 text-base text-muted-foreground leading-relaxed max-w-xl">
-                A locally-hosted clinical decision-support system developed by
-                FEU Institute of Technology in partnership with Molave Trading
-                Inc. GeneScope predicts whether a patient undergoes Targeted
-                Testing or Comprehensive Profiling based on six patient
-                indicators.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  to="/predict"
-                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
-                >
-                  Start Prediction <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  to="/dashboard"
-                  className="inline-flex items-center gap-2 rounded-lg border bg-card px-5 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors"
-                >
-                  View Dashboard
-                </Link>
-              </div>
-            </div>
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-10 md:pt-16 pb-24 md:pb-32 min-h-[80vh] flex flex-col justify-center relative">
+          {/* floating illustrations */}
+          <FloatingIllustration
+            src={helix}
+            className="hidden md:block absolute left-2 lg:left-12 top-24 w-32 lg:w-48"
+            rotate={-12}
+          />
+          <FloatingIllustration
+            src={microscope}
+            className="hidden md:block absolute right-4 lg:right-16 bottom-24 w-44 lg:w-64"
+            rotate={8}
+            variant="drift"
+          />
 
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/5 rounded-3xl rotate-3" />
-              <div className="relative rounded-3xl border bg-card p-8 shadow-sm">
-                <img src={logo} alt="GeneScope" className="w-full max-w-xs mx-auto" />
-                <div className="mt-6 grid grid-cols-2 gap-4">
-                  <div className="rounded-xl bg-muted/50 p-4">
-                    <Microscope className="h-5 w-5 text-primary" />
-                    <div className="mt-2 text-xs font-semibold">Binary Logistic Regression</div>
-                    <div className="text-xs text-muted-foreground">Primary Model</div>
-                  </div>
-                  <div className="rounded-xl bg-muted/50 p-4">
-                    <Database className="h-5 w-5 text-accent" />
-                    <div className="mt-2 text-xs font-semibold">2021–2025 Records</div>
-                    <div className="text-xs text-muted-foreground">Anonymized</div>
-                  </div>
-                </div>
-              </div>
+          <div className="relative z-10 mx-auto max-w-4xl text-center">
+            <div className="eyebrow text-coral mb-6">A confident decision</div>
+            <h1 className="display-xl">
+              Genetic Testing,
+              <br />
+              <span className="text-coral">without the guesswork.</span>
+            </h1>
+            <p className="mt-8 mx-auto max-w-2xl text-base md:text-lg text-foreground/80 leading-relaxed">
+              A locally-hosted clinical decision-support system predicting whether a
+              Philippine patient undergoes <strong>Targeted Testing</strong> or{" "}
+              <strong>Comprehensive Profiling</strong>, from six structured
+              indicators — using Binary Logistic Regression.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <Link to="/predict" className="pill pill-coral">
+                Start a Prediction <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link to="/dashboard" className="pill pill-outline">
+                View the Dashboard
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="border-y bg-card">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <StatItem label="Total Patient Records" value={totalRecords} />
-            <StatItem label="Coverage Period" value="2021–2025" />
-            <StatItem label="ML Models Compared" value={3} />
-            <StatItem label="Patient Indicators" value={6} />
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center max-w-2xl mx-auto">
-          <div className="text-xs font-semibold tracking-[0.18em] uppercase text-primary mb-3">
-            How GeneScope works
-          </div>
-          <h2 className="text-3xl md:text-4xl font-semibold">
-            From six indicators to one evidence-based recommendation
+      {/* ───────────── MISSION ───────────── */}
+      <section className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-24">
+        <div className="max-w-3xl mb-16">
+          <div className="eyebrow text-coral mb-4">Our mission</div>
+          <h2 className="display-lg">
+            Beyond a single number:
+            <br />
+            <span className="text-coral">clarity, context, and craft.</span>
           </h2>
         </div>
-        <div className="mt-12 grid md:grid-cols-3 gap-6">
+
+        <div className="grid md:grid-cols-3 gap-6">
           {[
-            { n: "01", t: "Enter indicators", d: "Six structured fields: sex, region, location, disease category, facility, and year of testing." },
-            { n: "02", t: "Run the local model", d: "Your trained Binary Logistic Regression model returns a class and a calibrated probability." },
-            { n: "03", t: "Interpret the result", d: "A knowledge card explains the recommendation; feature importance shows what drove it." },
-          ].map((s) => (
-            <div key={s.n} className="rounded-2xl border bg-card p-6 shadow-sm">
-              <div className="text-sm font-mono text-primary">{s.n}</div>
-              <div className="mt-3 text-lg font-semibold">{s.t}</div>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.d}</p>
+            {
+              img: helixCheck,
+              title: "A confident decision",
+              body: "Every prediction is paired with a knowledge card that explains what the result means in plain clinical language.",
+            },
+            {
+              img: magnifier,
+              title: "Streamlined indicators",
+              body: "Just six structured fields — sex, region, location, disease, facility, year — produce a calibrated probability in milliseconds.",
+            },
+            {
+              img: helix,
+              title: "Local & private",
+              body: "Everything runs against your own Flask backend. No patient data leaves the machine. RA 10173 compliant.",
+            },
+          ].map((c) => (
+            <div key={c.title} className="rounded-3xl bg-card text-card-foreground p-8 flex flex-col">
+              <img src={c.img} alt="" className="w-20 h-20 object-contain mb-6" />
+              <h3 className="font-display text-2xl mb-3">{c.title}</h3>
+              <p className="text-sm text-card-foreground/75 leading-relaxed">{c.body}</p>
             </div>
           ))}
         </div>
-        <div className="mt-12 flex justify-center">
-          <Link
-            to="/performance"
-            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-          >
-            <BarChart3 className="h-4 w-4" /> See model performance details
-          </Link>
+      </section>
+
+      {/* ───────────── PROCESS ───────────── */}
+      <section className="border-t border-foreground/15">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-24">
+          <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-start">
+            <div>
+              <div className="eyebrow text-coral mb-4">Your needs, our solution</div>
+              <h2 className="display-lg">
+                A workflow for the
+                <br />
+                <span className="text-coral">forward-thinking</span> clinician.
+              </h2>
+              <Link to="/predict" className="mt-8 pill pill-cream">
+                Try it now <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <ol className="space-y-3">
+              {[
+                { n: "01", t: "Enter the six indicators", d: "Structured dropdowns — no free text, no PII." },
+                { n: "02", t: "Run the local model", d: "Your trained Binary Logistic Regression model returns a class and a calibrated probability." },
+                { n: "03", t: "Interpret the result", d: "A knowledge card explains the recommendation; feature importance shows what drove it." },
+              ].map((s) => (
+                <li key={s.n} className="group rounded-2xl bg-card text-card-foreground p-7 flex items-start gap-6 hover:bg-cream-dim transition-colors">
+                  <div className="font-display text-5xl text-coral leading-none">{s.n}</div>
+                  <div className="flex-1">
+                    <div className="font-display text-2xl mb-1">{s.t}</div>
+                    <p className="text-sm text-card-foreground/75 leading-relaxed">{s.d}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────── STATS ───────────── */}
+      <section className="border-t border-foreground/15">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-20">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+            {[
+              { v: totalRecords, l: "Patient records" },
+              { v: "2021–25", l: "Coverage" },
+              { v: 3, l: "Models compared" },
+              { v: 6, l: "Indicators" },
+            ].map((s, i) => (
+              <div key={i}>
+                <div className="font-display text-5xl md:text-6xl text-coral tabular-nums">{s.v}</div>
+                <div className="eyebrow text-foreground/65 mt-3">{s.l}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </div>

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Dna, Loader2, RefreshCw, Save, Sparkles } from "lucide-react";
+import { Loader2, RefreshCw, Save } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -17,14 +17,10 @@ import {
   type PredictResponse,
 } from "@/lib/api";
 import { useHistory } from "@/hooks/useHistory";
+import { FloatingIllustration } from "@/components/FloatingIllustration";
+import helix from "@/assets/illustrations/helix-doodle.png";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip,
-  Cell,
+  BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell,
 } from "recharts";
 
 export const Route = createFileRoute("/predict")({
@@ -45,12 +41,12 @@ const FIELDS: {
   indicator: string;
   options: string[];
 }[] = [
-  { key: "Sex", label: "Sex", indicator: "Demographic Indicator", options: ["Male", "Female"] },
-  { key: "Geographic_Region", label: "Geographic Region", indicator: "Geographic Indicator", options: ["Luzon", "Visayas", "Mindanao"] },
-  { key: "Location_Type", label: "Location Type", indicator: "Location Indicator", options: ["Urban", "Rural"] },
-  { key: "Disease_Category", label: "Disease Category", indicator: "Clinical Indicator", options: ["Pediatrics", "Neurology", "Metabolic", "Others"] },
-  { key: "Facility_Type", label: "Facility Type", indicator: "Institutional Indicator", options: ["Private", "Public"] },
-  { key: "Year", label: "Year of Testing", indicator: "Temporal Indicator", options: ["2021", "2022", "2023", "2024", "2025"] },
+  { key: "Sex", label: "Sex", indicator: "Demographic", options: ["Male", "Female"] },
+  { key: "Geographic_Region", label: "Geographic Region", indicator: "Geographic", options: ["Luzon", "Visayas", "Mindanao"] },
+  { key: "Location_Type", label: "Location Type", indicator: "Location", options: ["Urban", "Rural"] },
+  { key: "Disease_Category", label: "Disease Category", indicator: "Clinical", options: ["Pediatrics", "Neurology", "Metabolic", "Others"] },
+  { key: "Facility_Type", label: "Facility Type", indicator: "Institutional", options: ["Private", "Public"] },
+  { key: "Year", label: "Year of Testing", indicator: "Temporal", options: ["2021", "2022", "2023", "2024", "2025"] },
 ];
 
 function ConfidenceRing({ value }: { value: number }) {
@@ -58,13 +54,12 @@ function ConfidenceRing({ value }: { value: number }) {
   const c = 2 * Math.PI * r;
   const offset = c - (value / 100) * c;
   return (
-    <div className="relative h-32 w-32">
+    <div className="relative h-32 w-32 text-card-foreground">
       <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
-        <circle cx="60" cy="60" r={r} stroke="currentColor" className="text-muted" strokeWidth="10" fill="none" />
+        <circle cx="60" cy="60" r={r} stroke="currentColor" className="opacity-15" strokeWidth="10" fill="none" />
         <circle
           cx="60" cy="60" r={r}
-          stroke="currentColor"
-          className="text-primary"
+          stroke="var(--coral)"
           strokeWidth="10"
           fill="none"
           strokeDasharray={c}
@@ -74,8 +69,8 @@ function ConfidenceRing({ value }: { value: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="text-2xl font-semibold tabular-nums">{value.toFixed(1)}%</div>
-        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Confidence</div>
+        <div className="font-display text-2xl tabular-nums">{value.toFixed(1)}%</div>
+        <div className="text-[10px] uppercase tracking-wider opacity-70">Confidence</div>
       </div>
     </div>
   );
@@ -84,13 +79,13 @@ function ConfidenceRing({ value }: { value: number }) {
 function ProbabilityBar({ comp, targ }: { comp: number; targ: number }) {
   return (
     <div>
-      <div className="flex justify-between text-xs font-medium mb-2">
-        <span className="text-success">Comprehensive {comp.toFixed(1)}%</span>
-        <span className="text-accent">Targeted {targ.toFixed(1)}%</span>
+      <div className="flex justify-between text-xs font-semibold uppercase tracking-wider mb-2">
+        <span>Comprehensive {comp.toFixed(1)}%</span>
+        <span>Targeted {targ.toFixed(1)}%</span>
       </div>
-      <div className="flex h-3 w-full overflow-hidden rounded-full bg-muted">
-        <div className="bg-success" style={{ width: `${comp}%`, transition: "width 0.8s ease" }} />
-        <div className="bg-accent" style={{ width: `${targ}%`, transition: "width 0.8s ease" }} />
+      <div className="flex h-3 w-full overflow-hidden rounded-full bg-green-deep/10">
+        <div className="bg-green-deep" style={{ width: `${comp}%`, transition: "width 0.8s ease" }} />
+        <div className="bg-coral" style={{ width: `${targ}%`, transition: "width 0.8s ease" }} />
       </div>
     </div>
   );
@@ -125,33 +120,27 @@ function ResultKnowledgeCard({ prediction }: { prediction: string }) {
   const info = KNOWLEDGE[prediction as keyof typeof KNOWLEDGE];
   if (!info) return null;
   return (
-    <div className="rounded-2xl border-2 border-primary/40 bg-card p-6 shadow-md">
-      <div className="flex items-center gap-3">
-        <div className="rounded-xl bg-primary/10 p-2.5">
-          <Dna className="h-5 w-5 text-primary" />
+    <div className="relative rounded-3xl bg-card text-card-foreground p-8 md:p-10 overflow-hidden">
+      <div className="absolute inset-0 rounded-3xl ring-4 ring-coral pointer-events-none" />
+      <div className="relative">
+        <div className="eyebrow text-coral mb-3">What this means</div>
+        <h3 className="display-md">{prediction}</h3>
+        <p className="mt-6 text-base leading-relaxed">
+          <span className="font-display text-coral text-4xl leading-none mr-1 align-top">“</span>
+          {info.definition}
+          <span className="font-display text-coral text-4xl leading-none ml-1 align-bottom">”</span>
+        </p>
+        <div className="mt-8">
+          <div className="eyebrow text-card-foreground/60 mb-3">Common examples</div>
+          <ul className="space-y-2.5">
+            {info.examples.map((e) => (
+              <li key={e} className="flex gap-3 text-sm">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-coral shrink-0" />
+                <span className="leading-relaxed">{e}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-wider text-primary">
-            Result Knowledge
-          </div>
-          <h3 className="text-lg font-semibold">What does this result mean?</h3>
-        </div>
-      </div>
-      <p className="mt-4 text-sm leading-relaxed italic text-foreground/90">
-        "{info.definition}"
-      </p>
-      <div className="mt-5">
-        <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-          Common examples
-        </div>
-        <ul className="space-y-1.5">
-          {info.examples.map((e) => (
-            <li key={e} className="flex gap-2 text-sm text-foreground/90">
-              <span className="text-primary mt-1.5 h-1 w-1 rounded-full bg-primary shrink-0" />
-              {e}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
@@ -179,211 +168,185 @@ function PredictPage() {
     retry: 0,
   });
 
-  const handleSubmit = () => {
-    if (!allFilled) return;
-    const payload: PredictPayload = {
-      Sex: form.Sex!,
-      Geographic_Region: form.Geographic_Region!,
-      Location_Type: form.Location_Type!,
-      Disease_Category: form.Disease_Category!,
-      Facility_Type: form.Facility_Type!,
-      Year: Number(form.Year),
-    };
-    mutation.mutate(payload);
-  };
+  const buildPayload = (): PredictPayload => ({
+    Sex: form.Sex!,
+    Geographic_Region: form.Geographic_Region!,
+    Location_Type: form.Location_Type!,
+    Disease_Category: form.Disease_Category!,
+    Facility_Type: form.Facility_Type!,
+    Year: Number(form.Year),
+  });
 
-  const handleReset = () => {
-    setForm({});
-    mutation.reset();
-    setSaved(false);
-  };
-
+  const handleSubmit = () => { if (allFilled) mutation.mutate(buildPayload()); };
+  const handleReset = () => { setForm({}); mutation.reset(); setSaved(false); };
   const handleSave = () => {
     if (!mutation.data) return;
-    const payload: PredictPayload = {
-      Sex: form.Sex!,
-      Geographic_Region: form.Geographic_Region!,
-      Location_Type: form.Location_Type!,
-      Disease_Category: form.Disease_Category!,
-      Facility_Type: form.Facility_Type!,
-      Year: Number(form.Year),
-    };
-    add(payload, mutation.data);
+    add(buildPayload(), mutation.data);
     setSaved(true);
   };
 
   const result: PredictResponse | undefined = mutation.data;
-  const isComp = result?.prediction === "Comprehensive Profiling";
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 animate-fade-up">
-      <div className="mb-10">
-        <div className="text-xs font-semibold tracking-[0.18em] uppercase text-primary mb-2">
-          Prediction
-        </div>
-        <h1 className="text-3xl md:text-4xl font-semibold">Generate a genetic test recommendation</h1>
-        <p className="mt-2 text-muted-foreground max-w-2xl">
-          Enter the patient's six indicators below. GeneScope runs your local
-          Binary Logistic Regression model and explains the result.
-        </p>
-      </div>
-
-      <div className="grid lg:grid-cols-2 gap-8">
-        {/* Left: form */}
-        <div className="rounded-2xl border bg-card p-6 md:p-8 shadow-sm h-fit">
-          <h2 className="text-lg font-semibold">Patient Indicator Input</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Enter the patient's indicators to generate a genetic test type prediction.
-          </p>
-
-          <div className="mt-6 grid sm:grid-cols-2 gap-4">
-            {FIELDS.map((f) => (
-              <div key={f.key} className="space-y-1.5">
-                <label className="block text-sm font-medium text-foreground">{f.label}</label>
-                <div className="text-[11px] text-muted-foreground -mt-1">{f.indicator}</div>
-                <Select
-                  value={form[f.key] ?? ""}
-                  onValueChange={(v) => setForm((p) => ({ ...p, [f.key]: v }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {f.options.map((o) => (
-                      <SelectItem key={o} value={o}>{o}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            <button
-              onClick={handleSubmit}
-              disabled={!allFilled || mutation.isPending}
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {mutation.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="h-4 w-4" />
-              )}
-              Generate Prediction
-            </button>
-            <button
-              onClick={handleReset}
-              className="inline-flex items-center gap-2 rounded-lg border bg-card px-5 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
-            >
-              <RefreshCw className="h-4 w-4" /> Reset
-            </button>
-          </div>
-
-          <p className="mt-6 text-xs text-muted-foreground border-t pt-4">
-            GeneScope is a research-based tool and does not replace clinical
-            judgment. All inputs are processed locally.
+    <div className="relative">
+      <FloatingIllustration
+        src={helix}
+        className="hidden lg:block absolute right-8 top-12 w-32 opacity-90 z-0"
+        rotate={14}
+      />
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 animate-fade-up">
+        <div className="mb-12 max-w-3xl">
+          <div className="eyebrow text-coral mb-4">Prediction</div>
+          <h1 className="display-lg">
+            Six indicators in,
+            <br />
+            <span className="text-coral">one clear recommendation.</span>
+          </h1>
+          <p className="mt-5 text-foreground/75 max-w-xl">
+            Enter the patient's six indicators. GeneScope runs your local
+            Binary Logistic Regression model and explains the result.
           </p>
         </div>
 
-        {/* Right: output */}
-        <div className="space-y-6">
-          {!mutation.isPending && !mutation.isError && !result && (
-            <div className="rounded-2xl border border-dashed bg-muted/30 p-12 text-center">
-              <Dna className="h-10 w-10 text-muted-foreground mx-auto" />
-              <p className="mt-4 text-sm text-muted-foreground">
-                Your prediction result will appear here once you submit the form.
-              </p>
-            </div>
-          )}
+        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-8">
+          {/* LEFT — form */}
+          <div className="rounded-3xl bg-card text-card-foreground p-7 md:p-9 h-fit">
+            <h2 className="font-display text-2xl">Patient indicators</h2>
+            <p className="mt-1 text-sm text-card-foreground/70">
+              All fields are required to generate a prediction.
+            </p>
 
-          {mutation.isPending && (
-            <div className="rounded-2xl border bg-card p-12 text-center">
-              <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-              <p className="mt-4 text-sm text-muted-foreground">Running model on local server…</p>
-            </div>
-          )}
-
-          {mutation.isError && (
-            <BackendOfflineNotice onRetry={handleSubmit} />
-          )}
-
-          {result && (
-            <>
-              <div className="rounded-2xl border bg-card p-6 shadow-sm">
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                  <div>
-                    <div className="text-xs uppercase tracking-wider text-muted-foreground">Prediction</div>
-                    <span
-                      className={`mt-2 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold ${
-                        isComp
-                          ? "bg-success/10 text-success"
-                          : "bg-accent/10 text-accent"
-                      }`}
-                    >
-                      {result.prediction}
-                    </span>
+            <div className="mt-7 grid sm:grid-cols-2 gap-5">
+              {FIELDS.map((f) => (
+                <div key={f.key} className="space-y-1.5">
+                  <label className="block text-sm font-semibold">{f.label}</label>
+                  <div className="text-[10px] uppercase tracking-wider text-card-foreground/55 -mt-1">
+                    {f.indicator}
                   </div>
-                  <ConfidenceRing value={result.confidence} />
+                  <Select
+                    value={form[f.key] ?? ""}
+                    onValueChange={(v) => setForm((p) => ({ ...p, [f.key]: v }))}
+                  >
+                    <SelectTrigger className="rounded-full bg-cream-dim border-0 h-11 px-5">
+                      <SelectValue placeholder="Select…" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {f.options.map((o) => (
+                        <SelectItem key={o} value={o}>{o}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <div className="mt-6">
-                  <ProbabilityBar
-                    comp={result.probability_comprehensive}
-                    targ={result.probability_targeted}
-                  />
-                </div>
-              </div>
+              ))}
+            </div>
 
-              <ResultKnowledgeCard prediction={result.prediction} />
+            <div className="mt-8 flex flex-wrap gap-3">
+              <button
+                onClick={handleSubmit}
+                disabled={!allFilled || mutation.isPending}
+                className="pill pill-coral disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {mutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : null}
+                Generate Prediction
+              </button>
+              <button onClick={handleReset} className="pill bg-green-deep text-cream hover:bg-green-deep/85">
+                <RefreshCw className="h-4 w-4" /> Reset
+              </button>
+            </div>
 
-              <div className="rounded-2xl border bg-card p-5 shadow-sm">
-                <h3 className="text-sm font-semibold">What drove this prediction?</h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Indicator influence from the trained model.
+            <p className="mt-7 text-xs text-card-foreground/60 border-t border-card-foreground/10 pt-5">
+              A research-based tool. Does not replace clinical judgment. Inputs are processed locally.
+            </p>
+          </div>
+
+          {/* RIGHT — output */}
+          <div className="space-y-6">
+            {!mutation.isPending && !mutation.isError && !result && (
+              <div className="rounded-3xl border-2 border-dashed border-foreground/20 p-14 text-center">
+                <p className="font-display text-2xl text-foreground/70">
+                  Your result will appear here.
                 </p>
-                <div className="h-56 mt-4">
-                  {fi.isLoading && (
-                    <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" /> Loading…
-                    </div>
-                  )}
-                  {fi.isError && (
-                    <div className="text-xs text-muted-foreground">Feature importance unavailable.</div>
-                  )}
-                  {fi.data && (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={fi.data} layout="vertical" margin={{ left: 8 }}>
-                        <XAxis type="number" tick={{ fontSize: 11 }} />
-                        <YAxis dataKey="feature" type="category" tick={{ fontSize: 11 }} width={120} />
-                        <Tooltip />
-                        <Bar dataKey="importance" radius={[0, 6, 6, 0]}>
-                          {fi.data.map((_, i) => (
-                            <Cell key={i} fill="var(--color-primary)" />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  )}
-                </div>
+                <p className="mt-2 text-sm text-foreground/55">
+                  Fill the six indicators on the left and hit Generate.
+                </p>
               </div>
+            )}
 
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={handleSave}
-                  disabled={saved}
-                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60 transition-colors"
-                >
-                  <Save className="h-4 w-4" />
-                  {saved ? "Saved to History" : "Save to History"}
-                </button>
-                <button
-                  onClick={handleReset}
-                  className="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-muted transition-colors"
-                >
-                  New Prediction
-                </button>
+            {mutation.isPending && (
+              <div className="rounded-3xl bg-card text-card-foreground p-14 text-center">
+                <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+                <p className="mt-4 text-sm">Running model on local server…</p>
               </div>
-            </>
-          )}
+            )}
+
+            {mutation.isError && <BackendOfflineNotice onRetry={handleSubmit} />}
+
+            {result && (
+              <>
+                {/* Headline result */}
+                <div className="rounded-3xl bg-card text-card-foreground p-7">
+                  <div className="flex items-center justify-between gap-5 flex-wrap">
+                    <div>
+                      <div className="eyebrow text-card-foreground/55">Prediction</div>
+                      <div className="mt-2 font-display text-3xl md:text-4xl leading-tight">
+                        {result.prediction}
+                      </div>
+                    </div>
+                    <ConfidenceRing value={result.confidence} />
+                  </div>
+                  <div className="mt-7">
+                    <ProbabilityBar
+                      comp={result.probability_comprehensive}
+                      targ={result.probability_targeted}
+                    />
+                  </div>
+                </div>
+
+                {/* THE DOMINANT KNOWLEDGE CARD */}
+                <ResultKnowledgeCard prediction={result.prediction} />
+
+                {/* Feature influence */}
+                <div className="rounded-3xl bg-card text-card-foreground p-6">
+                  <div className="eyebrow text-coral mb-1">Indicator influence</div>
+                  <h3 className="font-display text-xl">What drove this prediction</h3>
+                  <div className="h-56 mt-5">
+                    {fi.isLoading && (
+                      <div className="h-full flex items-center justify-center text-sm">
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" /> Loading…
+                      </div>
+                    )}
+                    {fi.isError && <div className="text-xs text-card-foreground/65">Feature importance unavailable.</div>}
+                    {fi.data && (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={fi.data} layout="vertical" margin={{ left: 8 }}>
+                          <XAxis type="number" tick={{ fontSize: 11, fill: "var(--green-deep)" }} />
+                          <YAxis dataKey="feature" type="category" tick={{ fontSize: 11, fill: "var(--green-deep)" }} width={120} />
+                          <Tooltip contentStyle={{ background: "var(--green-deep)", color: "var(--cream)", border: "none", borderRadius: 12 }} />
+                          <Bar dataKey="importance" radius={[0, 999, 999, 0]}>
+                            {fi.data.map((_, i) => (
+                              <Cell key={i} fill="var(--coral)" />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <button onClick={handleSave} disabled={saved} className="pill pill-cream disabled:opacity-60">
+                    <Save className="h-4 w-4" />
+                    {saved ? "Saved to History" : "Save to History"}
+                  </button>
+                  <button onClick={handleReset} className="pill pill-outline">
+                    New Prediction
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
