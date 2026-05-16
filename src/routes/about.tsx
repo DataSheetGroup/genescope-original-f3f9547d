@@ -80,7 +80,8 @@ function AboutPage() {
           </dl>
         </div>
 
-        <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10">
+        <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
+          <img src={heartPulse} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
           <div className="eyebrow text-coral mb-2">Compliance</div>
           <h2 className="font-display text-3xl mb-6">A clear ethical perimeter</h2>
           <ul className="grid sm:grid-cols-2 gap-3">
