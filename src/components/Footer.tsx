@@ -35,13 +35,13 @@ export function Footer() {
       </div>
 
       {/* Giant wordmark */}
-      <div className="mt-16 px-4 leading-none text-center select-none" aria-hidden>
+      <div className="mt-16 px-6 leading-none text-center select-none overflow-hidden" aria-hidden>
         <div
-          className="font-display tracking-[-0.02em]"
+          className="font-display tracking-[-0.02em] mx-auto"
           style={{
             color: "var(--green-deep)",
-            fontSize: "clamp(4rem, 22vw, 22rem)",
-            lineHeight: 0.85,
+            fontSize: "clamp(2.75rem, 13vw, 11rem)",
+            lineHeight: 0.9,
           }}
         >
           GENESCOPE

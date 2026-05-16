@@ -9,7 +9,6 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
-import { ConfidentialityBanner } from "@/components/ConfidentialityBanner";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 
@@ -98,7 +97,6 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen flex flex-col">
-        <ConfidentialityBanner />
         <Navbar />
         <main className="flex-1">
           <Outlet />
