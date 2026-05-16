@@ -23,6 +23,8 @@ import dnaStrand from "@/assets/illustrations/dna-strand.png";
 import labFlask from "@/assets/illustrations/lab-flask.png";
 import testTube from "@/assets/illustrations/test-tube.png";
 import chromosome from "@/assets/illustrations/chromosome.png";
+import pillCap from "@/assets/illustrations/pill-capsule.png";
+import petriDish from "@/assets/illustrations/petri-dish.png";
 import {
   BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell,
 } from "recharts";
