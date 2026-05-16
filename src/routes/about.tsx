@@ -55,7 +55,8 @@ function AboutPage() {
           </div>
         </div>
 
-        <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10">
+        <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
+          <img src={clipboard} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
           <div className="eyebrow text-coral mb-2">Project</div>
           <h2 className="font-display text-3xl mb-6">Research information</h2>
           <dl>
