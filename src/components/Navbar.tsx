@@ -51,7 +51,7 @@ export function Navbar() {
   const online = !!data && !isError;
 
   return (
-    <header className="sticky top-0 z-40 bg-background/90 backdrop-blur">
+    <header className="sticky top-0 z-40 bg-green-deep text-cream">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center h-20 gap-6">
           {/* Left */}
