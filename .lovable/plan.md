@@ -1,57 +1,109 @@
 
-## GeneScope — Build Plan
+## Restyle GeneScope in the Phamily aesthetic
 
-A locally-hosted clinical decision-support frontend for a FEU thesis. React + TanStack Start + Tailwind, talking to a Flask backend at `http://localhost:5000`. Six pages, persistent confidentiality banner, sticky nav, fully responsive.
+Keep every feature, route, API integration, and content block from the existing build. Replace the visual layer entirely so GeneScope reads like a Phamily-style editorial site applied to a clinical research project.
 
-### A note on the reference site
-I will take strong **stylistic inspiration** from phamilypharma.com (clean medical minimalism, calm whitespace, soft section transitions, simple illustrative accents, sober sans-serif typography, restrained motion) but will not reproduce its copy, exact layouts, brand assets, or proprietary illustrations. The result will *feel* like a polished pharma/health site, applied to GeneScope's own content and the navy/teal palette you specified.
+### Visual language (matched, not copied)
+- **Canvas**: deep forest green `#0F3D2E` as the dominant background; cream `#F5EFE0` as foreground text/cards
+- **Accent**: warm coral-pink `#F5B9C9` reserved for primary CTA pills and tiny highlight tags only
+- **Secondary accent**: a soft teal `#7FC9B8` (subtle nod to medical, used sparingly for status dots & data)
+- **No gradients, no glows, no emojis**, no neon — exactly as you asked
+- **Type system**:
+  - Display: **Bowlby One SC** (free Google Font, the closest legal match for that thick rounded display look with dot accents). Wordmark "GẸNẸSCÖPẸ" uses combining diacritics, mirroring Phamily's "PHÄMÏLŸ" trick.
+  - Body: **Inter** in 400/500
+  - Section eyebrows: tracked-out uppercase, small
+  - Headings mix weight + style: regular phrase **bold phrase** on the same line
+- **Buttons**: full pill (rounded-full), cream background with deep-green text for primary; outlined cream for secondary; coral fill for the single "hero" action on each page
+- **Cards**: cream panels on green, sharp 12px radius, hard 2px borders, no shadow — flat editorial
+- **Illustrations**: I'll generate a small set of minimal, hand-drawn, cream-on-green line illustrations themed to genetics (DNA helix doodle, microscope sketch, magnifier on a strand, helix-with-checkmark). These will be generated with `imagegen` (transparent PNGs) and placed floating in negative space like Phamily's hands.
+- **Motion**: subtle — sections fade-up on enter, illustrations have a slow idle float (CSS keyframes, 6s ease-in-out), pill buttons have a 200ms hover that slightly enlarges and shifts background.
 
-### Design system
-- Font: Inter (Google Fonts), tight tracking on headings
-- Tokens in `src/styles.css` (oklch): `--background` light gray `#F8FAFC`, `--foreground` navy `#0A1628`, `--primary` teal `#0D9488`, `--accent` blue `#2563EB`, plus amber for the banner. No gradients, no glow, no emoji decoration beyond the lock glyph you explicitly requested in the banner/badge.
-- Cards: white, rounded-2xl, 1px border, soft shadow
-- Motion: subtle fade/slide-up on section enter, 200ms hover transitions. No flashy effects.
-- Recharts for all charts (teal/navy/blue/amber palette, no rainbow)
-- Lucide React for icons
+### Tokens (`src/styles.css`)
+Replace the current oklch palette with:
+- `--background` deep green
+- `--foreground` cream
+- `--card` cream
+- `--card-foreground` deep green
+- `--primary` coral pink (pill highlight)
+- `--primary-foreground` deep green
+- `--accent` cream (outlined buttons)
+- `--muted` slightly lighter green for inner panels
+- `--warning` keeps amber for the top banner — but tuned to match (mustard) so it doesn't jar
+- Add `--font-display` for Bowlby One SC, keep Inter as `--font-sans`
+- Add idle-float keyframes + fade-up
 
-### Global shell
-- `src/routes/__root.tsx`: amber slim banner ("Private & Confidential — For Internal Use Only") + sticky navbar (GeneScope wordmark + small "Local" badge, links: Home/Predict/Dashboard/Performance/History/About, active link teal, mobile hamburger via Sheet) + `<Outlet />` + footer.
-- Health ping (`GET /health`) runs from a small `useHealth` hook; status dot lives in the navbar so every page shows Online/Offline.
-- Global API client `src/lib/api.ts` with one error shape; failed requests render a reusable `<BackendOfflineNotice />`: "Unable to reach GeneScope backend. Please ensure the Flask server is running at localhost:5000."
-- TanStack Query for all GETs; mutation for `/predict`.
+### Per-page restyle (no functional changes)
 
-### Routes (file-based, each with its own `head()` meta)
-1. `src/routes/index.tsx` — Home: hero (title, subtitle, description), two CTAs (Start Prediction → /predict, View Dashboard → /dashboard), stats strip fed by `/eda-data` (Total Records, 2021–2025 Coverage, 3 ML Models, 6 Indicators), footer attribution.
-2. `src/routes/predict.tsx` — Two-column layout.
-   - Left: form with 6 Shadcn `Select` dropdowns (Sex, Geographic Region, Location Type, Disease Category, Facility Type, Year). Each label has muted indicator-type subtext. Generate button disabled until all six set. Reset button. Disclaimer.
-   - Right: hidden until response. On submit, POST `/predict`; show spinner; on error show retry. On success render: result badge (green Comprehensive / blue Targeted), large circular confidence ring, dual probability bar, then the **prominent Result Knowledge Card** (teal-bordered, DNA icon, conditional definition + 5 example bullets), then Indicator Influence horizontal bar chart from `/feature-importance`, then Save to History + New Prediction buttons.
-3. `src/routes/dashboard.tsx` — All charts from `/eda-data` in a responsive grid, grouped under Descriptive / Comparative / Stacked sections. Donut, bar+line combo, grouped line, horizontal bar, pie, bars, grouped bars, correlation heatmap (custom Recharts/SVG), stacked bars. Skeletons while loading.
-4. `src/routes/performance.tsx` — `/metrics` + `/feature-importance`. Comparison table, 3 model cards with horizontal metric bars, grouped bar across all metrics, three 2×2 confusion-matrix heatmaps, overlaid ROC curve, feature importance bar. Primary Model card with the logit formula rendered cleanly (KaTeX-free, styled span). 5-fold CV block. Testing Methods checklist card.
-5. `src/routes/history.tsx` — localStorage-backed audit log. Table with No./Timestamp/Sex/Region/Disease/Facility/Year/Result/Confidence, colored result badges, filters (Result, Year, Disease), Export CSV, empty state, RA 10173 notice. `useHistory` hook in `src/hooks/useHistory.ts`.
-6. `src/routes/about.tsx` — Research Info card + Compliance card. Static content only.
+**Global shell** (`__root.tsx`, `Navbar`, `Footer`, `ConfidentialityBanner`):
+- Top mustard banner stays slim
+- Navbar: centered cream wordmark with decorated chars; nav links left (Home/Predict/Dashboard) and right (Performance/History/About) split around the wordmark on desktop; mobile collapses to hamburger
+- Active link gets a small coral underline pill
+- Status pill (Model Online / Server Offline) moves to a small cream chip in the right corner
+- Footer: oversized green/cream editorial block with FEU + Molave + RA10173 line
 
-### State & data
-- `src/lib/api.ts`: typed wrappers for `health`, `edaData`, `metrics`, `featureImportance`, `predict`.
-- `src/hooks/useHealth.ts`, query keys centralized in `src/lib/queryKeys.ts`.
-- History persisted in `localStorage` under `genescope.history.v1`.
+**Home** (`index.tsx`):
+- Massive hero headline like Phamily's "L'Achat et Vente…" pattern, but our copy:
+  > "Genetic Testing Decisions, **without the guesswork.**"
+  - Followed by your existing subtitle paragraph
+  - Two pill CTAs: coral "Start Prediction", outlined cream "View Dashboard"
+  - Two generated floating illustrations (DNA helix doodle top-right, microscope bottom-left), with slow idle float
+- "Our mission" 3-column block matching Phamily's 3-icon mission pattern, but with your three pillars: *A confident decision · Streamlined indicators · Local & private*
+- Numbered process block ("01 / 02 / 03") for "Enter indicators → Run local model → Interpret result"
+- Stats strip pulling from `/eda-data`, presented as oversized cream numerals on green
+- CTA band before the footer
 
-### Technical details
-- Stack: existing TanStack Start template, add `recharts`. Lucide already available.
-- Backend base URL via `VITE_API_BASE_URL` (default `http://localhost:5000`) for portability.
-- No Lovable Cloud — purely a frontend to the user's local Flask server.
-- No SSR data fetching for `/predict` etc. (loaders skipped; Query in components) since the Flask server is only reachable from the user's machine.
-- Accessibility: labeled selects, focus rings, color-contrast safe badges, aria-live on prediction result.
+**Predict** (`predict.tsx`):
+- Left form on a cream card with green labels and pill-shaped Selects (override Shadcn select trigger to rounded-full)
+- "Generate Prediction" = coral pill
+- Right output stays the same structure (result badge → confidence ring → probability bar → Knowledge Card → feature importance) but restyled with cream cards on green
+- The **Result Knowledge Card** becomes the largest, most striking block — coral border, oversized display heading, big quote-mark display character, kept visually dominant per your spec
 
-### Out of scope
-- No auth, no backend changes, no Supabase, no payment.
-- Not literally cloning phamilypharma.com markup/assets — inspiration only.
+**Dashboard** (`dashboard.tsx`):
+- Cream chart cards on the green canvas, recharts repalette to: deep green / cream / coral / soft teal / mustard
+- Section labels in tracked-out uppercase eyebrows
+- Same chart inventory, same layout grid
+
+**Performance** (`performance.tsx`):
+- Primary Model card becomes a hero block: huge display heading "Binary **Logistic Regression**" with the logit formula in a cream code panel
+- Comparison table in cream, model cards as cream panels, confusion matrices using coral/cream intensity instead of teal
+- ROC + grouped bar charts repaletted
+
+**History** (`history.tsx`):
+- Cream table on green, filter pills, coral "Export CSV" pill
+- Badges: cream-outlined for Targeted, coral-filled for Comprehensive (kept distinct without using bright green/blue dots)
+
+**About** (`about.tsx`):
+- Two oversized editorial cards on green
+- Researcher list as a clean stacked list with display weights
+
+### Generated assets
+Use `imagegen` to create 3–4 transparent-PNG illustrations under `src/assets/illustrations/`:
+1. `helix-doodle.png` — minimalist cream DNA helix hand-drawn line art, with subtle shadow, on transparent background
+2. `microscope-doodle.png` — same style microscope sketch
+3. `magnifier-strand.png` — magnifying glass over a DNA strand
+4. `helix-check.png` — DNA strand with a checkmark
+Each prompted to match a flat, two-color (cream + black outline), cartoon-editorial style — never resembling Phamily's hands.
+
+### Technical notes
+- Pure presentation refactor: no changes to `src/lib/api.ts`, `src/hooks/useHistory.ts`, route logic, or Flask integration
+- Add Google Font import (Bowlby One SC) at the top of `styles.css`
+- Update Recharts color references via CSS variables so dashboard/performance pick up the new palette automatically
+- Mobile responsiveness preserved; oversized display headings clamp via `clamp()` so they don't overflow on small screens
+- Files touched: `src/styles.css`, `src/routes/__root.tsx`, `src/components/{Navbar,Footer,ConfidentialityBanner,SectionHeader,ChartCard,BackendOfflineNotice}.tsx`, all six route files, plus new `src/assets/illustrations/*.png` and a small `src/components/FloatingIllustration.tsx` helper
+
+### What I will NOT do
+- Reproduce Phamily's logo, illustrations, copy, or French text
+- Reuse their wordmark with the same diacritic pattern — I'll use a different decoration on "GENESCOPE"
+- Pull any asset from their site
 
 ### Deliverable checklist
-- [ ] Tokens + Inter wired in `src/styles.css`
-- [ ] Root shell: banner, navbar, footer, health dot
-- [ ] API client + Query setup with `defaultPreloadStaleTime: 0`
-- [ ] 6 route files with `head()` meta
-- [ ] Reusable: BackendOfflineNotice, StatCard, SectionHeader, ChartCard, ConfidenceRing, ProbabilityBar, ResultKnowledgeCard, ConfusionMatrix, Heatmap
-- [ ] History hook + CSV export
-- [ ] Loading skeletons + empty/error states everywhere
-- [ ] Mobile pass on all six pages
+- [ ] Tokens + Bowlby One SC wired
+- [ ] Banner / Navbar / Footer restyled (centered wordmark, split nav)
+- [ ] Home: editorial hero with floating illustrations, mission row, numbered process, stats band
+- [ ] Predict: cream card form + pill selects + dominant Knowledge Card
+- [ ] Dashboard: green canvas, cream chart cards, repaletted charts
+- [ ] Performance: editorial primary-model hero, repaletted comparisons
+- [ ] History: cream editorial table, pill filters
+- [ ] About: oversized editorial cards
+- [ ] 4 generated illustrations placed and animated
+- [ ] Mobile pass with `clamp()` typography
