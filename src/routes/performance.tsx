@@ -174,7 +174,6 @@ function PerformancePage() {
               Comparative evaluation of Binary Logistic Regression, Decision Tree, and Random Forest.
             </p>
           </div>
-          <img src={helixCheck} alt="" className="hidden md:block w-24 lg:w-28 shrink-0 object-contain -mt-2" />
         </div>
       </div>
 

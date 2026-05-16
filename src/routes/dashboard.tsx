@@ -129,7 +129,6 @@ function Dashboard() {
               Derived from data under MOA &amp; NDA — Confidential.
             </p>
           </div>
-          <img src={petriDish} alt="" className="hidden md:block w-24 lg:w-28 shrink-0 object-contain -mt-2" />
         </div>
       </div>
 

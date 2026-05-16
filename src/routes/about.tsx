@@ -40,19 +40,18 @@ function AboutPage() {
   return (
     <div className="relative overflow-hidden">
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-10 py-16 space-y-10 z-10">
-        <div className="max-w-3xl">
-          <div className="flex items-start gap-6">
-            <div className="flex-1">
-              <div className="eyebrow text-coral mb-4">About</div>
-              <h1 className="display-lg">
-                A thesis built
-                <br />
-                <span className="text-coral">with care.</span>
-              </h1>
-            </div>
-            <img src={helix} alt="" className="hidden md:block w-24 lg:w-28 shrink-0 object-contain -mt-2" />
+      <div className="max-w-3xl">
+        <div className="flex items-start gap-6">
+          <div className="flex-1">
+            <div className="eyebrow text-coral mb-4">About</div>
+            <h1 className="display-lg">
+              A thesis built
+              <br />
+              <span className="text-coral">with care.</span>
+            </h1>
           </div>
         </div>
+      </div>
 
         <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
           <img src={clipboard} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />

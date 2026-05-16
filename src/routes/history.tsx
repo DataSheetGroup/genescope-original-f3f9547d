@@ -68,7 +68,6 @@ function HistoryPage() {
               <span className="text-coral">accountable.</span>
             </h1>
           </div>
-          <img src={clipboard} alt="" className="hidden md:block w-24 lg:w-28 shrink-0 object-contain -mt-2" />
         </div>
       </div>
 
