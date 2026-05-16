@@ -178,25 +178,15 @@ function PredictPage() {
 
   return (
     <div className="relative overflow-hidden">
-      {/* Decorative corner illustrations — kept clear of text columns */}
-      <FloatingIllustration
-        src={dnaStrand}
-        className="hidden xl:block absolute left-3 top-40 w-16 z-0 opacity-80"
-        rotate={-18}
-      />
-      <FloatingIllustration
-        src={labFlask}
-        className="hidden xl:block absolute right-4 top-56 w-24 z-0 opacity-80"
-        rotate={12}
-        variant="drift"
-      />
-      <FloatingIllustration src={clipboard} className="hidden xl:block absolute right-3 top-[42%] w-20 z-0 opacity-80" rotate={-8} />
-      <FloatingIllustration src={chromosome} className="hidden xl:block absolute left-5 top-[60%] w-20 z-0 opacity-80" rotate={20} variant="drift" />
-      <FloatingIllustration src={testTube} className="hidden xl:block absolute right-6 bottom-32 w-14 z-0 opacity-85" rotate={24} />
-      <FloatingIllustration src={pillCap} className="hidden xl:block absolute left-4 bottom-24 w-16 z-0 opacity-80" rotate={-14} />
-      <FloatingIllustration src={petriDish} className="hidden xl:block absolute right-5 bottom-12 w-20 z-0 opacity-80" rotate={10} variant="drift" />
-
       <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10 py-16 z-10">
+        {/* Stickers — placed in the gutter of the centered container, themed for prediction (form, lab, results) */}
+        <FloatingIllustration src={clipboard} className="hidden xl:block absolute -left-20 top-24 w-20 opacity-90 z-0" rotate={-12} />
+        <FloatingIllustration src={dnaStrand} className="hidden xl:block absolute -right-16 top-40 w-20 opacity-90 z-0" rotate={18} variant="drift" />
+        <FloatingIllustration src={chromosome} className="hidden 2xl:block absolute -left-24 top-[45%] w-24 opacity-90 z-0" rotate={20} variant="drift" />
+        <FloatingIllustration src={labFlask} className="hidden xl:block absolute -right-20 top-[55%] w-24 opacity-90 z-0" rotate={-8} />
+        <FloatingIllustration src={pillCap} className="hidden xl:block absolute -left-16 bottom-40 w-20 opacity-90 z-0" rotate={-14} variant="drift" />
+        <FloatingIllustration src={testTube} className="hidden 2xl:block absolute -right-12 bottom-24 w-14 opacity-90 z-0" rotate={24} />
+        <FloatingIllustration src={petriDish} className="hidden xl:block absolute -left-20 bottom-16 w-20 opacity-90 z-0" rotate={10} />
         {/* ── Centered hero ── */}
         <div className="text-center max-w-3xl mx-auto mb-14">
           <div className="eyebrow text-coral mb-4">Prediction</div>
