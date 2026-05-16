@@ -1,11 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Download, Lock, Trash2 } from "lucide-react";
+import { Download, Trash2 } from "lucide-react";
 import { useHistory, type HistoryItem } from "@/hooks/useHistory";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { FloatingIllustration } from "@/components/FloatingIllustration";
 import clipboard from "@/assets/illustrations/clipboard.png";
+import pillCap from "@/assets/illustrations/pill-capsule.png";
+import magnifier from "@/assets/illustrations/magnifier-strand.png";
+import chromosome from "@/assets/illustrations/chromosome.png";
 
 export const Route = createFileRoute("/history")({
   head: () => ({
