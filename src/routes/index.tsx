@@ -7,6 +7,14 @@ import helix from "@/assets/illustrations/helix-doodle.png";
 import microscope from "@/assets/illustrations/microscope-doodle.png";
 import magnifier from "@/assets/illustrations/magnifier-strand.png";
 import helixCheck from "@/assets/illustrations/helix-check.png";
+import dnaStrand from "@/assets/illustrations/dna-strand.png";
+import testTube from "@/assets/illustrations/test-tube.png";
+import clipboard from "@/assets/illustrations/clipboard.png";
+import pillCap from "@/assets/illustrations/pill-capsule.png";
+import heartPulse from "@/assets/illustrations/heart-pulse.png";
+import labFlask from "@/assets/illustrations/lab-flask.png";
+import chromosome from "@/assets/illustrations/chromosome.png";
+import petriDish from "@/assets/illustrations/petri-dish.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,20 +40,32 @@ function Home() {
     <div className="animate-fade-up">
       {/* ───────────── HERO (green) ───────────── */}
       <section className="hero-green relative overflow-hidden -mt-px">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-10 md:pt-20 pb-28 md:pb-40 min-h-[78vh] flex flex-col justify-center relative">
-          <FloatingIllustration
-            src={helix}
-            className="hidden md:block absolute left-2 lg:left-12 bottom-16 w-40 lg:w-56"
-            rotate={-14}
-          />
-          <FloatingIllustration
-            src={microscope}
-            className="hidden md:block absolute right-2 lg:right-16 top-20 w-44 lg:w-64"
-            rotate={10}
-            variant="drift"
-          />
+        {/* Corner illustrations — kept in safe margins, never under text */}
+        <FloatingIllustration
+          src={dnaStrand}
+          className="hidden lg:block absolute left-4 xl:left-10 top-24 w-28 xl:w-36 z-0 opacity-95"
+          rotate={-12}
+        />
+        <FloatingIllustration
+          src={microscope}
+          className="hidden lg:block absolute right-4 xl:right-10 top-24 w-32 xl:w-40 z-0 opacity-95"
+          rotate={10}
+          variant="drift"
+        />
+        <FloatingIllustration
+          src={testTube}
+          className="hidden xl:block absolute left-10 bottom-16 w-24 z-0"
+          rotate={8}
+          variant="drift"
+        />
+        <FloatingIllustration
+          src={chromosome}
+          className="hidden xl:block absolute right-10 bottom-16 w-28 z-0"
+          rotate={-6}
+        />
 
-          <div className="relative z-10 mx-auto max-w-4xl text-center">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-10 md:pt-20 pb-28 md:pb-40 min-h-[78vh] flex flex-col justify-center relative">
+          <div className="relative z-10 mx-auto max-w-3xl text-center">
             <div className="font-display text-base md:text-lg mb-8">
               A confident clinical decision
             </div>
