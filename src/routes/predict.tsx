@@ -17,7 +17,6 @@ import {
   type PredictResponse,
 } from "@/lib/api";
 import { useHistory } from "@/hooks/useHistory";
-import { FloatingIllustration } from "@/components/FloatingIllustration";
 import clipboard from "@/assets/illustrations/clipboard.png";
 import dnaStrand from "@/assets/illustrations/dna-strand.png";
 import labFlask from "@/assets/illustrations/lab-flask.png";

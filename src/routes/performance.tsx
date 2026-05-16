@@ -4,7 +4,6 @@ import { Check } from "lucide-react";
 import { getFeatureImportance, getMetrics, type ModelMetrics } from "@/lib/api";
 import { BackendOfflineNotice } from "@/components/BackendOfflineNotice";
 import { ChartCard } from "@/components/ChartCard";
-import { FloatingIllustration } from "@/components/FloatingIllustration";
 import heartPulse from "@/assets/illustrations/heart-pulse.png";
 import chromosome from "@/assets/illustrations/chromosome.png";
 import labFlask from "@/assets/illustrations/lab-flask.png";
