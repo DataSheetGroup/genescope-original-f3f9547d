@@ -40,34 +40,6 @@ function Home() {
     <div className="">
       {/* ───────────── HERO (green) — centered, asymmetric illustrations ───────────── */}
       <section className="hero-green relative overflow-hidden -mt-px">
-        {/* Hero stickers — anchored in outer corners, sized to fit gutters, never crossing text column */}
-        <FloatingIllustration
-          src={chromosome}
-          className="hidden lg:block absolute left-2 top-6 w-16 xl:w-24 z-0 opacity-90"
-          rotate={-16}
-        />
-        <FloatingIllustration
-          src={helixCheck}
-          className="hidden lg:block absolute right-2 top-4 w-24 xl:w-36 z-0 opacity-95"
-          rotate={10}
-          variant="drift"
-        />
-        <FloatingIllustration
-          src={dnaStrand}
-          className="hidden lg:block absolute left-2 bottom-6 w-20 xl:w-28 z-0 opacity-90"
-          rotate={-22}
-          variant="drift"
-        />
-        <FloatingIllustration
-          src={petriDish}
-          className="hidden lg:block absolute right-3 bottom-8 w-20 xl:w-28 z-0 opacity-90"
-          rotate={12}
-        />
-        <FloatingIllustration
-          src={testTube}
-          className="hidden xl:block absolute right-6 top-1/2 -translate-y-1/2 w-12 z-0 opacity-85"
-          rotate={22}
-        />
 
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-8 md:pt-12 pb-14 md:pb-20 relative">
           <div className="relative z-10 text-center max-w-3xl mx-auto">
