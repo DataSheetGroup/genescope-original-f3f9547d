@@ -161,14 +161,13 @@ function PerformancePage() {
 
   return (
     <div className="relative overflow-hidden">
-      {/* Asymmetric floating stickers — only on very wide screens where they sit in the outer gutter */}
-      <FloatingIllustration src={heartPulse} className="hidden xl:block absolute right-4 top-32 w-20 opacity-80 z-0" rotate={14} />
-      <FloatingIllustration src={chromosome} className="hidden xl:block absolute left-3 top-[55%] w-16 opacity-75 z-0" rotate={-22} variant="drift" />
-      <FloatingIllustration src={labFlask} className="hidden xl:block absolute right-6 bottom-40 w-28 opacity-80 z-0" rotate={-6} />
-      <FloatingIllustration src={clipboard} className="hidden xl:block absolute left-5 top-32 w-20 opacity-80 z-0" rotate={12} variant="drift" />
-      <FloatingIllustration src={dnaStrand} className="hidden xl:block absolute right-3 top-[70%] w-20 opacity-80 z-0" rotate={-16} />
-      <FloatingIllustration src={helixCheck} className="hidden xl:block absolute left-4 bottom-24 w-20 opacity-85 z-0" rotate={8} variant="drift" />
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 py-16 space-y-14 z-10">
+        {/* Stickers sit in the outer gutter of the centered container — only at 2xl+ where real gutter exists */}
+        <FloatingIllustration src={heartPulse} className="hidden 2xl:block absolute -left-16 top-24 w-20 opacity-90 z-0" rotate={-14} />
+        <FloatingIllustration src={chromosome} className="hidden 2xl:block absolute -right-20 top-[30%] w-24 opacity-90 z-0" rotate={18} variant="drift" />
+        <FloatingIllustration src={labFlask} className="hidden 2xl:block absolute -left-20 top-[55%] w-24 opacity-90 z-0" rotate={-8} variant="drift" />
+        <FloatingIllustration src={clipboard} className="hidden 2xl:block absolute -right-16 top-[75%] w-20 opacity-90 z-0" rotate={12} />
+        <FloatingIllustration src={helixCheck} className="hidden 2xl:block absolute -left-16 bottom-32 w-20 opacity-90 z-0" rotate={8} variant="drift" />
       <div className="max-w-3xl">
         <div className="eyebrow text-coral mb-4">Evaluation</div>
         <h1 className="display-lg">
