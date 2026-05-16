@@ -133,10 +133,34 @@
 }
 
 .eyebrow {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+/* Marker-style highlight, Phamily-inspired: pink block behind dark text */
+.hl {
+  background: var(--coral);
+  color: oklch(0.28 0.08 25);          /* deep brown text on pink */
+  padding: 0 0.18em 0.05em 0.18em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Full-bleed cream slab on a green page */
+.slab-cream {
+  background: var(--cream);
+  color: var(--green-deep);
+}
+.slab-cream .eyebrow { color: var(--green-deep); }
+
+/* Rounded green hero corners */
+.hero-green {
+  background: var(--green-deep);
+  color: var(--cream);
+  border-bottom-left-radius: 2.5rem;
+  border-bottom-right-radius: 2.5rem;
 }
 
 /* Pill primitives */
