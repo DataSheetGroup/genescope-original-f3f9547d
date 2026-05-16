@@ -3,6 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getEdaData } from "@/lib/api";
 import { ChartCard } from "@/components/ChartCard";
 import { BackendOfflineNotice } from "@/components/BackendOfflineNotice";
+import { FloatingIllustration } from "@/components/FloatingIllustration";
+import petriDish from "@/assets/illustrations/petri-dish.png";
+import labFlask from "@/assets/illustrations/lab-flask.png";
+import testTube from "@/assets/illustrations/test-tube.png";
+import heartPulse from "@/assets/illustrations/heart-pulse.png";
+import helixCheck from "@/assets/illustrations/helix-check.png";
 import {
   Bar, BarChart, CartesianGrid, Cell, ComposedChart, Legend, Line, Pie,
   PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
