@@ -32,7 +32,7 @@ const tooltipStyle = {
   fontSize: 12,
 };
 const axisTick = { fontSize: 11, fill: "var(--green-deep)" };
-const gridStroke = "rgba(15,61,46,0.12)";
+const gridStroke = "rgba(34,15,69,0.14)";
 
 function Heatmap({ labels, values }: { labels: string[]; values: number[][] }) {
   const cell = (v: number) => {

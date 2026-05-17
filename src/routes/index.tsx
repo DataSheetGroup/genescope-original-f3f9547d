@@ -103,7 +103,7 @@ function Home() {
             ].map((c) => (
               <div
                 key={c.title}
-                className={`rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-10 lg:p-12 flex items-start gap-6 ${c.offset}`}
+                className={`rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(34,15,69,0.30)] p-10 lg:p-12 flex items-start gap-6 ${c.offset}`}
               >
                 <div className="flex-1">
                   <h3 className="font-display text-2xl md:text-3xl leading-tight" style={{ color: "var(--green-deep)" }}>
@@ -166,7 +166,7 @@ function Home() {
               ].map((s) => (
                 <li
                   key={s.n}
-                  className="rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-8 lg:p-10 flex items-start gap-6 md:gap-8"
+                  className="rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(34,15,69,0.30)] p-8 lg:p-10 flex items-start gap-6 md:gap-8"
                 >
                   <div className="shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-full bg-coral flex items-center justify-center font-display text-xl md:text-2xl" style={{ color: "var(--green-deep)" }}>
                     {s.n}
@@ -280,14 +280,14 @@ function Home() {
               </div>
 
               {/* Models */}
-              <div className="col-span-3 md:col-span-2 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-6 md:p-7" style={{ color: "var(--green-deep)" }}>
+              <div className="col-span-3 md:col-span-2 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(34,15,69,0.30)] p-6 md:p-7" style={{ color: "var(--green-deep)" }}>
                 <div className="text-xs font-display uppercase tracking-widest opacity-70">03 — Benchmarks</div>
                 <div className="font-display text-4xl md:text-5xl tabular-nums mt-3 leading-none">3</div>
                 <div className="mt-3 text-xs md:text-sm font-semibold">Models compared</div>
               </div>
 
               {/* Indicators */}
-              <div className="col-span-3 md:col-span-4 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-6 md:p-8 md:-translate-y-2 flex items-center gap-5" style={{ color: "var(--green-deep)" }}>
+              <div className="col-span-3 md:col-span-4 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(34,15,69,0.30)] p-6 md:p-8 md:-translate-y-2 flex items-center gap-5" style={{ color: "var(--green-deep)" }}>
                 <div className="font-display text-5xl md:text-6xl tabular-nums leading-none">6</div>
                 <div>
                   <div className="text-xs font-display uppercase tracking-widest opacity-70">04 — Inputs</div>

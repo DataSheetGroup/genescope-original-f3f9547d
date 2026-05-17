@@ -54,9 +54,15 @@ export function PhilippinesMap({ data }: { data: RegionDatum[] }) {
     ? "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
     : "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png";
 
-  const ringFill = "rgba(245,185,201,0.18)";    // coral wash
-  const ringStroke = "var(--coral)";
-  const dotFill = theme === "light" ? "rgba(15,61,46,0.6)" : "rgba(245,239,224,0.55)";
+  // Logo gradient colors per island group (teal → blended → purple)
+  const ISLAND_COLORS: Record<string, { stroke: string; fill: string }> = {
+    Luzon:    { stroke: "#3FB8AF", fill: "rgba(63,184,175,0.20)"  },
+    Visayas:  { stroke: "#7A8FC9", fill: "rgba(122,143,201,0.20)" },
+    Mindanao: { stroke: "#6B4FBB", fill: "rgba(107,79,187,0.20)"  },
+  };
+  const dotFill = theme === "light"
+    ? "rgba(34,15,69,0.55)"          // ink @ 55%
+    : "rgba(232,225,245,0.55)";      // paper @ 55%
 
   if (!Comp) {
     return (
@@ -90,20 +96,21 @@ export function PhilippinesMap({ data }: { data: RegionDatum[] }) {
           />
         ))}
 
-        {/* Island-group data circles, sized by share */}
+        {/* Island-group data circles, sized by share, colored by gradient stop */}
         {Object.entries(ISLAND_CENTERS).map(([name, center]) => {
           const v = byName.get(name) ?? 0;
           const share = v / total;
           const radiusM = 60000 + share * 240000; // 60–300km
+          const c = ISLAND_COLORS[name] ?? ISLAND_COLORS.Luzon;
           return (
             <Circle
               key={name}
               center={center}
               radius={radiusM}
-              pathOptions={{ color: ringStroke, fillColor: ringFill, fillOpacity: 1, weight: 2 }}
+              pathOptions={{ color: c.stroke, fillColor: c.fill, fillOpacity: 1, weight: 2 }}
             >
               <Tooltip direction="top" offset={[0, -8]} opacity={1} permanent>
-                <div className="text-[11px] font-semibold" style={{ color: "var(--green-deep)" }}>
+                <div className="text-[11px] font-semibold" style={{ color: c.stroke }}>
                   {name} · {v.toLocaleString()}
                 </div>
               </Tooltip>
