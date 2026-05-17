@@ -19,6 +19,7 @@ export type EdaData = {
   stacked_region?: { name: string; Targeted: number; Comprehensive: number }[];
   stacked_disease?: { name: string; Targeted: number; Comprehensive: number }[];
   stacked_facility?: { name: string; Targeted: number; Comprehensive: number }[];
+  region_by_year?: { region: string; year: string; count: number; Targeted: number; Comprehensive: number }[];
 } & Record<string, unknown>;
 
 export type ModelMetrics = {
