@@ -239,26 +239,22 @@ export function PhilippinesMap({
           })}
 
           {/* Heat overlay (multi-ring radial) */}
-          {mode === "heat" && Object.entries(ISLAND_CENTERS).map(([name, center]) => {
+          {mode === "heat" && Object.entries(ISLAND_CENTERS).flatMap(([name, center]) => {
             const v = valueFor(name);
             const ratio = v / maxV;
             const base = 80000 + ratio * 260000;
-            return (
-              <g key={name}>
-                {[0.3, 0.55, 0.8, 1].map((m, i) => (
-                  <Circle
-                    key={i}
-                    center={center}
-                    radius={base * m}
-                    pathOptions={{
-                      stroke: false,
-                      fillColor: "var(--purple)",
-                      fillOpacity: 0.10 + (1 - m) * 0.18,
-                    }}
-                  />
-                ))}
-              </g>
-            );
+            return [0.3, 0.55, 0.8, 1].map((m, i) => (
+              <Circle
+                key={`${name}-${i}`}
+                center={center}
+                radius={base * m}
+                pathOptions={{
+                  stroke: false,
+                  fillColor: "var(--purple)",
+                  fillOpacity: 0.10 + (1 - m) * 0.18,
+                }}
+              />
+            ));
           })}
 
           {/* Bubble mode */}
