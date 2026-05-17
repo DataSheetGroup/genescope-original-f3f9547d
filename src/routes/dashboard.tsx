@@ -1,7 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState, type ReactNode } from "react";
-import { Icon } from "@iconify/react";
+import microscopeSticker from "@/assets/stickers/microscope.png";
+import moleculeSticker from "@/assets/stickers/molecule.png";
+import flaskPurpleSticker from "@/assets/stickers/flask-purple.png";
+import flaskGreenSticker from "@/assets/stickers/flask-green.png";
+import potionBlueSticker from "@/assets/stickers/potion-blue.png";
+import dropperSticker from "@/assets/stickers/dropper.png";
+import magnetSticker from "@/assets/stickers/magnet.png";
+import gogglesSticker from "@/assets/stickers/goggles.png";
 import {
   Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, ComposedChart,
   Legend, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
@@ -42,8 +49,32 @@ const axisTick = { fontSize: 12, fill: INK, opacity: 0.6, fontFamily: "Poppins, 
 const chartMargin = { top: 8, right: 16, bottom: 0, left: 0 };
 
 // ─────────────────────────── sticker icon helper
-function Sticker({ name, size = 28 }: { name: string; size?: number }) {
-  return <Icon icon={`fluent-emoji-flat:${name}`} width={size} height={size} />;
+export type StickerName =
+  | "microscope" | "molecule" | "flask-purple" | "flask-green"
+  | "potion-blue" | "dropper" | "magnet" | "goggles";
+
+const STICKERS: Record<StickerName, string> = {
+  "microscope": microscopeSticker,
+  "molecule": moleculeSticker,
+  "flask-purple": flaskPurpleSticker,
+  "flask-green": flaskGreenSticker,
+  "potion-blue": potionBlueSticker,
+  "dropper": dropperSticker,
+  "magnet": magnetSticker,
+  "goggles": gogglesSticker,
+};
+
+export function Sticker({ name, size = 28 }: { name: StickerName; size?: number }) {
+  return (
+    <img
+      src={STICKERS[name]}
+      alt=""
+      width={size}
+      height={size}
+      style={{ width: size, height: size, objectFit: "contain", display: "inline-block" }}
+      draggable={false}
+    />
+  );
 }
 
 // ─────────────────────────── primitives
