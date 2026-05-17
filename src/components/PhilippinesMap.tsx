@@ -1,4 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import stickerFlaskPurple from "@/assets/stickers/flask-purple.png";
+import stickerFlaskGreen from "@/assets/stickers/flask-green.png";
+import stickerGoggles from "@/assets/stickers/goggles.png";
+import stickerMolecule from "@/assets/stickers/molecule.png";
+import stickerMagnet from "@/assets/stickers/magnet.png";
+import stickerMicroscope from "@/assets/stickers/microscope.png";
+import stickerDropper from "@/assets/stickers/dropper.png";
+import stickerPotion from "@/assets/stickers/potion-blue.png";
 
 type RegionDatum = { name: string; value: number };
 type RegionByTest = { name: string; Targeted: number; Comprehensive: number };
@@ -83,7 +91,7 @@ export function PhilippinesMap({
   const [showLabels, setShowLabels] = useState(true);
   const [showDots, setShowDots] = useState(true);
   const [minThreshold, setMinThreshold] = useState(0);
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  // (drawer state removed; controls are now distributed pods)
   const [playing, setPlaying] = useState(false);
   const mapRef = useRef<any>(null);
   const wrapRef = useRef<HTMLDivElement | null>(null);
@@ -123,6 +131,26 @@ export function PhilippinesMap({
     return () => clearInterval(id);
   }, [playing, years]);
 
+  // Native Fullscreen API
+  const toggleFs = () => {
+    const el = wrapRef.current;
+    if (!el) return;
+    if (!document.fullscreenElement) {
+      el.requestFullscreen?.().catch(() => {});
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  };
+  useEffect(() => {
+    const onChange = () => {
+      const fs = !!document.fullscreenElement;
+      setFullscreen(fs);
+      setTimeout(() => mapRef.current?.invalidateSize?.(), 120);
+    };
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
   // Keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -130,9 +158,8 @@ export function PhilippinesMap({
       if (e.key === "1") setMode("bubbles");
       else if (e.key === "2") setMode("choropleth");
       else if (e.key === "3") setMode("heat");
-      else if (e.key === "f" || e.key === "F") setFullscreen((f) => !f);
+      else if (e.key === "f" || e.key === "F") toggleFs();
       else if (e.key === "r" || e.key === "R") { setSelected(null); mapRef.current?.flyTo([12.5, 122.5], 6, { duration: 0.7 }); }
-      else if (e.key === "Escape") setFullscreen(false);
       else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
         const all = ["all", ...years];
         const idx = all.indexOf(year);
@@ -201,12 +228,9 @@ export function PhilippinesMap({
   }
   const { MapContainer, TileLayer, CircleMarker, Tooltip, Circle, Polygon } = Comp;
 
-  const containerCls = fullscreen
-    ? "fixed inset-4 z-50 rounded-2xl overflow-hidden bg-white"
-    : "relative rounded-2xl overflow-hidden bg-white";
-
-  const containerStyle = fullscreen
-    ? { border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }
+  const containerCls = "relative rounded-2xl overflow-hidden bg-white";
+  const containerStyle: React.CSSProperties = fullscreen
+    ? { border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)", height: "100vh", width: "100vw", borderRadius: 0 }
     : { border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)", height: 680 };
 
   const selectedData = selected ? islandValues[selected] : null;
@@ -227,7 +251,6 @@ export function PhilippinesMap({
 
   return (
     <>
-      {fullscreen && <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setFullscreen(false)} />}
       <div ref={wrapRef} className={containerCls} style={containerStyle}>
         {/* Scoped: hide leaflet attribution + zoom defaults within this map */}
         <style>{`
@@ -359,73 +382,130 @@ export function PhilippinesMap({
           </div>
         )}
 
-        {/* ── Top-right: Layers & Filters drawer */}
-        <div className="absolute top-4 right-4 z-[400]">
-          <LayersDrawer
-            open={drawerOpen}
-            setOpen={setDrawerOpen}
-            metric={metric} setMetric={setMetric}
-            year={year} setYear={setYear} years={years}
-            playing={playing} setPlaying={setPlaying}
-            basemap={basemap} setBasemap={setBasemap}
-            islandsOn={islandsOn} setIslandsOn={setIslandsOn}
-            showLabels={showLabels} setShowLabels={setShowLabels}
-            showDots={showDots} setShowDots={setShowDots}
-            minThreshold={minThreshold} setMinThreshold={setMinThreshold}
-            maxV={maxV} minV={minV} metricLabel={metricLabel}
-          />
-        </div>
-
-        {/* ── Bottom-left: Mode switcher (flat) */}
-        <div className="absolute bottom-5 left-5 z-[400] flex items-center gap-1 rounded-full p-1"
-          style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
+        {/* ── POD: Metric (top-left, below selected card) */}
+        <Pod className={`top-4 ${selectedData ? "left-[284px]" : "left-4"}`}>
+          <Sticker src={stickerFlaskPurple} />
+          <PodLabel>Metric</PodLabel>
           {([
-            ["bubbles", "Bubbles"],
-            ["choropleth", "Regions"],
-            ["heat", "Heat"],
-          ] as [Mode, string][]).map(([v, l]) => {
-            const active = mode === v;
-            return (
-              <button
-                key={v}
-                onClick={() => setMode(v)}
-                title={`${l} (shortcut: ${v === "bubbles" ? "1" : v === "choropleth" ? "2" : "3"})`}
-                className="rounded-full px-3.5 h-9 font-display text-[12.5px] tracking-wide transition-colors"
-                style={active
-                  ? { background: "var(--ink)", color: "var(--paper)" }
-                  : { background: "transparent", color: "var(--ink)", opacity: 0.75 }
-                }
-              >
-                {l}
-              </button>
-            );
-          })}
-        </div>
+            ["total", "Total"],
+            ["targeted", "Targeted"],
+            ["comprehensive", "Comprehensive"],
+            ["share", "Share %"],
+          ] as [Metric, string][]).map(([v, l]) => (
+            <PodChip key={v} active={metric === v} onClick={() => setMetric(v)}>{l}</PodChip>
+          ))}
+          <span className="ml-1 font-display text-[10.5px] tabular-nums" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>
+            {minV.toLocaleString()}{metric === "share" ? "%" : ""} – {maxV.toLocaleString()}{metric === "share" ? "%" : ""}
+          </span>
+        </Pod>
 
-        {/* ── Bottom-right: Action stack (flat) */}
-        <div className="absolute bottom-5 right-5 z-[400] flex items-center gap-1.5">
-          <div className="flex items-center rounded-full overflow-hidden"
-            style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
-            <FlatBtn title="Zoom out (−)" onClick={() => handleZoom(-1)} label="−" />
-            <div className="w-px h-5" style={{ background: "color-mix(in oklab, var(--ink) 14%, transparent)" }} />
-            <FlatBtn title="Zoom in (+)" onClick={() => handleZoom(1)} label="+" />
+        {/* ── POD: Basemap (top-right) */}
+        <Pod className="top-4 right-4">
+          <Sticker src={stickerGoggles} />
+          <PodLabel>Basemap</PodLabel>
+          {(Object.keys(BASEMAPS) as Basemap[]).map((b) => (
+            <PodChip key={b} active={basemap === b} onClick={() => setBasemap(b)}>
+              <span className="capitalize">{b}</span>
+            </PodChip>
+          ))}
+        </Pod>
+
+        {/* ── POD: Mode switcher (middle-left) */}
+        <Pod className="left-4 top-1/2 -translate-y-1/2 flex-col items-stretch !gap-1.5">
+          <div className="flex items-center gap-2">
+            <Sticker src={stickerMolecule} />
+            <PodLabel>View</PodLabel>
           </div>
-          <button
-            onClick={handleReset}
-            title="Reset view (R)"
-            className="rounded-full h-9 px-4 font-display text-[12.5px] tracking-wide"
-            style={{ background: "#fff", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}
-          >Reset</button>
-          <button
-            onClick={() => setFullscreen((f) => !f)}
-            title={fullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
-            className="rounded-full h-9 px-4 font-display text-[12.5px] tracking-wide"
-            style={{ background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" }}
-          >{fullscreen ? "Exit" : "Fullscreen"}</button>
-        </div>
+          {([
+            ["bubbles", "Bubbles", "1"],
+            ["choropleth", "Regions", "2"],
+            ["heat", "Heat", "3"],
+          ] as [Mode, string, string][]).map(([v, l, k]) => (
+            <PodChip key={v} active={mode === v} onClick={() => setMode(v)} title={`${l} (${k})`} block>
+              {l}
+            </PodChip>
+          ))}
+        </Pod>
+
+        {/* ── POD: Island filter + display toggles (middle-right) */}
+        <Pod className="right-4 top-1/2 -translate-y-1/2 flex-col items-stretch !gap-1.5">
+          <div className="flex items-center gap-2">
+            <Sticker src={stickerPotion} />
+            <PodLabel>Islands</PodLabel>
+          </div>
+          {(["Luzon", "Visayas", "Mindanao"] as IslandName[]).map((n) => (
+            <PodChip key={n} active={!!islandsOn[n]} onClick={() => setIslandsOn({ ...islandsOn, [n]: !islandsOn[n] })} block>
+              {n}
+            </PodChip>
+          ))}
+          <div className="h-px my-0.5" style={{ background: "color-mix(in oklab, var(--ink) 12%, transparent)" }} />
+          <PodChip active={showLabels} onClick={() => setShowLabels(!showLabels)} block>Labels</PodChip>
+          <PodChip active={showDots} onClick={() => setShowDots(!showDots)} block>Region dots</PodChip>
+        </Pod>
+
+        {/* ── POD: Min threshold (above bottom-left mode area, sticker magnet) */}
+        <Pod className="bottom-20 left-4 w-[220px]">
+          <Sticker src={stickerMagnet} />
+          <PodLabel>Min</PodLabel>
+          <input
+            type="range"
+            min={0}
+            max={Math.max(1, maxV)}
+            value={Math.min(minThreshold, maxV)}
+            onChange={(e) => setMinThreshold(Number(e.target.value))}
+            className="flex-1 accent-[var(--ink)]"
+          />
+          <span className="font-display text-[10.5px] tabular-nums" style={{ color: "var(--ink)" }}>{minThreshold.toLocaleString()}</span>
+        </Pod>
+
+        {/* ── POD: Year scrubber (bottom-center) */}
+        {years.length > 0 && (
+          <Pod className="bottom-5 left-1/2 -translate-x-1/2 max-w-[calc(100%-32px)] overflow-x-auto">
+            <Sticker src={stickerFlaskGreen} />
+            <PodLabel>Year</PodLabel>
+            <button
+              onClick={() => setPlaying(!playing)}
+              className="rounded-md px-2 h-7 font-display text-[11px] transition-colors"
+              style={playing
+                ? { background: "var(--ink)", color: "var(--paper)" }
+                : { background: "transparent", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}
+              title="Auto-cycle years"
+            >{playing ? "❚❚" : "▶"}</button>
+            {["all", ...years].map((y) => (
+              <PodChip key={y} active={year === y} onClick={() => setYear(y)}>{y === "all" ? "All" : y}</PodChip>
+            ))}
+          </Pod>
+        )}
+
+        {/* ── POD: Zoom (bottom-right inner) */}
+        <Pod className="bottom-5 right-[180px] !px-1 !py-1">
+          <button onClick={() => handleZoom(-1)} title="Zoom out (−)"
+            className="inline-flex items-center justify-center h-7 w-7 font-display text-[15px] leading-none rounded-md hover:bg-[color-mix(in_oklab,var(--ink)_8%,transparent)]"
+            style={{ color: "var(--ink)" }}>−</button>
+          <div className="w-px h-5" style={{ background: "color-mix(in oklab, var(--ink) 14%, transparent)" }} />
+          <button onClick={() => handleZoom(1)} title="Zoom in (+)"
+            className="inline-flex items-center justify-center h-7 w-7 font-display text-[15px] leading-none rounded-md hover:bg-[color-mix(in_oklab,var(--ink)_8%,transparent)]"
+            style={{ color: "var(--ink)" }}>+</button>
+        </Pod>
+
+        {/* ── POD: Reset (bottom-right) */}
+        <Pod className="bottom-5 right-[92px]">
+          <Sticker src={stickerDropper} />
+          <button onClick={handleReset} title="Reset view (R)"
+            className="font-display text-[12px] tracking-wide" style={{ color: "var(--ink)" }}>Reset</button>
+        </Pod>
+
+        {/* ── POD: Fullscreen (bottom-right corner) */}
+        <Pod className="bottom-5 right-4">
+          <Sticker src={stickerMicroscope} />
+          <button onClick={toggleFs} title={fullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
+            className="font-display text-[12px] tracking-wide" style={{ color: "var(--ink)" }}>
+            {fullscreen ? "Exit" : "Fullscreen"}
+          </button>
+        </Pod>
 
         {/* ── Tiny attribution */}
-        <div className="absolute bottom-1 right-2 z-[300] text-[9px] opacity-40 pointer-events-none"
+        <div className="absolute bottom-1 left-2 z-[300] text-[9px] opacity-40 pointer-events-none"
           style={{ color: "var(--ink)", fontFamily: "Poppins, sans-serif" }}>
           {BASEMAPS[basemap].attr}
         </div>
@@ -450,210 +530,45 @@ const kbd: React.CSSProperties = {
   margin: "0 2px",
 };
 
-function FlatBtn({
-  onClick, label, title,
-}: { onClick: () => void; label: string; title: string }) {
+function Pod({ className = "", children }: { className?: string; children: React.ReactNode }) {
   return (
-    <button
-      onClick={onClick}
-      title={title}
-      aria-label={title}
-      className="inline-flex items-center justify-center h-9 w-9 font-display text-[16px] leading-none transition-colors hover:bg-[color-mix(in_oklab,var(--ink)_6%,transparent)]"
-      style={{ background: "transparent", color: "var(--ink)" }}
+    <div
+      className={`absolute z-[400] flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 animate-fade-up ${className}`}
+      style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}
     >
-      {label}
-    </button>
-  );
-}
-
-function LayersDrawer(props: {
-  open: boolean; setOpen: (b: boolean) => void;
-  metric: Metric; setMetric: (m: Metric) => void;
-  year: string; setYear: (y: string) => void; years: string[];
-  playing: boolean; setPlaying: (b: boolean) => void;
-  basemap: Basemap; setBasemap: (b: Basemap) => void;
-  islandsOn: Record<IslandName, boolean>; setIslandsOn: (v: Record<IslandName, boolean>) => void;
-  showLabels: boolean; setShowLabels: (b: boolean) => void;
-  showDots: boolean; setShowDots: (b: boolean) => void;
-  minThreshold: number; setMinThreshold: (n: number) => void;
-  maxV: number; minV: number; metricLabel: string;
-}) {
-  const {
-    open, setOpen, metric, setMetric, year, setYear, years, playing, setPlaying,
-    basemap, setBasemap, islandsOn, setIslandsOn, showLabels, setShowLabels,
-    showDots, setShowDots, minThreshold, setMinThreshold, maxV, minV, metricLabel,
-  } = props;
-
-  if (!open) {
-    return (
-      <button
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-full px-4 h-9 font-display text-[12.5px] tracking-wide"
-        style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)", color: "var(--ink)" }}
-      >
-        <span aria-hidden>☰</span> Layers & Filters
-      </button>
-    );
-  }
-
-  const metrics: [Metric, string][] = [
-    ["total", "Total records"],
-    ["targeted", "Targeted only"],
-    ["comprehensive", "Comprehensive only"],
-    ["share", "Regional share %"],
-  ];
-
-  const chipOn  = { background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" };
-  const chipOff = { background: "transparent", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" };
-
-  return (
-    <div className="w-[280px] max-h-[calc(100vh-220px)] overflow-y-auto rounded-xl animate-fade-up"
-      style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
-      <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "color-mix(in oklab, var(--ink) 12%, transparent)" }}>
-        <div className="font-display text-[13px] tracking-wide" style={{ color: "var(--ink)" }}>Layers & Filters</div>
-        <button onClick={() => setOpen(false)} className="opacity-60 hover:opacity-100 text-[18px] leading-none" style={{ color: "var(--ink)" }} aria-label="Collapse">–</button>
-      </div>
-
-      <div className="p-3 space-y-4">
-        {/* METRIC */}
-        <Section label="Metric">
-          <div className="grid grid-cols-2 gap-1.5">
-            {metrics.map(([v, label]) => {
-              const active = metric === v;
-              return (
-                <button
-                  key={v}
-                  onClick={() => setMetric(v)}
-                  className="text-left rounded-md px-2.5 py-2 font-display text-[12px] transition-colors"
-                  style={active ? chipOn : chipOff}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-          <div className="mt-2.5 flex items-center justify-between text-[11px]" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))", fontFamily: "Poppins, sans-serif" }}>
-            <span>{minV.toLocaleString()}{metric === "share" ? "%" : ""} – {maxV.toLocaleString()}{metric === "share" ? "%" : ""}</span>
-            <span>{metricLabel}</span>
-          </div>
-        </Section>
-
-        {/* YEAR */}
-        {years.length > 0 && (
-          <Section label="Year"
-            action={
-              <button
-                onClick={() => setPlaying(!playing)}
-                className="rounded-full px-2.5 py-1 font-display text-[11px] transition-colors"
-                style={playing
-                  ? { background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" }
-                  : { background: "transparent", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }
-                }
-                title="Auto-cycle years"
-              >
-                {playing ? "❚❚ Pause" : "▶ Play"}
-              </button>
-            }>
-            <div className="flex flex-wrap gap-1.5">
-              {["all", ...years].map((y) => {
-                const active = year === y;
-                return (
-                  <button
-                    key={y}
-                    onClick={() => setYear(y)}
-                    className="rounded-full px-3 py-1 font-display text-[12px] transition-colors"
-                    style={active ? chipOn : chipOff}
-                  >
-                    {y === "all" ? "All" : y}
-                  </button>
-                );
-              })}
-            </div>
-          </Section>
-        )}
-
-        {/* BASEMAP */}
-        <Section label="Basemap">
-          <div className="grid grid-cols-3 gap-1.5">
-            {(Object.keys(BASEMAPS) as Basemap[]).map((b) => {
-              const active = basemap === b;
-              return (
-                <button
-                  key={b}
-                  onClick={() => setBasemap(b)}
-                  className="rounded-md px-2 py-1.5 font-display text-[12px] capitalize transition-colors"
-                  style={active ? chipOn : chipOff}
-                >
-                  {b}
-                </button>
-              );
-            })}
-          </div>
-        </Section>
-
-        {/* ISLAND FILTER */}
-        <Section label="Island groups">
-          <div className="flex gap-1.5">
-            {(["Luzon", "Visayas", "Mindanao"] as IslandName[]).map((n) => {
-              const on = islandsOn[n];
-              return (
-                <button
-                  key={n}
-                  onClick={() => setIslandsOn({ ...islandsOn, [n]: !on })}
-                  className="flex-1 rounded-full px-2 py-1.5 font-display text-[12px] transition-colors"
-                  style={on ? chipOn : chipOff}
-                >
-                  {n}
-                </button>
-              );
-            })}
-          </div>
-        </Section>
-
-        {/* MIN THRESHOLD */}
-        <Section label="Min value"
-          action={<span className="font-display text-[11px] tabular-nums" style={{ color: "var(--ink)" }}>{minThreshold.toLocaleString()}</span>}>
-          <input
-            type="range"
-            min={0}
-            max={Math.max(1, maxV)}
-            value={Math.min(minThreshold, maxV)}
-            onChange={(e) => setMinThreshold(Number(e.target.value))}
-            className="w-full accent-[var(--ink)]"
-          />
-        </Section>
-
-        {/* DISPLAY (inline chips) */}
-        <Section label="Display">
-          <div className="flex flex-wrap gap-1.5">
-            <button
-              onClick={() => setShowLabels(!showLabels)}
-              className="rounded-full px-3 py-1 font-display text-[12px] transition-colors"
-              style={showLabels ? chipOn : chipOff}
-            >Labels</button>
-            <button
-              onClick={() => setShowDots(!showDots)}
-              className="rounded-full px-3 py-1 font-display text-[12px] transition-colors"
-              style={showDots ? chipOn : chipOff}
-            >Region dots</button>
-          </div>
-        </Section>
-      </div>
-    </div>
-  );
-}
-
-function Section({ label, action, children }: { label: string; action?: React.ReactNode; children: React.ReactNode }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <div className="font-display text-[10px] tracking-widest" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>{label.toUpperCase()}</div>
-        {action}
-      </div>
       {children}
     </div>
   );
 }
+
+function Sticker({ src }: { src: string }) {
+  return <img src={src} alt="" aria-hidden className="h-5 w-5 select-none pointer-events-none" draggable={false} />;
+}
+
+function PodLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="font-display text-[10px] tracking-widest pr-1" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>
+      {String(children).toUpperCase()}
+    </span>
+  );
+}
+
+function PodChip({ active, onClick, children, title, block }: { active: boolean; onClick: () => void; children: React.ReactNode; title?: string; block?: boolean }) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      className={`rounded-md px-2.5 h-7 font-display text-[11.5px] tracking-wide transition-colors ${block ? "w-full text-left" : ""}`}
+      style={active
+        ? { background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" }
+        : { background: "transparent", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
 
 function MiniStat({ name, v, totalAll }: { name: string; v: { total: number; targeted: number; comprehensive: number } | undefined; totalAll: number }) {
   const x = v ?? { total: 0, targeted: 0, comprehensive: 0 };

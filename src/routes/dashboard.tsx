@@ -210,7 +210,7 @@ function Dashboard() {
               ANALYTICS
             </div>
             <h1 className="display-lg mt-3">
-              The dataset, at <span className="hl">a glance.</span>
+              The dataset, <span className="hl">at a glance.</span>
             </h1>
             <p className="mt-4 max-w-2xl text-base" style={{ color: MUTED }}>
               Exploratory analysis of anonymized patient genetic testing records, 2021–2025.

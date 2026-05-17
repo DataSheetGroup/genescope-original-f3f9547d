@@ -1,57 +1,79 @@
-# Plan: Highlight headings everywhere + simpler flat map controls
+## Goals
 
-## 1. `.hl` highlight on all route headings
+1. Stop packing every map control into one drawer — distribute them as small framed pods around the map's edges.
+2. Make fullscreen actually fill the viewport reliably.
+3. Use the science stickers as glyphs on map controls.
+4. Fix the "at a glance" highlight so the word "at" is inside the marker too.
 
-Several routes still use `text-coral` (plain colored text) for the accent word instead of the hero-style `.hl` marker block. Swap them so every page matches the hero treatment.
+## 1. Highlight fix (`src/routes/dashboard.tsx`, line 213)
 
-**`src/routes/about.tsx`**
-- L50: `<span className="text-coral">with care.</span>` → `<span className="hl">with care.</span>`
-- L59: wrap "information" in `.hl` → `Research <span className="hl">information</span>`
-- L84: wrap "ethical perimeter" in `.hl`
+Change:
+```
+The dataset, at <span className="hl">a glance.</span>
+```
+to:
+```
+The dataset, <span className="hl">at a glance.</span>
+```
 
-**`src/routes/history.tsx`**
-- L67: `text-coral` → `hl` on "accountable."
+## 2. Map control layout (`src/components/PhilippinesMap.tsx`)
 
-**`src/routes/performance.tsx`**
-- L169: `text-coral` → `hl` on "one chosen for the job."
-- L184: `text-coral` → `hl` on "Logistic Regression"
-- L201, L303, L319: wrap the last 1–2 words of each `<h2>` in `.hl` (e.g. `…side by <span className="hl">side</span>`, `5-Fold Mean ± <span className="hl">SD</span>`, `Testing <span className="hl">methods</span>`).
+Replace the single "Layers & Filters" drawer with discrete pods anchored to the map frame. Each pod is its own small `absolute` panel with hairline border, solid paper bg, no shadow:
 
-**`src/routes/predict.tsx`**
-- L305 `<h3 className="display-md">`: wrap the prediction text (or its last word) in `.hl`.
-- L328: wrap "prediction" in `.hl`.
+```text
+┌─────────────────────────────────────────────────────┐
+│ [🧪 Metric ▾]                       [🥽 Basemap ▾] │ top row
+│                                                     │
+│                    MAP CANVAS                       │
+│                                                     │
+│ [🧫 Bubbles|Regions|Heat]          [⊖ Min ──●── ⊕] │ mid-low
+│                                                     │
+│ [⟲ Reset] [⛶ Fullscreen]    [− 100% +]  [▶ Year ‣]│ bottom row
+└─────────────────────────────────────────────────────┘
+```
 
-No new tokens needed — `.hl` already exists and now uses purple.
+- Top-left pod: Metric switcher (sticker: `flask-purple` as leading glyph).
+- Top-right pod: Basemap chips Light/Dark/Satellite (sticker: `goggles`).
+- Middle-left pod: Mode switcher Bubbles / Regions / Heat (sticker: `molecule`).
+- Middle-right pod: Min-value slider only (sticker: `magnet`).
+- Bottom-left pod: Reset + Fullscreen text buttons (stickers: `dropper` for reset, `microscope` for fullscreen).
+- Bottom-center pod: Zoom `[ − | + ]`.
+- Bottom-right pod: Year scrubber with Play/Pause and chips (sticker: `flask-green`).
+- Island-group toggles and label/dot toggles fold into the Basemap pod as a tiny secondary row (still framed, still small).
 
-## 2. Simpler, flatter map controls (`src/components/PhilippinesMap.tsx`)
+Each pod uses the same primitive:
+```tsx
+<div className="absolute … rounded-xl border bg-[var(--paper)] px-2 py-1.5 flex items-center gap-2">
+  <img src={sticker} className="h-4 w-4" alt="" />
+  …controls…
+</div>
+```
+No gradients, no backdrop-blur, no shadow — matches the prior "flat" pass.
 
-User wants cleaner controls and **no gradient color**. Strip every gradient/translucent treatment and move to a flat, single-tone surface.
+Remove the existing drawer state, drawer container, and color-ramp caption (caption moves under the Metric pod as a single muted line).
 
-### Surface treatment
-- Remove `bg-white/95 backdrop-blur` on every floating panel → use solid `background: var(--paper)` (off-white).
-- Remove `shadow-xl` / `shadow-2xl` → use a single hairline border only.
-- Remove the purple metric ramp `linear-gradient(90deg, ...)` swatch in the Layers drawer. Replace with a single-line caption: `"{minV} – {maxV}  ·  {metricLabel}"` in muted text. No color bar.
-- Remove the gradient previews on the basemap swatches (`preview: "linear-gradient(...)"`). Replace with plain labeled buttons (3 text pills): Light / Dark / Satellite. Active = filled ink, inactive = bordered.
+## 3. Fullscreen fix
 
-### Layout simplification
-- Collapse the Layers & Filters drawer to **5 sections** (down from 6) by merging "Display" toggles into a single inline row at the bottom: `[Labels] [Region dots]` as small flat chips.
-- Replace the custom `Toggle` switch with a flat chip-style on/off button (purple-filled when on, hairline-bordered when off). No animated knob.
-- Reduce drawer width 320 → 280; reduce internal padding 16 → 12.
-- Drop the min-threshold slider header value (`"Minimum value: 1,234"`) and use a simpler `"Min value"` label with the number to the right.
+Current code only toggles `position: fixed` + a backdrop, which can be clipped by ancestor `overflow:hidden` / transforms and doesn't escape sticky headers reliably.
 
-### Bottom controls
-- Bottom-left mode switcher: keep 3 pills but flatten — remove backdrop-blur, single hairline border, smaller height (36 px), no symbol glyphs (just labels). Active = filled ink, inactive = transparent.
-- Bottom-right action stack: flatten zoom in/out into a single horizontal pill `[ − | + ]`, and put Reset and Fullscreen as two adjacent text buttons (`Reset`, `Fullscreen`). All same hairline-bordered paper surface, no shadows.
-
-### Selected region card
-- Solid paper background, hairline border, no shadow, no backdrop blur.
-
-### Keep as-is
-- Keyboard shortcuts, play/pause year scrubber, island toggles, label/dot toggles, hidden Leaflet attribution.
+Switch to the native Fullscreen API on the map wrapper ref:
+```tsx
+const wrapRef = useRef<HTMLDivElement>(null);
+const toggleFs = () => {
+  if (!document.fullscreenElement) wrapRef.current?.requestFullscreen();
+  else document.exitFullscreen();
+};
+useEffect(() => {
+  const onChange = () => setFullscreen(!!document.fullscreenElement);
+  document.addEventListener("fullscreenchange", onChange);
+  return () => document.removeEventListener("fullscreenchange", onChange);
+}, []);
+```
+- Drop the manual `position: fixed` overlay and backdrop div.
+- When `fullscreen` is true, the wrapper gets `h-screen w-screen bg-[var(--paper)]` so Leaflet fills the real fullscreen surface.
+- Call `map.invalidateSize()` after the fullscreen change so tiles re-layout.
+- Keep `Esc` handling via the browser (no custom listener needed); keep `F` shortcut calling `toggleFs`.
 
 ## Out of scope
-- Data layer, dashboard tabs other than headings, navbar, color tokens, removal of map features (compare mode is not being added).
 
-## Files touched
-- `src/routes/about.tsx`, `src/routes/history.tsx`, `src/routes/performance.tsx`, `src/routes/predict.tsx` — swap `text-coral` accents for `.hl`, wrap remaining h2/h3 accent words.
-- `src/components/PhilippinesMap.tsx` — strip gradients/shadows/blur, flatten controls, simplify drawer.
+Data, chart panels, color tokens, navbar, other routes.
