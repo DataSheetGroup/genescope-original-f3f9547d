@@ -1,4 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import stickerFlaskPurple from "@/assets/stickers/flask-purple.png";
+import stickerFlaskGreen from "@/assets/stickers/flask-green.png";
+import stickerGoggles from "@/assets/stickers/goggles.png";
+import stickerMolecule from "@/assets/stickers/molecule.png";
+import stickerMagnet from "@/assets/stickers/magnet.png";
+import stickerMicroscope from "@/assets/stickers/microscope.png";
+import stickerDropper from "@/assets/stickers/dropper.png";
+import stickerPotion from "@/assets/stickers/potion-blue.png";
 
 type RegionDatum = { name: string; value: number };
 type RegionByTest = { name: string; Targeted: number; Comprehensive: number };
