@@ -58,6 +58,7 @@
   --mustard:    oklch(0.84 0.13 85);      /* warm banner */
   --teal-soft:  oklch(0.78 0.07 175);     /* soft teal accent */
 
+  /* ---- DARK (default) ---- */
   --background: var(--green-deep);
   --foreground: var(--cream);
   --card: var(--cream);
@@ -87,6 +88,36 @@
   --chart-3: var(--teal-soft);
   --chart-4: var(--mustard);
   --chart-5: oklch(0.55 0.08 158);
+
+  /* Themed neutrals used by components */
+  --nav-bg: var(--green-deep);
+  --nav-fg: var(--cream);
+  --surface-strong: var(--cream);
+}
+
+/* ---- LIGHT THEME ---- */
+:root[data-theme="light"] {
+  --background: oklch(0.97 0.018 85);       /* paper */
+  --foreground: var(--green-deep);
+  --card: oklch(1 0 0);                      /* pure white panels */
+  --card-foreground: var(--green-deep);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--green-deep);
+  --primary: var(--green-deep);
+  --primary-foreground: var(--cream);
+  --secondary: var(--green-deep);
+  --secondary-foreground: var(--cream);
+  --muted: oklch(0.92 0.015 85);
+  --muted-foreground: oklch(0.40 0.04 158);
+  --accent: var(--coral);
+  --accent-foreground: var(--green-deep);
+  --border: oklch(0.32 0.06 158 / 0.14);
+  --input: oklch(0.92 0.015 85);
+  --ring: var(--green-deep);
+
+  --nav-bg: var(--cream);
+  --nav-fg: var(--green-deep);
+  --surface-strong: var(--green-deep);
 }
 
 @layer base {
