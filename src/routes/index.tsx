@@ -9,6 +9,7 @@ import helixCheck from "@/assets/illustrations/helix-check.png";
 import dnaStrand from "@/assets/illustrations/dna-strand.png";
 import testTube from "@/assets/illustrations/test-tube.png";
 import clipboard from "@/assets/illustrations/clipboard.png";
+import dropper from "@/assets/illustrations/dropper.png";
 import pillCap from "@/assets/illustrations/pill-capsule.png";
 import heartPulse from "@/assets/illustrations/heart-pulse.png";
 import labFlask from "@/assets/illustrations/lab-flask.png";
@@ -93,7 +94,7 @@ function Home() {
                 offset: "md:-translate-y-6 md:-rotate-2",
               },
               {
-                img: clipboard,
+                img: dropper,
                 title: "Streamlined indicators",
                 body: "Six structured fields and a calibrated probability in milliseconds — built for the realities of busy Philippine practice today.",
                 rotate: -2,

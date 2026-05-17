@@ -18,6 +18,7 @@ import {
 } from "@/lib/api";
 import { useHistory } from "@/hooks/useHistory";
 import clipboard from "@/assets/illustrations/clipboard.png";
+import safetyGlasses from "@/assets/illustrations/safety-glasses.png";
 import dnaStrand from "@/assets/illustrations/dna-strand.png";
 import labFlask from "@/assets/illustrations/lab-flask.png";
 import testTube from "@/assets/illustrations/test-tube.png";
@@ -244,7 +245,7 @@ function PredictPage() {
 
             {!mutation.isPending && !mutation.isError && !result && (
               <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
-                <img src={clipboard} alt="" className="w-28 mb-5 opacity-90" />
+                <img src={safetyGlasses} alt="" className="w-28 mb-5 opacity-90" />
                 <p className="font-display text-xl text-card-foreground/75">
                   Fill the form to see your result.
                 </p>

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import heartPulse from "@/assets/illustrations/heart-pulse.png";
 import clipboard from "@/assets/illustrations/clipboard.png";
+import fireFlask from "@/assets/illustrations/fire-flask.png";
 import testTube from "@/assets/illustrations/test-tube.png";
 import petriDish from "@/assets/illustrations/petri-dish.png";
 import magnifier from "@/assets/illustrations/magnifier-strand.png";
@@ -53,7 +54,7 @@ function AboutPage() {
       </div>
 
         <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
-          <img src={clipboard} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
+          <img src={fireFlask} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
           <div className="eyebrow text-coral mb-2">Project</div>
           <h2 className="font-display text-3xl mb-6">Research information</h2>
           <dl>
