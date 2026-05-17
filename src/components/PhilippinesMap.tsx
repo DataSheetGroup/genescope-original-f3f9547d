@@ -460,7 +460,7 @@ export function PhilippinesMap({
 
         {/* ── POD: Year scrubber (bottom-center) */}
         {years.length > 0 && (
-          <Pod className="bottom-20 left-1/2 -translate-x-1/2 max-w-[calc(100%-32px)] overflow-x-auto">
+          <Pod className="bottom-5 left-1/2 -translate-x-1/2 max-w-[calc(100%-32px)] overflow-x-auto">
             <Sticker src={stickerFlaskGreen} />
             <PodLabel>Year</PodLabel>
             <button
