@@ -305,43 +305,21 @@ export function PhilippinesMap({
           ))}
         </MapContainer>
 
-        {/* Control panel: top-right */}
-        <div className="absolute top-4 right-4 z-[400] w-[260px] rounded-xl bg-white/95 backdrop-blur p-3 space-y-3 shadow-lg"
-          style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }}>
-          <Segmented label="MODE" value={mode} onChange={(v) => setMode(v as Mode)}
-            options={[["bubbles","Bubbles"],["choropleth","Choro"],["heat","Heat"]]} />
-          <Segmented label="METRIC" value={metric} onChange={(v) => setMetric(v as Metric)}
-            options={[["total","Total"],["targeted","Targeted"],["comprehensive","Compr."],["share","Share"]]} />
-          <Segmented label="BASEMAP" value={basemap} onChange={(v) => setBasemap(v as Basemap)}
-            options={[["light","Light"],["dark","Dark"],["satellite","Sat"]]} />
-          {years.length > 1 && (
-            <Segmented label="YEAR" value={year} onChange={setYear}
-              options={years.map((y) => [y, y === "all" ? "All" : y]) as [string, string][]} />
-          )}
-          <div className="flex gap-2 pt-1">
-            <button
-              onClick={() => { setSelected(null); mapRef.current?.flyTo([12.5, 122.5], 6, { duration: 0.7 }); }}
-              className="flex-1 rounded-md px-2 py-1.5 text-[11px] font-display tracking-wider"
-              style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)", color: "var(--ink)" }}
-            >RESET</button>
-            <button
-              onClick={() => setFullscreen((f) => !f)}
-              className="flex-1 rounded-md px-2 py-1.5 text-[11px] font-display tracking-wider"
-              style={{ background: "var(--ink)", color: "var(--paper)" }}
-            >{fullscreen ? "EXIT" : "EXPAND"}</button>
-          </div>
+        {/* ── LAYERS button + drawer (top-right) */}
+        <div className="absolute top-4 right-4 z-[400]">
+          <LayersControl metric={metric} setMetric={setMetric} />
         </div>
 
-        {/* Detail card: bottom-left when selected */}
+        {/* ── Selected detail card (top-left) */}
         {selectedData && selected && (
           <div className="absolute top-4 left-4 z-[400] w-[240px] rounded-xl bg-white/95 backdrop-blur p-4 shadow-lg animate-fade-up"
             style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }}>
             <div className="flex items-start justify-between gap-2">
               <div>
-                <div className="font-display text-[10px] tracking-widest" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>SELECTED</div>
+                <div className="font-display text-[10px] tracking-widest" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>SELECTED REGION</div>
                 <div className="font-display text-[20px] mt-0.5" style={{ color: "var(--ink)" }}>{selected}</div>
               </div>
-              <button onClick={() => setSelected(null)} className="text-[16px] leading-none opacity-60 hover:opacity-100" style={{ color: "var(--ink)" }}>×</button>
+              <button onClick={() => setSelected(null)} className="text-[18px] leading-none opacity-60 hover:opacity-100" style={{ color: "var(--ink)" }} aria-label="Close">×</button>
             </div>
             <div className="mt-3 space-y-2 text-[12px]" style={{ fontFamily: "Poppins, sans-serif", color: "var(--ink)" }}>
               <Row label="Total" value={selectedData.total.toLocaleString()} />
@@ -352,59 +330,156 @@ export function PhilippinesMap({
           </div>
         )}
 
-        {/* Legend: bottom-left */}
-        <div className="absolute bottom-4 left-4 z-[400] rounded-xl bg-white/95 backdrop-blur px-3 py-2.5 shadow-lg"
+        {/* ── Legend (bottom-left, single line) */}
+        <div className="absolute bottom-4 left-4 z-[400] rounded-full bg-white/95 backdrop-blur px-3 py-1.5 shadow flex items-center gap-2"
           style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }}>
-          <div className="font-display text-[10px] tracking-widest mb-1.5" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>
-            {metricLabel} · {year === "all" ? "All Years" : year}
+          <div className="h-1.5 w-24 rounded-full" style={{ background: `linear-gradient(90deg, ${PURPLE_RAMP.join(",")})` }} />
+          <span className="text-[11px]" style={{ fontFamily: "Poppins, sans-serif", color: "var(--ink)" }}>
+            {minV.toLocaleString()} – {maxV.toLocaleString()}{metric === "share" ? "%" : ""}
+          </span>
+          <span className="text-[11px] opacity-60" style={{ fontFamily: "Poppins, sans-serif", color: "var(--ink)" }}>
+            · {metricLabel} · {year === "all" ? "All years" : year}
+          </span>
+        </div>
+
+        {/* ── Bottom toolbar (centered) */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[400] flex items-center gap-2 rounded-full bg-white/95 backdrop-blur px-2 py-1.5 shadow-lg"
+          style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }}>
+          {/* mode pills */}
+          <div className="flex items-center gap-1">
+            {([
+              ["bubbles", "Bubbles", "●"],
+              ["choropleth", "Regions", "◆"],
+              ["heat", "Heat", "≋"],
+            ] as [Mode, string, string][]).map(([v, l, g]) => {
+              const active = mode === v;
+              return (
+                <button
+                  key={v}
+                  onClick={() => setMode(v)}
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-display text-[12px] tracking-wide transition-colors"
+                  style={
+                    active
+                      ? { background: "var(--ink)", color: "var(--paper)" }
+                      : { background: "transparent", color: "var(--ink)", opacity: 0.7 }
+                  }
+                >
+                  <span aria-hidden style={{ fontSize: 10 }}>{g}</span>
+                  {l}
+                </button>
+              );
+            })}
           </div>
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-32 rounded" style={{ background: `linear-gradient(90deg, ${PURPLE_RAMP.join(",")})` }} />
-            <span className="text-[10px]" style={{ fontFamily: "Poppins, sans-serif", color: "var(--ink)" }}>
-              {minV.toLocaleString()} → {maxV.toLocaleString()}{metric === "share" ? "%" : ""}
-            </span>
-          </div>
+
+          <span className="h-5 w-px" style={{ background: "color-mix(in oklab, var(--ink) 14%, transparent)" }} />
+
+          {/* dropdowns */}
+          {years.length > 1 && (
+            <PrettySelect
+              label="Year"
+              value={year}
+              onChange={setYear}
+              options={years.map((y) => [y, y === "all" ? "All years" : y])}
+            />
+          )}
+          <PrettySelect
+            label="Map"
+            value={basemap}
+            onChange={(v) => setBasemap(v as Basemap)}
+            options={[["light", "Light"], ["dark", "Dark"], ["satellite", "Satellite"]]}
+          />
+
+          <span className="h-5 w-px" style={{ background: "color-mix(in oklab, var(--ink) 14%, transparent)" }} />
+
+          {/* actions */}
+          <button
+            onClick={() => { setSelected(null); mapRef.current?.flyTo([12.5, 122.5], 6, { duration: 0.7 }); }}
+            className="rounded-full px-3 py-1.5 font-display text-[12px] tracking-wide hover:opacity-100 opacity-70"
+            style={{ color: "var(--ink)" }}
+          >Reset</button>
+          <button
+            onClick={() => setFullscreen((f) => !f)}
+            className="rounded-full px-3 py-1.5 font-display text-[12px] tracking-wide"
+            style={{ background: "var(--ink)", color: "var(--paper)" }}
+          >{fullscreen ? "Exit" : "Expand"}</button>
         </div>
       </div>
+
+      {/* Helper caption beneath the map */}
+      {!fullscreen && (
+        <p className="mt-3 text-center text-[12.5px]" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))", fontFamily: "Poppins, sans-serif" }}>
+          Click an island group for details · Scroll to zoom · Tap <strong style={{ color: "var(--ink)" }}>Layers</strong> for metric options
+        </p>
+      )}
     </>
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function LayersControl({ metric, setMetric }: { metric: Metric; setMetric: (m: Metric) => void }) {
+  const [open, setOpen] = useState(false);
+  const metricLabels: [Metric, string, string][] = [
+    ["total", "Total records", "All records combined"],
+    ["targeted", "Targeted only", "Targeted gene panels"],
+    ["comprehensive", "Comprehensive only", "Comprehensive panels"],
+    ["share", "Regional share", "% of national volume"],
+  ];
   return (
-    <div className="flex items-center justify-between border-b last:border-0 pb-1.5 last:pb-0"
-      style={{ borderColor: "color-mix(in oklab, var(--ink) 10%, transparent)" }}>
-      <span style={{ opacity: 0.6 }}>{label}</span>
-      <span style={{ fontVariantNumeric: "tabular-nums", fontWeight: 600 }}>{value}</span>
+    <div className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="inline-flex items-center gap-2 rounded-full bg-white/95 backdrop-blur px-3.5 py-1.5 font-display text-[12px] tracking-wide shadow"
+        style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)", color: "var(--ink)" }}
+      >
+        <span aria-hidden>⊞</span> Layers
+      </button>
+      {open && (
+        <div className="absolute top-[calc(100%+8px)] right-0 w-[240px] rounded-xl bg-white p-3 shadow-lg animate-fade-up"
+          style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }}>
+          <div className="font-display text-[10px] tracking-widest mb-2" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>METRIC</div>
+          <div className="space-y-1">
+            {metricLabels.map(([v, label, desc]) => {
+              const active = metric === v;
+              return (
+                <button
+                  key={v}
+                  onClick={() => { setMetric(v); setOpen(false); }}
+                  className="w-full text-left rounded-lg px-2.5 py-2 transition-colors"
+                  style={
+                    active
+                      ? { background: "color-mix(in oklab, var(--purple) 12%, transparent)" }
+                      : { background: "transparent" }
+                  }
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: active ? "var(--purple)" : "transparent", border: "1.5px solid var(--purple)" }} />
+                    <span className="font-display text-[13px]" style={{ color: "var(--ink)" }}>{label}</span>
+                  </div>
+                  <div className="ml-[18px] text-[11px] mt-0.5" style={{ fontFamily: "Poppins, sans-serif", color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>{desc}</div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function Segmented({
+function PrettySelect({
   label, value, onChange, options,
 }: { label: string; value: string; onChange: (v: string) => void; options: [string, string][] }) {
   return (
-    <div>
-      <div className="font-display text-[9px] tracking-widest mb-1" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>
-        {label}
-      </div>
-      <div className="flex rounded-md overflow-hidden" style={{ border: "1px solid color-mix(in oklab, var(--ink) 12%, transparent)" }}>
-        {options.map(([v, l]) => {
-          const active = v === value;
-          return (
-            <button
-              key={v}
-              onClick={() => onChange(v)}
-              className="flex-1 px-1.5 py-1 text-[10.5px] font-display tracking-wide transition-colors"
-              style={
-                active
-                  ? { background: "var(--ink)", color: "var(--paper)" }
-                  : { background: "transparent", color: "var(--ink)", opacity: 0.7 }
-              }
-            >{l}</button>
-          );
-        })}
-      </div>
-    </div>
+    <label className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 cursor-pointer"
+      style={{ border: "1px solid color-mix(in oklab, var(--ink) 12%, transparent)" }}>
+      <span className="font-display text-[10px] tracking-widest" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="bg-transparent font-display text-[12px] tracking-wide outline-none cursor-pointer"
+        style={{ color: "var(--ink)" }}
+      >
+        {options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+      </select>
+    </label>
   );
 }
