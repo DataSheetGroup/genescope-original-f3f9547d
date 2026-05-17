@@ -582,13 +582,13 @@ function LayersDrawer(props: {
                 <button
                   key={b}
                   onClick={() => setBasemap(b)}
-                  className="rounded-lg overflow-hidden text-left transition"
-                  style={{
-                    border: active ? "2px solid var(--purple)" : "1px solid color-mix(in oklab, var(--ink) 14%, transparent)",
-                  }}
+                  className="rounded-md px-2 py-2 font-display text-[12px] capitalize transition-colors"
+                  style={active
+                    ? { background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" }
+                    : { background: "transparent", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }
+                  }
                 >
-                  <div className="h-10 w-full" style={{ background: BASEMAPS[b].preview }} />
-                  <div className="px-2 py-1.5 font-display text-[11px] capitalize" style={{ color: "var(--ink)" }}>{b}</div>
+                  {b}
                 </button>
               );
             })}
