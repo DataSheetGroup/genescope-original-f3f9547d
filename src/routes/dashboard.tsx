@@ -109,11 +109,17 @@ function StatCard({
 function Panel({
   title, hint, action, children, className = "",
 }: { title: string; hint?: string; action?: ReactNode; children: ReactNode; className?: string }) {
+  // Highlight the last word of the title (hero-style marker)
+  const words = title.trim().split(" ");
+  const head = words.slice(0, -1).join(" ");
+  const tail = words[words.length - 1];
   return (
     <Card className={`p-7 h-full ${className}`}>
       <div className="mb-5 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="font-display text-[1.05rem] leading-tight" style={{ letterSpacing: "0.02em" }}>{title}</h3>
+          <h3 className="font-display text-[1.15rem] leading-tight" style={{ letterSpacing: "0.02em" }}>
+            {head && <>{head} </>}<span className="hl">{tail}</span>
+          </h3>
           {hint && <p className="mt-1.5 text-sm" style={{ color: MUTED }}>{hint}</p>}
         </div>
         {action && <div className="text-sm" style={{ color: MUTED }}>{action}</div>}
