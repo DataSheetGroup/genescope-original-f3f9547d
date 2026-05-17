@@ -20,8 +20,8 @@ const allLinks = [{ to: "/", label: "Home" }, ...leftLinks, ...rightLinks] as co
 
 function Wordmark() {
   return (
-    <Link to="/" className="font-display text-2xl md:text-[28px] tracking-tight hover:opacity-90 transition-opacity" style={{ color: "var(--nav-fg)" }}>
-      GENESCOPE
+    <Link to="/" className="font-brand text-2xl md:text-[28px] tracking-tight hover:opacity-90 transition-opacity" style={{ color: "var(--nav-fg)" }}>
+      GeneScope
     </Link>
   );
 }
