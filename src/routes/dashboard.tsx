@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getEdaData } from "@/lib/api";
 import { ChartCard } from "@/components/ChartCard";
 import { BackendOfflineNotice } from "@/components/BackendOfflineNotice";
+import { PhilippinesMap } from "@/components/PhilippinesMap";
 import labFlask from "@/assets/illustrations/lab-flask.png";
 import testTube from "@/assets/illustrations/test-tube.png";
 import heartPulse from "@/assets/illustrations/heart-pulse.png";
@@ -222,6 +223,29 @@ function Dashboard() {
                     <YAxis tick={axisTick} />
                     <Tooltip contentStyle={tooltipStyle} />
                     <Bar dataKey="value" fill="var(--coral)" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartCard>
+            </div>
+          </Section>
+
+          <Section title="Geographic Distribution">
+            <div className="grid lg:grid-cols-[1.6fr_1fr] gap-5">
+              <div className="rounded-2xl bg-card text-card-foreground p-4">
+                <div className="mb-3 px-2">
+                  <h3 className="text-sm font-semibold uppercase tracking-wider">Philippines</h3>
+                  <p className="mt-1 text-xs text-card-foreground/65">Testing volume by island group</p>
+                </div>
+                <PhilippinesMap data={data.region_distribution ?? []} />
+              </div>
+              <ChartCard title="Regional Breakdown" description="Counts per island group">
+                <ResponsiveContainer>
+                  <BarChart data={data.region_distribution ?? []} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                    <XAxis type="number" tick={axisTick} />
+                    <YAxis dataKey="name" type="category" tick={axisTick} width={80} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Bar dataKey="value" fill="var(--coral)" radius={[0, 999, 999, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </ChartCard>

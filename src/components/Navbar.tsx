@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { getHealth } from "@/lib/api";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const leftLinks = [
   { to: "/predict", label: "Predict" },
@@ -19,7 +20,7 @@ const allLinks = [{ to: "/", label: "Home" }, ...leftLinks, ...rightLinks] as co
 
 function Wordmark() {
   return (
-    <Link to="/" className="font-display text-2xl md:text-[28px] tracking-tight text-foreground hover:opacity-90 transition-opacity">
+    <Link to="/" className="font-display text-2xl md:text-[28px] tracking-tight hover:opacity-90 transition-opacity" style={{ color: "var(--nav-fg)" }}>
       GENESCOPE
     </Link>
   );
@@ -31,9 +32,10 @@ function NavLink({ to, label, onClick }: { to: string; label: string; onClick?: 
       to={to}
       onClick={onClick}
       activeOptions={{ exact: to === "/" }}
-      activeProps={{ className: "bg-cream text-green-deep" }}
-      inactiveProps={{ className: "text-cream/85 hover:bg-cream hover:text-green-deep" }}
+      activeProps={{ style: { background: "var(--surface-strong)", color: "var(--nav-bg)" } }}
+      inactiveProps={{ className: "opacity-85 hover:opacity-100" }}
       className="rounded-full px-4 py-2 text-[13px] font-semibold uppercase tracking-wider transition-colors"
+      style={{ color: "var(--nav-fg)" }}
     >
       {label}
     </Link>
@@ -51,7 +53,7 @@ export function Navbar() {
   const online = !!data && !isError;
 
   return (
-    <header className="sticky top-0 z-40 bg-green-deep text-cream">
+    <header className="sticky top-0 z-40" style={{ background: "var(--nav-bg)", color: "var(--nav-fg)" }}>
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center h-20 gap-6">
           {/* Left */}
@@ -65,16 +67,19 @@ export function Navbar() {
           </div>
 
           {/* Right */}
-          <div className="hidden md:flex items-center gap-7 justify-end">
+          <div className="hidden md:flex items-center gap-5 justify-end">
             {rightLinks.map((l) => <NavLink key={l.to} {...l} />)}
             <span
-              className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider ${
-                online ? "bg-cream text-green-deep" : "bg-coral text-green-deep"
-              }`}
+              className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider"
+              style={{
+                background: online ? "var(--surface-strong)" : "var(--coral)",
+                color: "var(--nav-bg)",
+              }}
             >
-              <span className={`h-1.5 w-1.5 rounded-full ${online ? "bg-green-deep" : "bg-green-deep"} ${online ? "animate-pulse" : ""}`} />
+              <span className={`h-1.5 w-1.5 rounded-full ${online ? "animate-pulse" : ""}`} style={{ background: "var(--nav-bg)" }} />
               {online ? "Online" : "Offline"}
             </span>
+            <ThemeToggle />
           </div>
 
           {/* Mobile hamburger placed across grid */}
@@ -102,15 +107,15 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
-            <div className="px-4 pt-3">
+            <div className="px-4 pt-3 flex items-center gap-3">
               <span
-                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider ${
-                  online ? "bg-cream text-green-deep" : "bg-coral text-green-deep"
-                }`}
+                className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider"
+                style={{ background: online ? "var(--surface-strong)" : "var(--coral)", color: "var(--nav-bg)" }}
               >
-                <span className={`h-1.5 w-1.5 rounded-full bg-green-deep`} />
+                <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--nav-bg)" }} />
                 {online ? "Model Online" : "Server Offline"}
               </span>
+              <ThemeToggle />
             </div>
           </div>
         )}
