@@ -443,8 +443,8 @@ export function PhilippinesMap({
           <PodChip active={showDots} onClick={() => setShowDots(!showDots)} block>Region dots</PodChip>
         </Pod>
 
-        {/* ── POD: Min threshold (above bottom-left mode area, sticker magnet) */}
-        <Pod className="bottom-20 left-4 w-[220px]">
+        {/* ── POD: Min threshold (bottom-left) */}
+        <Pod className="bottom-5 left-4 w-[220px]">
           <Sticker src={stickerMagnet} />
           <PodLabel>Min</PodLabel>
           <input
@@ -453,19 +453,19 @@ export function PhilippinesMap({
             max={Math.max(1, maxV)}
             value={Math.min(minThreshold, maxV)}
             onChange={(e) => setMinThreshold(Number(e.target.value))}
-            className="flex-1 accent-[var(--ink)]"
+            className="flex-1 accent-[var(--ink)] min-w-0"
           />
           <span className="font-display text-[10.5px] tabular-nums" style={{ color: "var(--ink)" }}>{minThreshold.toLocaleString()}</span>
         </Pod>
 
         {/* ── POD: Year scrubber (bottom-center) */}
         {years.length > 0 && (
-          <Pod className="bottom-5 left-1/2 -translate-x-1/2 max-w-[calc(100%-32px)] overflow-x-auto">
+          <Pod className="bottom-20 left-1/2 -translate-x-1/2 max-w-[calc(100%-32px)] overflow-x-auto">
             <Sticker src={stickerFlaskGreen} />
             <PodLabel>Year</PodLabel>
             <button
               onClick={() => setPlaying(!playing)}
-              className="rounded-md px-2 h-7 font-display text-[11px] transition-colors"
+              className="rounded-md px-2 h-7 font-display text-[11px] transition-colors shrink-0"
               style={playing
                 ? { background: "var(--ink)", color: "var(--paper)" }
                 : { background: "transparent", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}
@@ -477,32 +477,33 @@ export function PhilippinesMap({
           </Pod>
         )}
 
-        {/* ── POD: Zoom (bottom-right inner) */}
-        <Pod className="bottom-5 right-[180px] !px-1 !py-1">
-          <button onClick={() => handleZoom(-1)} title="Zoom out (−)"
-            className="inline-flex items-center justify-center h-7 w-7 font-display text-[15px] leading-none rounded-md hover:bg-[color-mix(in_oklab,var(--ink)_8%,transparent)]"
-            style={{ color: "var(--ink)" }}>−</button>
-          <div className="w-px h-5" style={{ background: "color-mix(in oklab, var(--ink) 14%, transparent)" }} />
-          <button onClick={() => handleZoom(1)} title="Zoom in (+)"
-            className="inline-flex items-center justify-center h-7 w-7 font-display text-[15px] leading-none rounded-md hover:bg-[color-mix(in_oklab,var(--ink)_8%,transparent)]"
-            style={{ color: "var(--ink)" }}>+</button>
-        </Pod>
-
-        {/* ── POD: Reset (bottom-right) */}
-        <Pod className="bottom-5 right-[92px]">
-          <Sticker src={stickerDropper} />
-          <button onClick={handleReset} title="Reset view (R)"
-            className="font-display text-[12px] tracking-wide" style={{ color: "var(--ink)" }}>Reset</button>
-        </Pod>
-
-        {/* ── POD: Fullscreen (bottom-right corner) */}
-        <Pod className="bottom-5 right-4">
-          <Sticker src={stickerMicroscope} />
-          <button onClick={toggleFs} title={fullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
-            className="font-display text-[12px] tracking-wide" style={{ color: "var(--ink)" }}>
-            {fullscreen ? "Exit" : "Fullscreen"}
-          </button>
-        </Pod>
+        {/* ── POD STACK: Zoom + Reset + Fullscreen (bottom-right, auto-spaced) */}
+        <div className="absolute bottom-5 right-4 z-[400] flex items-center gap-1.5">
+          <div className="flex items-center gap-0.5 rounded-xl px-1 py-1"
+            style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
+            <button onClick={() => handleZoom(-1)} title="Zoom out (−)"
+              className="inline-flex items-center justify-center h-7 w-7 font-display text-[15px] leading-none rounded-md hover:bg-[color-mix(in_oklab,var(--ink)_8%,transparent)]"
+              style={{ color: "var(--ink)" }}>−</button>
+            <div className="w-px h-5" style={{ background: "color-mix(in oklab, var(--ink) 14%, transparent)" }} />
+            <button onClick={() => handleZoom(1)} title="Zoom in (+)"
+              className="inline-flex items-center justify-center h-7 w-7 font-display text-[15px] leading-none rounded-md hover:bg-[color-mix(in_oklab,var(--ink)_8%,transparent)]"
+              style={{ color: "var(--ink)" }}>+</button>
+          </div>
+          <div className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5"
+            style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
+            <Sticker src={stickerDropper} />
+            <button onClick={handleReset} title="Reset view (R)"
+              className="font-display text-[12px] tracking-wide whitespace-nowrap" style={{ color: "var(--ink)" }}>Reset</button>
+          </div>
+          <div className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5"
+            style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
+            <Sticker src={stickerMicroscope} />
+            <button onClick={toggleFs} title={fullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
+              className="font-display text-[12px] tracking-wide whitespace-nowrap" style={{ color: "var(--ink)" }}>
+              {fullscreen ? "Exit" : "Fullscreen"}
+            </button>
+          </div>
+        </div>
 
         {/* ── Tiny attribution */}
         <div className="absolute bottom-1 left-2 z-[300] text-[9px] opacity-40 pointer-events-none"
