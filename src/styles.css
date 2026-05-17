@@ -244,7 +244,7 @@ h1:has(.hl), h2:has(.hl), h3:has(.hl) { line-height: 1.15; }
 }
 .pill:hover { transform: translateY(-1px); }
 .pill-coral { background: var(--coral); color: var(--green-deep); }
-.pill-coral:hover { background: oklch(0.78 0.1 12); }
+.pill-coral:hover { background: color-mix(in oklab, var(--purple) 78%, black); }
 .pill-cream { background: var(--cream); color: var(--green-deep); }
 .pill-cream:hover { background: var(--cream-dim); }
 .pill-outline {
