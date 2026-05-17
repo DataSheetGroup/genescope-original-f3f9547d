@@ -47,7 +47,7 @@ function AboutPage() {
             <h1 className="display-lg">
               A thesis built
               <br />
-              <span className="text-coral">with care.</span>
+              <span className="hl">with care.</span>
             </h1>
           </div>
         </div>
@@ -56,7 +56,7 @@ function AboutPage() {
         <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
           <img src={fireFlask} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
           <div className="eyebrow text-coral mb-2">Project</div>
-          <h2 className="font-display text-3xl mb-6">Research information</h2>
+          <h2 className="font-display text-3xl mb-6">Research <span className="hl">information</span></h2>
           <dl>
             <Row k="System" v="GeneScope v1.0" />
             <Row k="Study" v="Predicting Genetic Testing Utilization in the Philippines Using Binary Logistic Regression Through Indicators" />
@@ -81,7 +81,7 @@ function AboutPage() {
         <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
           <img src={heartPulse} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
           <div className="eyebrow text-coral mb-2">Compliance</div>
-          <h2 className="font-display text-3xl mb-6">A clear ethical perimeter</h2>
+          <h2 className="font-display text-3xl mb-6">A clear <span className="hl">ethical perimeter</span></h2>
           <ul className="grid sm:grid-cols-2 gap-3">
             {compliance.map((c) => (
               <li key={c} className="flex items-center gap-3 rounded-2xl bg-cream-dim px-5 py-4 text-sm">

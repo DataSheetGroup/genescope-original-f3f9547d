@@ -51,10 +51,10 @@ type Metric = "total" | "targeted" | "comprehensive" | "share";
 type Basemap = "light" | "dark" | "satellite";
 type IslandName = "Luzon" | "Visayas" | "Mindanao";
 
-const BASEMAPS: Record<Basemap, { url: string; attr: string; preview: string }> = {
-  light:     { url: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", attr: "© OSM © CARTO", preview: "linear-gradient(135deg,#f5f5f5,#e2e2e2)" },
-  dark:      { url: "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",  attr: "© OSM © CARTO", preview: "linear-gradient(135deg,#2a2a35,#0f0f15)" },
-  satellite: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", attr: "Tiles © Esri", preview: "linear-gradient(135deg,#3b5f3a,#1d3a4a)" },
+const BASEMAPS: Record<Basemap, { url: string; attr: string }> = {
+  light:     { url: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", attr: "© OSM © CARTO" },
+  dark:      { url: "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",  attr: "© OSM © CARTO" },
+  satellite: { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", attr: "Tiles © Esri" },
 };
 
 const PURPLE_RAMP = ["#efe7ff", "#cdb6ff", "#a382ff", "#7b4fff", "#5a2bdb"];
@@ -341,8 +341,8 @@ export function PhilippinesMap({
 
         {/* ── Top-left: Selected region detail */}
         {selectedData && selected && (
-          <div className="absolute top-4 left-4 z-[400] w-[270px] rounded-2xl bg-white/95 backdrop-blur p-4 shadow-xl animate-fade-up"
-            style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }}>
+          <div className="absolute top-4 left-4 z-[400] w-[260px] rounded-xl p-4 animate-fade-up"
+            style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
             <div className="flex items-start justify-between gap-2">
               <div>
                 <div className="font-display text-[10px] tracking-widest" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>SELECTED REGION</div>
@@ -376,46 +376,55 @@ export function PhilippinesMap({
           />
         </div>
 
-        {/* ── Bottom-left: Mode switcher */}
-        <div className="absolute bottom-5 left-5 z-[400] flex items-center gap-1 rounded-full bg-white/95 backdrop-blur p-1.5 shadow-xl"
-          style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }}>
+        {/* ── Bottom-left: Mode switcher (flat) */}
+        <div className="absolute bottom-5 left-5 z-[400] flex items-center gap-1 rounded-full p-1"
+          style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
           {([
-            ["bubbles", "Bubbles", "●"],
-            ["choropleth", "Regions", "◆"],
-            ["heat", "Heat", "≋"],
-          ] as [Mode, string, string][]).map(([v, l, g]) => {
+            ["bubbles", "Bubbles"],
+            ["choropleth", "Regions"],
+            ["heat", "Heat"],
+          ] as [Mode, string][]).map(([v, l]) => {
             const active = mode === v;
             return (
               <button
                 key={v}
                 onClick={() => setMode(v)}
                 title={`${l} (shortcut: ${v === "bubbles" ? "1" : v === "choropleth" ? "2" : "3"})`}
-                className="inline-flex items-center gap-2 rounded-full px-4 h-10 font-display text-[13px] tracking-wide transition-colors"
+                className="rounded-full px-3.5 h-9 font-display text-[12.5px] tracking-wide transition-colors"
                 style={active
                   ? { background: "var(--ink)", color: "var(--paper)" }
                   : { background: "transparent", color: "var(--ink)", opacity: 0.75 }
                 }
               >
-                <span aria-hidden style={{ fontSize: 12 }}>{g}</span>
                 {l}
               </button>
             );
           })}
         </div>
 
-        {/* ── Bottom-right: Action stack (zoom + reset + fullscreen) */}
+        {/* ── Bottom-right: Action stack (flat) */}
         <div className="absolute bottom-5 right-5 z-[400] flex items-center gap-1.5">
-          <div className="flex flex-col rounded-full bg-white/95 backdrop-blur shadow-xl overflow-hidden"
-            style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }}>
-            <IconBtn title="Zoom in (+)" onClick={() => handleZoom(1)} label="+" />
-            <div className="h-px w-full" style={{ background: "color-mix(in oklab, var(--ink) 12%, transparent)" }} />
-            <IconBtn title="Zoom out (−)" onClick={() => handleZoom(-1)} label="−" />
+          <div className="flex items-center rounded-full overflow-hidden"
+            style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
+            <FlatBtn title="Zoom out (−)" onClick={() => handleZoom(-1)} label="−" />
+            <div className="w-px h-5" style={{ background: "color-mix(in oklab, var(--ink) 14%, transparent)" }} />
+            <FlatBtn title="Zoom in (+)" onClick={() => handleZoom(1)} label="+" />
           </div>
-          <IconBtn title="Reset view (R)" onClick={handleReset} label="⟲" pill />
-          <IconBtn title={fullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"} onClick={() => setFullscreen((f) => !f)} label={fullscreen ? "⤫" : "⛶"} pill solid />
+          <button
+            onClick={handleReset}
+            title="Reset view (R)"
+            className="rounded-full h-9 px-4 font-display text-[12.5px] tracking-wide"
+            style={{ background: "#fff", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}
+          >Reset</button>
+          <button
+            onClick={() => setFullscreen((f) => !f)}
+            title={fullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
+            className="rounded-full h-9 px-4 font-display text-[12.5px] tracking-wide"
+            style={{ background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" }}
+          >{fullscreen ? "Exit" : "Fullscreen"}</button>
         </div>
 
-        {/* ── Tiny attribution (legal, off-canvas, bottom-right text) */}
+        {/* ── Tiny attribution */}
         <div className="absolute bottom-1 right-2 z-[300] text-[9px] opacity-40 pointer-events-none"
           style={{ color: "var(--ink)", fontFamily: "Poppins, sans-serif" }}>
           {BASEMAPS[basemap].attr}
@@ -441,22 +450,16 @@ const kbd: React.CSSProperties = {
   margin: "0 2px",
 };
 
-function IconBtn({
-  onClick, label, title, solid, pill,
-}: { onClick: () => void; label: string; title: string; solid?: boolean; pill?: boolean }) {
+function FlatBtn({
+  onClick, label, title,
+}: { onClick: () => void; label: string; title: string }) {
   return (
     <button
       onClick={onClick}
       title={title}
       aria-label={title}
-      className={`inline-flex items-center justify-center h-10 w-10 font-display text-[18px] leading-none transition-colors ${pill ? "rounded-full shadow-xl" : ""}`}
-      style={
-        solid
-          ? { background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" }
-          : pill
-          ? { background: "rgba(255,255,255,0.95)", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }
-          : { background: "transparent", color: "var(--ink)" }
-      }
+      className="inline-flex items-center justify-center h-9 w-9 font-display text-[16px] leading-none transition-colors hover:bg-[color-mix(in_oklab,var(--ink)_6%,transparent)]"
+      style={{ background: "transparent", color: "var(--ink)" }}
     >
       {label}
     </button>
@@ -485,8 +488,8 @@ function LayersDrawer(props: {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-full bg-white/95 backdrop-blur px-4 h-10 font-display text-[13px] tracking-wide shadow-xl"
-        style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)", color: "var(--ink)" }}
+        className="inline-flex items-center gap-2 rounded-full px-4 h-9 font-display text-[12.5px] tracking-wide"
+        style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)", color: "var(--ink)" }}
       >
         <span aria-hidden>☰</span> Layers & Filters
       </button>
@@ -500,15 +503,18 @@ function LayersDrawer(props: {
     ["share", "Regional share %"],
   ];
 
+  const chipOn  = { background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" };
+  const chipOff = { background: "transparent", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" };
+
   return (
-    <div className="w-[320px] max-h-[calc(100vh-220px)] overflow-y-auto rounded-2xl bg-white/97 backdrop-blur shadow-2xl animate-fade-up"
-      style={{ border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)" }}>
-      <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: "color-mix(in oklab, var(--ink) 10%, transparent)" }}>
-        <div className="font-display text-[14px] tracking-wide" style={{ color: "var(--ink)" }}>Layers & Filters</div>
+    <div className="w-[280px] max-h-[calc(100vh-220px)] overflow-y-auto rounded-xl animate-fade-up"
+      style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
+      <div className="flex items-center justify-between px-3 py-2.5 border-b" style={{ borderColor: "color-mix(in oklab, var(--ink) 12%, transparent)" }}>
+        <div className="font-display text-[13px] tracking-wide" style={{ color: "var(--ink)" }}>Layers & Filters</div>
         <button onClick={() => setOpen(false)} className="opacity-60 hover:opacity-100 text-[18px] leading-none" style={{ color: "var(--ink)" }} aria-label="Collapse">–</button>
       </div>
 
-      <div className="p-4 space-y-5">
+      <div className="p-3 space-y-4">
         {/* METRIC */}
         <Section label="Metric">
           <div className="grid grid-cols-2 gap-1.5">
@@ -518,24 +524,17 @@ function LayersDrawer(props: {
                 <button
                   key={v}
                   onClick={() => setMetric(v)}
-                  className="text-left rounded-lg px-2.5 py-2 font-display text-[12px] transition-colors"
-                  style={active
-                    ? { background: "var(--ink)", color: "var(--paper)" }
-                    : { background: "color-mix(in oklab, var(--ink) 5%, transparent)", color: "var(--ink)" }
-                  }
+                  className="text-left rounded-md px-2.5 py-2 font-display text-[12px] transition-colors"
+                  style={active ? chipOn : chipOff}
                 >
                   {label}
                 </button>
               );
             })}
           </div>
-          <div className="mt-3">
-            <div className="h-1.5 w-full rounded-full" style={{ background: `linear-gradient(90deg, ${PURPLE_RAMP.join(",")})` }} />
-            <div className="mt-1.5 flex justify-between text-[11px]" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))", fontFamily: "Poppins, sans-serif" }}>
-              <span>{minV.toLocaleString()}{metric === "share" ? "%" : ""}</span>
-              <span>{metricLabel}</span>
-              <span>{maxV.toLocaleString()}{metric === "share" ? "%" : ""}</span>
-            </div>
+          <div className="mt-2.5 flex items-center justify-between text-[11px]" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))", fontFamily: "Poppins, sans-serif" }}>
+            <span>{minV.toLocaleString()}{metric === "share" ? "%" : ""} – {maxV.toLocaleString()}{metric === "share" ? "%" : ""}</span>
+            <span>{metricLabel}</span>
           </div>
         </Section>
 
@@ -545,8 +544,11 @@ function LayersDrawer(props: {
             action={
               <button
                 onClick={() => setPlaying(!playing)}
-                className="rounded-full px-2.5 py-1 font-display text-[11px]"
-                style={{ background: playing ? "var(--purple)" : "color-mix(in oklab, var(--ink) 6%, transparent)", color: playing ? "white" : "var(--ink)" }}
+                className="rounded-full px-2.5 py-1 font-display text-[11px] transition-colors"
+                style={playing
+                  ? { background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" }
+                  : { background: "transparent", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }
+                }
                 title="Auto-cycle years"
               >
                 {playing ? "❚❚ Pause" : "▶ Play"}
@@ -559,11 +561,8 @@ function LayersDrawer(props: {
                   <button
                     key={y}
                     onClick={() => setYear(y)}
-                    className="rounded-full px-3 py-1.5 font-display text-[12px] transition-colors"
-                    style={active
-                      ? { background: "var(--purple)", color: "white" }
-                      : { background: "color-mix(in oklab, var(--ink) 5%, transparent)", color: "var(--ink)" }
-                    }
+                    className="rounded-full px-3 py-1 font-display text-[12px] transition-colors"
+                    style={active ? chipOn : chipOff}
                   >
                     {y === "all" ? "All" : y}
                   </button>
@@ -582,13 +581,10 @@ function LayersDrawer(props: {
                 <button
                   key={b}
                   onClick={() => setBasemap(b)}
-                  className="rounded-lg overflow-hidden text-left transition"
-                  style={{
-                    border: active ? "2px solid var(--purple)" : "1px solid color-mix(in oklab, var(--ink) 14%, transparent)",
-                  }}
+                  className="rounded-md px-2 py-1.5 font-display text-[12px] capitalize transition-colors"
+                  style={active ? chipOn : chipOff}
                 >
-                  <div className="h-10 w-full" style={{ background: BASEMAPS[b].preview }} />
-                  <div className="px-2 py-1.5 font-display text-[11px] capitalize" style={{ color: "var(--ink)" }}>{b}</div>
+                  {b}
                 </button>
               );
             })}
@@ -605,10 +601,7 @@ function LayersDrawer(props: {
                   key={n}
                   onClick={() => setIslandsOn({ ...islandsOn, [n]: !on })}
                   className="flex-1 rounded-full px-2 py-1.5 font-display text-[12px] transition-colors"
-                  style={on
-                    ? { background: "var(--ink)", color: "var(--paper)" }
-                    : { background: "transparent", color: "var(--ink)", opacity: 0.5, border: "1px dashed color-mix(in oklab, var(--ink) 25%, transparent)" }
-                  }
+                  style={on ? chipOn : chipOff}
                 >
                   {n}
                 </button>
@@ -618,22 +611,31 @@ function LayersDrawer(props: {
         </Section>
 
         {/* MIN THRESHOLD */}
-        <Section label={`Minimum value: ${minThreshold.toLocaleString()}`}>
+        <Section label="Min value"
+          action={<span className="font-display text-[11px] tabular-nums" style={{ color: "var(--ink)" }}>{minThreshold.toLocaleString()}</span>}>
           <input
             type="range"
             min={0}
             max={Math.max(1, maxV)}
             value={Math.min(minThreshold, maxV)}
             onChange={(e) => setMinThreshold(Number(e.target.value))}
-            className="w-full accent-[var(--purple)]"
+            className="w-full accent-[var(--ink)]"
           />
         </Section>
 
-        {/* TOGGLES */}
+        {/* DISPLAY (inline chips) */}
         <Section label="Display">
-          <div className="space-y-2">
-            <Toggle label="Show bubble labels" checked={showLabels} onChange={setShowLabels} />
-            <Toggle label="Show 17-region dots" checked={showDots} onChange={setShowDots} />
+          <div className="flex flex-wrap gap-1.5">
+            <button
+              onClick={() => setShowLabels(!showLabels)}
+              className="rounded-full px-3 py-1 font-display text-[12px] transition-colors"
+              style={showLabels ? chipOn : chipOff}
+            >Labels</button>
+            <button
+              onClick={() => setShowDots(!showDots)}
+              className="rounded-full px-3 py-1 font-display text-[12px] transition-colors"
+              style={showDots ? chipOn : chipOff}
+            >Region dots</button>
           </div>
         </Section>
       </div>
@@ -650,23 +652,6 @@ function Section({ label, action, children }: { label: string; action?: React.Re
       </div>
       {children}
     </div>
-  );
-}
-
-function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (b: boolean) => void }) {
-  return (
-    <button
-      onClick={() => onChange(!checked)}
-      className="w-full flex items-center justify-between text-left rounded-lg px-2 py-1.5 transition-colors"
-      style={{ background: "color-mix(in oklab, var(--ink) 4%, transparent)" }}
-    >
-      <span className="font-display text-[12px]" style={{ color: "var(--ink)" }}>{label}</span>
-      <span className="relative inline-block w-9 h-5 rounded-full transition-colors"
-        style={{ background: checked ? "var(--purple)" : "color-mix(in oklab, var(--ink) 20%, transparent)" }}>
-        <span className="absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all shadow"
-          style={{ left: checked ? 18 : 2 }} />
-      </span>
-    </button>
   );
 }
 

@@ -166,7 +166,7 @@ function PerformancePage() {
             <h1 className="display-lg">
               Three models,
               <br />
-              <span className="text-coral">one chosen for the job.</span>
+              <span className="hl">one chosen for the job.</span>
             </h1>
             <p className="mt-5 text-foreground/75">
               Comparative evaluation of Binary Logistic Regression, Decision Tree, and Random Forest.
@@ -181,7 +181,7 @@ function PerformancePage() {
         <div className="relative">
           <div className="eyebrow text-coral mb-3">Primary model</div>
           <h2 className="display-md">
-            Binary <span className="text-coral">Logistic Regression</span>
+            Binary <span className="hl">Logistic Regression</span>
           </h2>
           <p className="mt-5 max-w-3xl leading-relaxed">
             Binary Logistic Regression is the primary prediction model of this study.
@@ -198,7 +198,7 @@ function PerformancePage() {
       <div className="rounded-3xl bg-card text-card-foreground overflow-hidden">
         <div className="px-7 py-5 border-b border-card-foreground/10">
           <div className="eyebrow text-coral mb-1">Comparison</div>
-          <h2 className="font-display text-2xl">All five metrics, side by side</h2>
+          <h2 className="font-display text-2xl">All five metrics, side by <span className="hl">side</span></h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -300,7 +300,7 @@ function PerformancePage() {
       <div className="grid md:grid-cols-2 gap-5">
         <div className="rounded-3xl bg-card text-card-foreground p-7">
           <div className="eyebrow text-coral mb-2">Cross validation</div>
-          <h2 className="font-display text-2xl">5-Fold Mean ± SD</h2>
+          <h2 className="font-display text-2xl">5-Fold Mean ± <span className="hl">SD</span></h2>
           <div className="mt-5 space-y-2.5">
             {models.map((m) => (
               <div key={m.name} className="flex items-center justify-between rounded-2xl bg-cream-dim px-5 py-4">
@@ -316,7 +316,7 @@ function PerformancePage() {
 
         <div className="rounded-3xl bg-card text-card-foreground p-7">
           <div className="eyebrow text-coral mb-2">Quality assurance</div>
-          <h2 className="font-display text-2xl">Testing methods</h2>
+          <h2 className="font-display text-2xl">Testing <span className="hl">methods</span></h2>
           <ul className="mt-5 space-y-2.5">
             {[
               "White Box Testing",

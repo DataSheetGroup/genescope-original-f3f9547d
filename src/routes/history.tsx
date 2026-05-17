@@ -64,7 +64,7 @@ function HistoryPage() {
             <h1 className="display-lg">
               Every prediction,
               <br />
-              <span className="text-coral">accountable.</span>
+              <span className="hl">accountable.</span>
             </h1>
           </div>
         </div>
