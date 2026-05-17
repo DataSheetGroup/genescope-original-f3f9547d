@@ -1,114 +1,70 @@
-## Goals
+# Plan: Map polish, heading highlights, kill pink hover
 
-1. Replace **every** `@iconify` "fluent-emoji-flat" icon on the dashboard with the 8 uploaded lab/science stickers.
-2. Redesign the Philippines map controls so they're easier to scan and use — fewer dense segmented rows, more obvious labels, and a collapsible panel so the map breathes.
+## 1. Fix the lingering pink hover (`src/styles.css`)
 
----
+`--coral` was rethemed to `--purple`, but two hovers still hard-code pink:
+- L247: `.pill-coral:hover { background: oklch(0.78 0.1 12); }` → change to a darker purple (e.g. `color-mix(in oklab, var(--purple) 80%, black)`).
+- L291: `*::-webkit-scrollbar-thumb:hover` → same purple-dark mix.
 
-## 1. Sticker assets
+## 2. Section heading highlights (match hero `.hl`)
 
-Copy the 8 user-uploaded PNGs into `src/assets/stickers/` and import them as ES modules:
+Currently only the landing hero uses `<span className="hl">…</span>`. Other section headings (dashboard `h1`, About, History, Performance, Predict, plus the inner section titles inside each dashboard tab) use plain inline color.
 
-```text
-src/assets/stickers/
-  microscope.png   ← microscope-removebg-preview-2.png
-  molecule.png     ← amino-removebg-preview-2.png
-  flask-purple.png ← purple-removebg-preview-2.png
-  flask-green.png  ← green-removebg-preview-2.png
-  potion-blue.png  ← fire-removebg-preview-3.png
-  dropper.png      ← drop-removebg-preview-3.png
-  magnet.png       ← magnet-removebg-preview-2.png
-  goggles.png      ← glasses-removebg-preview-3.png
-```
+- Update `src/routes/dashboard.tsx` L207: wrap "a glance." in `<span className="hl">` instead of inline `color: ACCENT`.
+- Audit `src/routes/{about,history,performance,predict}.tsx` and the inner tab headings (`OverviewTab`, `GeographicTab`, etc.) and wrap the accent word(s) of each `h1`/`h2` in `<span className="hl">`.
+- Also update `src/components/SectionHeader.tsx` so the `title` prop can accept JSX (already does) — no code change, just consistent usage.
+- Verify `.hl` token in `styles.css` reads well on both cream and white backgrounds; if needed, add a `.hl-soft` variant using `color-mix(in oklab, var(--purple) 35%, var(--paper))` for dashboard headings on white.
 
-## 2. Sticker mapping (every emoji → a sticker)
+## 3. Map overhaul (`src/components/PhilippinesMap.tsx`)
 
-In `src/routes/dashboard.tsx`, replace the `Sticker` helper so it maps semantic names → imported PNGs:
+### Remove visual clutter
+- **Hide Leaflet attribution**: pass `attribution=""` to `TileLayer` and add `attributionControl={false}` to `MapContainer` (or render `.leaflet-control-attribution { display:none }` scoped to the map wrapper). Add a tiny "Map data © OSM/CARTO" line into the page footer instead (legal compliance, off-canvas).
+- **Remove the bottom-left legend ribbon** ("7 – 77 · Targeted · All years"). Move the min–max gradient into the new Layers panel as a passive caption under the active metric.
 
-```ts
-type StickerName =
-  | "records" | "calendar" | "regions" | "dna"
-  | "overview" | "geographic" | "demographic" | "institutional" | "temporal"
-  | "search" | "filters"
-  | "trophy" | "coverage" | "patients" | "female" | "male"
-  | "hospital" | "public" | "private" | "growth";
-```
-
-Mapping (re-uses the 8 stickers thoughtfully — labs/genetics theme):
-
-| Use case (current icon)                    | Sticker        |
-|---                                          |---             |
-| TOTAL RECORDS / TOTAL TESTS / CUMULATIVE   | microscope     |
-| YEAR COVERAGE                               | flask-green    |
-| REGIONS / TOP REGION / COVERAGE / map tab  | potion-blue    |
-| DISEASE CATEGORIES                          | molecule       |
-| Overview tab                                | microscope     |
-| Demographic tab / TOTAL PATIENTS            | molecule       |
-| FEMALE SHARE                                | flask-purple   |
-| MALE SHARE                                  | flask-green    |
-| Institutional tab / FACILITY TYPES / hospital | goggles      |
-| PUBLIC                                      | flask-green    |
-| PRIVATE                                     | flask-purple   |
-| Temporal tab / GROWTH / chart-increasing   | dropper        |
-| PEAK YEAR / TOP REGION trophy               | flask-purple   |
-| Header search input                         | magnet         |
-| Header "Filters" button                     | dropper        |
-
-Update every `<StatCard icon="…">` call and the `TABS` array to use the new semantic names.
-
-## 3. Cleaner, friendlier map controls (`PhilippinesMap.tsx`)
-
-Replace the current dense top-right panel (4 stacked segmented controls + 2 buttons, ~260px tall) with a much calmer two-piece UI:
-
-### Toolbar — bottom-center, pill-shaped
-
-A single horizontal toolbar that hovers above the bottom of the map:
+### Bigger, cleaner, more usable controls
+Replace the current cramped bottom pill toolbar with a two-zone layout:
 
 ```text
-┌──────────────────────────────────────────────────────────────────────┐
-│  [● Bubbles] [◇ Choropleth] [≋ Heat]    │    Year: [ All ▾ ]         │
-│                                          │    Map:  [ Light ▾ ]       │
-│                       [ Reset ]  [ ⤢ Expand ]                        │
-└──────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│ [Selected]                          [☰ Layers & Filters]
+│                                              
+│              MAP                             
+│                                              
+│ [● Bubbles] [◆ Regions] [≋ Heat]    [⛶]      
+└─────────────────────────────────────────────┘
 ```
 
-- Visualization mode = 3 clearly-labeled pill buttons with small inline icons (active pill filled with `--ink`, inactive transparent). This is the most important control, so it gets the most space.
-- Year + Basemap collapse into compact native-styled dropdowns (real `<select>` for accessibility, restyled to match the card hairlines). Year dropdown is hidden when `regionByYear` is empty.
-- Reset + Expand are right-aligned ghost buttons.
-- Metric switcher (Total / Targeted / Comprehensive / Share) moves into a **secondary "Layers"** drawer (see below) — most users never need it, so it shouldn't crowd the primary toolbar.
+- **Bottom-left mode switcher**: large 40px-tall segmented control, 14px display font, icon + label, clear active state (filled ink, white text). Three modes stay.
+- **Bottom-right floating action stack**: Reset (home icon), Fullscreen (expand icon), Zoom +/− (replace Leaflet's tiny default with custom 40px buttons). All same visual language.
+- **Top-right "Layers & Filters" drawer (expanded by default on desktop ≥1024px, collapsed on mobile)**: a 300px wide card containing
+  - **Metric** (radio list of 4, with sticker icons): Total / Targeted / Comprehensive / Share
+  - **Year** (chip row: All · 2021 · 2022 · 2023 · 2024 · 2025) — replaces the tiny `<select>`
+  - **Basemap** (3 visual swatches: Light / Dark / Satellite) — replaces the tiny `<select>`
+  - **NEW Region filter** (multi-select: Luzon / Visayas / Mindanao) — dims unselected island groups
+  - **NEW Test-type filter** (Targeted / Comprehensive toggles for bubble sizing)
+  - **NEW Min value slider** — hide islands below a threshold
+  - **NEW Label toggle** — show/hide permanent labels on bubbles
+  - **NEW Region dots toggle** — show/hide the 17-region context dots
+  - Passive caption at bottom of drawer: gradient bar with min–max for the active metric
+- **Top-left Selected Region card**: keep, slightly larger (260px), with sticker.
 
-### Layers drawer — top-right, collapsible
+### New interactive features
+- **Hover halo**: islands lift/scale on hover (CSS on Leaflet path via class).
+- **Compare mode toggle**: split-screen overlay of two years (year A vs year B) — bubble sizes shown side by side.
+- **Animated year scrubber** (optional play/pause button next to the year chips): auto-cycles through 2021→2025 with 1.2s/frame.
+- **Export PNG button** in the action stack (uses `leaflet-image` or `html-to-image`; if adding deps is undesirable, use `domtoimage` via `bun add dom-to-image-more`).
+- **Keyboard shortcuts**: `1/2/3` for modes, `F` fullscreen, `R` reset, `←/→` cycle years. Show a `?` help popover listing them.
+- **Tooltip upgrade**: on bubble hover, show a mini stat block (Total / Targeted / Comprehensive / Share) instead of a single number.
 
-Single small button labeled `LAYERS` in the top-right. Clicking it slides out a clean panel containing:
-- Metric switcher (4 options, as a vertical radio list with descriptions like "Total records" / "Targeted only").
-- Closed by default → map looks calm and uncluttered. Persists during the session via local component state.
-
-### Detail card
-
-Keep the "selected region" card but move it to **top-left** with friendlier copy and a small sticker (potion-blue) in the header so it visually ties to the map.
-
-### Legend
-
-Keep at bottom-left, but shrink it to a single line: `[gradient bar] 0 — 184  ·  Total records · All years` so it reads as a caption, not a panel.
-
-### Affordances
-
-- Add a subtle one-line helper *under* the map ("Click an island group for details · scroll to zoom") so users know what's interactive — replaces having to discover via the dense panel.
-- Bump map height from `600px` to `640px` on desktop now that floating UI is lighter.
-
-### What's removed
-
-- The 260px floating control card.
-- The cramped 11px font in segmented controls.
-- Two of the segmented rows (Metric moves to drawer; nothing else changes behavior).
-
-## 4. Files touched
-
-- `src/routes/dashboard.tsx` — swap `Sticker` helper to import PNGs, rename every `icon=` prop, replace the two header `<Icon>` calls.
-- `src/components/PhilippinesMap.tsx` — replace top-right control panel with bottom toolbar + collapsible Layers drawer; relocate detail card; shrink legend; add helper caption.
-- `src/assets/stickers/*.png` — 8 copied PNG files.
+### Type/font consistency
+- Display font (Anton) for control labels, Poppins tabular-nums for numbers, all controls 13–14px (was 10–12px).
 
 ## Out of scope
+- Backend/data layer, other dashboard tabs' charts, navbar, color tokens beyond the two hover fixes.
 
-- Color tokens, fonts, navbar, other tabs' charts, data layer, backend.
-- No new dependencies.
+## Files touched
+- `src/styles.css` — 2 hover lines, optional `.hl-soft` variant.
+- `src/components/PhilippinesMap.tsx` — full controls refactor + new features.
+- `src/routes/dashboard.tsx` — `<span className="hl">` wrap on tab/section headings.
+- `src/routes/{about,history,performance,predict}.tsx` — `.hl` wrap on hero/section headings.
+- `package.json` — possibly `dom-to-image-more` if Export PNG is kept.
