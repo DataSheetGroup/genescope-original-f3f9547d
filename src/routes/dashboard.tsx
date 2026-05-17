@@ -252,6 +252,7 @@ function Dashboard() {
             </div>
           </Section>
 
+          <Section title="Comparative">
             <div className="grid lg:grid-cols-2 gap-5">
               {[
                 { title: "Sex vs Test Type", d: data.sex_vs_test },
