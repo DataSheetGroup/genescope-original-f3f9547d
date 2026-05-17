@@ -1,70 +1,57 @@
-# Plan: Map polish, heading highlights, kill pink hover
+# Plan: Highlight headings everywhere + simpler flat map controls
 
-## 1. Fix the lingering pink hover (`src/styles.css`)
+## 1. `.hl` highlight on all route headings
 
-`--coral` was rethemed to `--purple`, but two hovers still hard-code pink:
-- L247: `.pill-coral:hover { background: oklch(0.78 0.1 12); }` → change to a darker purple (e.g. `color-mix(in oklab, var(--purple) 80%, black)`).
-- L291: `*::-webkit-scrollbar-thumb:hover` → same purple-dark mix.
+Several routes still use `text-coral` (plain colored text) for the accent word instead of the hero-style `.hl` marker block. Swap them so every page matches the hero treatment.
 
-## 2. Section heading highlights (match hero `.hl`)
+**`src/routes/about.tsx`**
+- L50: `<span className="text-coral">with care.</span>` → `<span className="hl">with care.</span>`
+- L59: wrap "information" in `.hl` → `Research <span className="hl">information</span>`
+- L84: wrap "ethical perimeter" in `.hl`
 
-Currently only the landing hero uses `<span className="hl">…</span>`. Other section headings (dashboard `h1`, About, History, Performance, Predict, plus the inner section titles inside each dashboard tab) use plain inline color.
+**`src/routes/history.tsx`**
+- L67: `text-coral` → `hl` on "accountable."
 
-- Update `src/routes/dashboard.tsx` L207: wrap "a glance." in `<span className="hl">` instead of inline `color: ACCENT`.
-- Audit `src/routes/{about,history,performance,predict}.tsx` and the inner tab headings (`OverviewTab`, `GeographicTab`, etc.) and wrap the accent word(s) of each `h1`/`h2` in `<span className="hl">`.
-- Also update `src/components/SectionHeader.tsx` so the `title` prop can accept JSX (already does) — no code change, just consistent usage.
-- Verify `.hl` token in `styles.css` reads well on both cream and white backgrounds; if needed, add a `.hl-soft` variant using `color-mix(in oklab, var(--purple) 35%, var(--paper))` for dashboard headings on white.
+**`src/routes/performance.tsx`**
+- L169: `text-coral` → `hl` on "one chosen for the job."
+- L184: `text-coral` → `hl` on "Logistic Regression"
+- L201, L303, L319: wrap the last 1–2 words of each `<h2>` in `.hl` (e.g. `…side by <span className="hl">side</span>`, `5-Fold Mean ± <span className="hl">SD</span>`, `Testing <span className="hl">methods</span>`).
 
-## 3. Map overhaul (`src/components/PhilippinesMap.tsx`)
+**`src/routes/predict.tsx`**
+- L305 `<h3 className="display-md">`: wrap the prediction text (or its last word) in `.hl`.
+- L328: wrap "prediction" in `.hl`.
 
-### Remove visual clutter
-- **Hide Leaflet attribution**: pass `attribution=""` to `TileLayer` and add `attributionControl={false}` to `MapContainer` (or render `.leaflet-control-attribution { display:none }` scoped to the map wrapper). Add a tiny "Map data © OSM/CARTO" line into the page footer instead (legal compliance, off-canvas).
-- **Remove the bottom-left legend ribbon** ("7 – 77 · Targeted · All years"). Move the min–max gradient into the new Layers panel as a passive caption under the active metric.
+No new tokens needed — `.hl` already exists and now uses purple.
 
-### Bigger, cleaner, more usable controls
-Replace the current cramped bottom pill toolbar with a two-zone layout:
+## 2. Simpler, flatter map controls (`src/components/PhilippinesMap.tsx`)
 
-```text
-┌─────────────────────────────────────────────┐
-│ [Selected]                          [☰ Layers & Filters]
-│                                              
-│              MAP                             
-│                                              
-│ [● Bubbles] [◆ Regions] [≋ Heat]    [⛶]      
-└─────────────────────────────────────────────┘
-```
+User wants cleaner controls and **no gradient color**. Strip every gradient/translucent treatment and move to a flat, single-tone surface.
 
-- **Bottom-left mode switcher**: large 40px-tall segmented control, 14px display font, icon + label, clear active state (filled ink, white text). Three modes stay.
-- **Bottom-right floating action stack**: Reset (home icon), Fullscreen (expand icon), Zoom +/− (replace Leaflet's tiny default with custom 40px buttons). All same visual language.
-- **Top-right "Layers & Filters" drawer (expanded by default on desktop ≥1024px, collapsed on mobile)**: a 300px wide card containing
-  - **Metric** (radio list of 4, with sticker icons): Total / Targeted / Comprehensive / Share
-  - **Year** (chip row: All · 2021 · 2022 · 2023 · 2024 · 2025) — replaces the tiny `<select>`
-  - **Basemap** (3 visual swatches: Light / Dark / Satellite) — replaces the tiny `<select>`
-  - **NEW Region filter** (multi-select: Luzon / Visayas / Mindanao) — dims unselected island groups
-  - **NEW Test-type filter** (Targeted / Comprehensive toggles for bubble sizing)
-  - **NEW Min value slider** — hide islands below a threshold
-  - **NEW Label toggle** — show/hide permanent labels on bubbles
-  - **NEW Region dots toggle** — show/hide the 17-region context dots
-  - Passive caption at bottom of drawer: gradient bar with min–max for the active metric
-- **Top-left Selected Region card**: keep, slightly larger (260px), with sticker.
+### Surface treatment
+- Remove `bg-white/95 backdrop-blur` on every floating panel → use solid `background: var(--paper)` (off-white).
+- Remove `shadow-xl` / `shadow-2xl` → use a single hairline border only.
+- Remove the purple metric ramp `linear-gradient(90deg, ...)` swatch in the Layers drawer. Replace with a single-line caption: `"{minV} – {maxV}  ·  {metricLabel}"` in muted text. No color bar.
+- Remove the gradient previews on the basemap swatches (`preview: "linear-gradient(...)"`). Replace with plain labeled buttons (3 text pills): Light / Dark / Satellite. Active = filled ink, inactive = bordered.
 
-### New interactive features
-- **Hover halo**: islands lift/scale on hover (CSS on Leaflet path via class).
-- **Compare mode toggle**: split-screen overlay of two years (year A vs year B) — bubble sizes shown side by side.
-- **Animated year scrubber** (optional play/pause button next to the year chips): auto-cycles through 2021→2025 with 1.2s/frame.
-- **Export PNG button** in the action stack (uses `leaflet-image` or `html-to-image`; if adding deps is undesirable, use `domtoimage` via `bun add dom-to-image-more`).
-- **Keyboard shortcuts**: `1/2/3` for modes, `F` fullscreen, `R` reset, `←/→` cycle years. Show a `?` help popover listing them.
-- **Tooltip upgrade**: on bubble hover, show a mini stat block (Total / Targeted / Comprehensive / Share) instead of a single number.
+### Layout simplification
+- Collapse the Layers & Filters drawer to **5 sections** (down from 6) by merging "Display" toggles into a single inline row at the bottom: `[Labels] [Region dots]` as small flat chips.
+- Replace the custom `Toggle` switch with a flat chip-style on/off button (purple-filled when on, hairline-bordered when off). No animated knob.
+- Reduce drawer width 320 → 280; reduce internal padding 16 → 12.
+- Drop the min-threshold slider header value (`"Minimum value: 1,234"`) and use a simpler `"Min value"` label with the number to the right.
 
-### Type/font consistency
-- Display font (Anton) for control labels, Poppins tabular-nums for numbers, all controls 13–14px (was 10–12px).
+### Bottom controls
+- Bottom-left mode switcher: keep 3 pills but flatten — remove backdrop-blur, single hairline border, smaller height (36 px), no symbol glyphs (just labels). Active = filled ink, inactive = transparent.
+- Bottom-right action stack: flatten zoom in/out into a single horizontal pill `[ − | + ]`, and put Reset and Fullscreen as two adjacent text buttons (`Reset`, `Fullscreen`). All same hairline-bordered paper surface, no shadows.
+
+### Selected region card
+- Solid paper background, hairline border, no shadow, no backdrop blur.
+
+### Keep as-is
+- Keyboard shortcuts, play/pause year scrubber, island toggles, label/dot toggles, hidden Leaflet attribution.
 
 ## Out of scope
-- Backend/data layer, other dashboard tabs' charts, navbar, color tokens beyond the two hover fixes.
+- Data layer, dashboard tabs other than headings, navbar, color tokens, removal of map features (compare mode is not being added).
 
 ## Files touched
-- `src/styles.css` — 2 hover lines, optional `.hl-soft` variant.
-- `src/components/PhilippinesMap.tsx` — full controls refactor + new features.
-- `src/routes/dashboard.tsx` — `<span className="hl">` wrap on tab/section headings.
-- `src/routes/{about,history,performance,predict}.tsx` — `.hl` wrap on hero/section headings.
-- `package.json` — possibly `dom-to-image-more` if Export PNG is kept.
+- `src/routes/about.tsx`, `src/routes/history.tsx`, `src/routes/performance.tsx`, `src/routes/predict.tsx` — swap `text-coral` accents for `.hl`, wrap remaining h2/h3 accent words.
+- `src/components/PhilippinesMap.tsx` — strip gradients/shadows/blur, flatten controls, simplify drawer.

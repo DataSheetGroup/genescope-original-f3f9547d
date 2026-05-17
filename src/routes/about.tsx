@@ -47,7 +47,7 @@ function AboutPage() {
             <h1 className="display-lg">
               A thesis built
               <br />
-              <span className="text-coral">with care.</span>
+              <span className="hl">with care.</span>
             </h1>
           </div>
         </div>
