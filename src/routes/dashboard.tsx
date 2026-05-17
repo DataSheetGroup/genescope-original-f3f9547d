@@ -216,7 +216,7 @@ function Dashboard() {
               className="flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-base"
               style={{ border: `1px solid ${HAIRLINE}`, color: INK }}
             >
-              <Icon icon="fluent-emoji-flat:magnifying-glass-tilted-left" width={18} height={18} />
+              <Sticker name="magnet" size={20} />
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
@@ -228,7 +228,7 @@ function Dashboard() {
               className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 font-display text-[13px]"
               style={{ border: `1px solid ${HAIRLINE}`, color: INK, letterSpacing: "0.03em" }}
             >
-              <Icon icon="fluent-emoji-flat:control-knobs" width={18} height={18} />
+              <Sticker name="dropper" size={20} />
               Filters
             </button>
           </div>
