@@ -302,7 +302,7 @@ function PredictPage() {
           <div className="mt-6 rounded-[2rem] bg-card text-card-foreground p-7 md:p-10 relative overflow-hidden">
             <img src={testTube} alt="" className="hidden md:block absolute right-6 top-6 w-20 opacity-80" />
             <StepBadge n={3} label="What this means" />
-            <h3 className="display-md mb-5">{result.prediction}</h3>
+            <h3 className="display-md mb-5"><span className="hl">{result.prediction}</span></h3>
             <div className="grid md:grid-cols-2 gap-8">
               <p className="text-base leading-relaxed">{info.definition}</p>
               <div>
