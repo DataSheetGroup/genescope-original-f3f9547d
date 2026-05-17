@@ -210,7 +210,7 @@ function PredictPage() {
                     value={form[f.key] ?? ""}
                     onValueChange={(v) => setForm((p) => ({ ...p, [f.key]: v }))}
                   >
-                    <SelectTrigger className="w-full max-w-[170px] rounded-full bg-cream-dim h-10 px-4 text-sm font-semibold border-[2.5px] border-[var(--purple)] hover:border-[var(--purple-deep)] focus:border-[var(--purple-deep)] transition-colors">
+                    <SelectTrigger className="w-[200px] max-w-full rounded-full bg-cream-dim h-10 px-4 text-sm font-semibold border-[2.5px] border-[var(--purple)] hover:border-[var(--purple-deep)] focus:border-[var(--purple-deep)] transition-colors">
                       <SelectValue placeholder="Select…" />
                     </SelectTrigger>
                     <SelectContent>
