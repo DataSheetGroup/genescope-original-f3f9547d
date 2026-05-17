@@ -331,24 +331,25 @@ function GeographicTab({ data, query }: { data: any; query: string }) {
         <StatCard icon="card-index-dividers" label="TOTAL TESTS" value={total.toLocaleString()} sub="Across all regions" />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-12 auto-rows-fr">
-        <Panel title="Philippines" hint="Testing volume by island group" className="lg:col-span-7">
-          <PhilippinesMap data={regions} />
-        </Panel>
-        <Panel title="Regional Breakdown" hint="Counts per island group" className="lg:col-span-5">
-          <ChartBox>
-            <ResponsiveContainer>
-              <BarChart data={filtered} layout="vertical" margin={{ ...chartMargin, left: 10 }}>
-                <CartesianGrid stroke={GRID} horizontal={false} />
-                <XAxis type="number" tick={axisTick} axisLine={false} tickLine={false} />
-                <YAxis dataKey="name" type="category" tick={axisTick} width={110} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={tooltipStyle} />
-                <Bar dataKey="value" fill={ACCENT} radius={[0, 6, 6, 0]} barSize={22} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartBox>
-        </Panel>
-      </div>
+      <PhilippinesMap
+        data={regions}
+        regionByTest={data.region_vs_test ?? []}
+        regionByYear={data.region_by_year ?? []}
+      />
+
+      <Panel title="Regional Breakdown" hint="Counts per island group">
+        <ChartBox>
+          <ResponsiveContainer>
+            <BarChart data={filtered} layout="vertical" margin={{ ...chartMargin, left: 20 }}>
+              <CartesianGrid stroke={GRID} horizontal={false} />
+              <XAxis type="number" tick={axisTick} axisLine={false} tickLine={false} />
+              <YAxis dataKey="name" type="category" tick={axisTick} width={130} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Bar dataKey="value" fill={ACCENT} radius={[0, 6, 6, 0]} barSize={26} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartBox>
+      </Panel>
 
       <Panel title="Region × Test Type" hint="Which test types dominate in each region">
         <ChartBox>
