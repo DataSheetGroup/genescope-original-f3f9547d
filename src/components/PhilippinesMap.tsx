@@ -382,73 +382,130 @@ export function PhilippinesMap({
           </div>
         )}
 
-        {/* ── Top-right: Layers & Filters drawer */}
-        <div className="absolute top-4 right-4 z-[400]">
-          <LayersDrawer
-            open={drawerOpen}
-            setOpen={setDrawerOpen}
-            metric={metric} setMetric={setMetric}
-            year={year} setYear={setYear} years={years}
-            playing={playing} setPlaying={setPlaying}
-            basemap={basemap} setBasemap={setBasemap}
-            islandsOn={islandsOn} setIslandsOn={setIslandsOn}
-            showLabels={showLabels} setShowLabels={setShowLabels}
-            showDots={showDots} setShowDots={setShowDots}
-            minThreshold={minThreshold} setMinThreshold={setMinThreshold}
-            maxV={maxV} minV={minV} metricLabel={metricLabel}
-          />
-        </div>
-
-        {/* ── Bottom-left: Mode switcher (flat) */}
-        <div className="absolute bottom-5 left-5 z-[400] flex items-center gap-1 rounded-full p-1"
-          style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
+        {/* ── POD: Metric (top-left, below selected card) */}
+        <Pod className={`top-4 ${selectedData ? "left-[284px]" : "left-4"}`}>
+          <Sticker src={stickerFlaskPurple} />
+          <PodLabel>Metric</PodLabel>
           {([
-            ["bubbles", "Bubbles"],
-            ["choropleth", "Regions"],
-            ["heat", "Heat"],
-          ] as [Mode, string][]).map(([v, l]) => {
-            const active = mode === v;
-            return (
-              <button
-                key={v}
-                onClick={() => setMode(v)}
-                title={`${l} (shortcut: ${v === "bubbles" ? "1" : v === "choropleth" ? "2" : "3"})`}
-                className="rounded-full px-3.5 h-9 font-display text-[12.5px] tracking-wide transition-colors"
-                style={active
-                  ? { background: "var(--ink)", color: "var(--paper)" }
-                  : { background: "transparent", color: "var(--ink)", opacity: 0.75 }
-                }
-              >
-                {l}
-              </button>
-            );
-          })}
-        </div>
+            ["total", "Total"],
+            ["targeted", "Targeted"],
+            ["comprehensive", "Comprehensive"],
+            ["share", "Share %"],
+          ] as [Metric, string][]).map(([v, l]) => (
+            <PodChip key={v} active={metric === v} onClick={() => setMetric(v)}>{l}</PodChip>
+          ))}
+          <span className="ml-1 font-display text-[10.5px] tabular-nums" style={{ color: "color-mix(in oklab, var(--ink) 55%, var(--paper))" }}>
+            {minV.toLocaleString()}{metric === "share" ? "%" : ""} – {maxV.toLocaleString()}{metric === "share" ? "%" : ""}
+          </span>
+        </Pod>
 
-        {/* ── Bottom-right: Action stack (flat) */}
-        <div className="absolute bottom-5 right-5 z-[400] flex items-center gap-1.5">
-          <div className="flex items-center rounded-full overflow-hidden"
-            style={{ background: "#fff", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}>
-            <FlatBtn title="Zoom out (−)" onClick={() => handleZoom(-1)} label="−" />
-            <div className="w-px h-5" style={{ background: "color-mix(in oklab, var(--ink) 14%, transparent)" }} />
-            <FlatBtn title="Zoom in (+)" onClick={() => handleZoom(1)} label="+" />
+        {/* ── POD: Basemap (top-right) */}
+        <Pod className="top-4 right-4">
+          <Sticker src={stickerGoggles} />
+          <PodLabel>Basemap</PodLabel>
+          {(Object.keys(BASEMAPS) as Basemap[]).map((b) => (
+            <PodChip key={b} active={basemap === b} onClick={() => setBasemap(b)}>
+              <span className="capitalize">{b}</span>
+            </PodChip>
+          ))}
+        </Pod>
+
+        {/* ── POD: Mode switcher (middle-left) */}
+        <Pod className="left-4 top-1/2 -translate-y-1/2 flex-col items-stretch !gap-1.5">
+          <div className="flex items-center gap-2">
+            <Sticker src={stickerMolecule} />
+            <PodLabel>View</PodLabel>
           </div>
-          <button
-            onClick={handleReset}
-            title="Reset view (R)"
-            className="rounded-full h-9 px-4 font-display text-[12.5px] tracking-wide"
-            style={{ background: "#fff", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}
-          >Reset</button>
-          <button
-            onClick={() => setFullscreen((f) => !f)}
-            title={fullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
-            className="rounded-full h-9 px-4 font-display text-[12.5px] tracking-wide"
-            style={{ background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" }}
-          >{fullscreen ? "Exit" : "Fullscreen"}</button>
-        </div>
+          {([
+            ["bubbles", "Bubbles", "1"],
+            ["choropleth", "Regions", "2"],
+            ["heat", "Heat", "3"],
+          ] as [Mode, string, string][]).map(([v, l, k]) => (
+            <PodChip key={v} active={mode === v} onClick={() => setMode(v)} title={`${l} (${k})`} block>
+              {l}
+            </PodChip>
+          ))}
+        </Pod>
+
+        {/* ── POD: Island filter + display toggles (middle-right) */}
+        <Pod className="right-4 top-1/2 -translate-y-1/2 flex-col items-stretch !gap-1.5">
+          <div className="flex items-center gap-2">
+            <Sticker src={stickerPotion} />
+            <PodLabel>Islands</PodLabel>
+          </div>
+          {(["Luzon", "Visayas", "Mindanao"] as IslandName[]).map((n) => (
+            <PodChip key={n} active={!!islandsOn[n]} onClick={() => setIslandsOn({ ...islandsOn, [n]: !islandsOn[n] })} block>
+              {n}
+            </PodChip>
+          ))}
+          <div className="h-px my-0.5" style={{ background: "color-mix(in oklab, var(--ink) 12%, transparent)" }} />
+          <PodChip active={showLabels} onClick={() => setShowLabels(!showLabels)} block>Labels</PodChip>
+          <PodChip active={showDots} onClick={() => setShowDots(!showDots)} block>Region dots</PodChip>
+        </Pod>
+
+        {/* ── POD: Min threshold (above bottom-left mode area, sticker magnet) */}
+        <Pod className="bottom-20 left-4 w-[220px]">
+          <Sticker src={stickerMagnet} />
+          <PodLabel>Min</PodLabel>
+          <input
+            type="range"
+            min={0}
+            max={Math.max(1, maxV)}
+            value={Math.min(minThreshold, maxV)}
+            onChange={(e) => setMinThreshold(Number(e.target.value))}
+            className="flex-1 accent-[var(--ink)]"
+          />
+          <span className="font-display text-[10.5px] tabular-nums" style={{ color: "var(--ink)" }}>{minThreshold.toLocaleString()}</span>
+        </Pod>
+
+        {/* ── POD: Year scrubber (bottom-center) */}
+        {years.length > 0 && (
+          <Pod className="bottom-5 left-1/2 -translate-x-1/2 max-w-[calc(100%-32px)] overflow-x-auto">
+            <Sticker src={stickerFlaskGreen} />
+            <PodLabel>Year</PodLabel>
+            <button
+              onClick={() => setPlaying(!playing)}
+              className="rounded-md px-2 h-7 font-display text-[11px] transition-colors"
+              style={playing
+                ? { background: "var(--ink)", color: "var(--paper)" }
+                : { background: "transparent", color: "var(--ink)", border: "1px solid color-mix(in oklab, var(--ink) 18%, transparent)" }}
+              title="Auto-cycle years"
+            >{playing ? "❚❚" : "▶"}</button>
+            {["all", ...years].map((y) => (
+              <PodChip key={y} active={year === y} onClick={() => setYear(y)}>{y === "all" ? "All" : y}</PodChip>
+            ))}
+          </Pod>
+        )}
+
+        {/* ── POD: Zoom (bottom-right inner) */}
+        <Pod className="bottom-5 right-[180px] !px-1 !py-1">
+          <button onClick={() => handleZoom(-1)} title="Zoom out (−)"
+            className="inline-flex items-center justify-center h-7 w-7 font-display text-[15px] leading-none rounded-md hover:bg-[color-mix(in_oklab,var(--ink)_8%,transparent)]"
+            style={{ color: "var(--ink)" }}>−</button>
+          <div className="w-px h-5" style={{ background: "color-mix(in oklab, var(--ink) 14%, transparent)" }} />
+          <button onClick={() => handleZoom(1)} title="Zoom in (+)"
+            className="inline-flex items-center justify-center h-7 w-7 font-display text-[15px] leading-none rounded-md hover:bg-[color-mix(in_oklab,var(--ink)_8%,transparent)]"
+            style={{ color: "var(--ink)" }}>+</button>
+        </Pod>
+
+        {/* ── POD: Reset (bottom-right) */}
+        <Pod className="bottom-5 right-[92px]">
+          <Sticker src={stickerDropper} />
+          <button onClick={handleReset} title="Reset view (R)"
+            className="font-display text-[12px] tracking-wide" style={{ color: "var(--ink)" }}>Reset</button>
+        </Pod>
+
+        {/* ── POD: Fullscreen (bottom-right corner) */}
+        <Pod className="bottom-5 right-4">
+          <Sticker src={stickerMicroscope} />
+          <button onClick={toggleFs} title={fullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
+            className="font-display text-[12px] tracking-wide" style={{ color: "var(--ink)" }}>
+            {fullscreen ? "Exit" : "Fullscreen"}
+          </button>
+        </Pod>
 
         {/* ── Tiny attribution */}
-        <div className="absolute bottom-1 right-2 z-[300] text-[9px] opacity-40 pointer-events-none"
+        <div className="absolute bottom-1 left-2 z-[300] text-[9px] opacity-40 pointer-events-none"
           style={{ color: "var(--ink)", fontFamily: "Poppins, sans-serif" }}>
           {BASEMAPS[basemap].attr}
         </div>
