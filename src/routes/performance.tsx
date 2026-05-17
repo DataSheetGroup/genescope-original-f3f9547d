@@ -181,7 +181,7 @@ function PerformancePage() {
         <div className="relative">
           <div className="eyebrow text-coral mb-3">Primary model</div>
           <h2 className="display-md">
-            Binary <span className="text-coral">Logistic Regression</span>
+            Binary <span className="hl">Logistic Regression</span>
           </h2>
           <p className="mt-5 max-w-3xl leading-relaxed">
             Binary Logistic Regression is the primary prediction model of this study.
