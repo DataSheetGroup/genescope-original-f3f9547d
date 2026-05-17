@@ -264,10 +264,10 @@ function KpiRow({ data }: { data: any }) {
   const diseases = data.disease_category?.length ?? 0;
   return (
     <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4 auto-rows-fr">
-      <StatCard icon="card-index-dividers" label="TOTAL RECORDS" value={total.toLocaleString()} sub={data.year_coverage ? `Covering ${data.year_coverage}` : null} />
-      <StatCard icon="spiral-calendar" label="YEAR COVERAGE" value={data.year_coverage ?? "—"} sub={`${data.annual_volume?.length ?? 0} reporting years`} />
-      <StatCard icon="round-pushpin" label="REGIONS" value={regions} sub="Island groups covered" />
-      <StatCard icon="dna" label="DISEASE CATEGORIES" value={diseases} sub="Distinct conditions tracked" />
+      <StatCard icon="microscope" label="TOTAL RECORDS" value={total.toLocaleString()} sub={data.year_coverage ? `Covering ${data.year_coverage}` : null} />
+      <StatCard icon="flask-green" label="YEAR COVERAGE" value={data.year_coverage ?? "—"} sub={`${data.annual_volume?.length ?? 0} reporting years`} />
+      <StatCard icon="potion-blue" label="REGIONS" value={regions} sub="Island groups covered" />
+      <StatCard icon="molecule" label="DISEASE CATEGORIES" value={diseases} sub="Distinct conditions tracked" />
     </div>
   );
 }
