@@ -357,9 +357,9 @@ function GeographicTab({ data, query }: { data: any; query: string }) {
   return (
     <>
       <div className="grid gap-6 sm:grid-cols-3 auto-rows-fr">
-        <StatCard icon="trophy" label="TOP REGION" value={top?.name ?? "—"} sub={top ? `${top.value.toLocaleString()} records` : ""} />
-        <StatCard icon="globe-showing-asia-australia" label="COVERAGE" value={`${regions.length}`} sub="Island groups represented" />
-        <StatCard icon="card-index-dividers" label="TOTAL TESTS" value={total.toLocaleString()} sub="Across all regions" />
+        <StatCard icon="flask-purple" label="TOP REGION" value={top?.name ?? "—"} sub={top ? `${top.value.toLocaleString()} records` : ""} />
+        <StatCard icon="potion-blue" label="COVERAGE" value={`${regions.length}`} sub="Island groups represented" />
+        <StatCard icon="microscope" label="TOTAL TESTS" value={total.toLocaleString()} sub="Across all regions" />
       </div>
 
       <PhilippinesMap
@@ -412,9 +412,9 @@ function DemographicTab({ data }: { data: any }) {
   return (
     <>
       <div className="grid gap-6 sm:grid-cols-3 auto-rows-fr">
-        <StatCard icon="busts-in-silhouette" label="TOTAL PATIENTS" value={total.toLocaleString()} sub="Anonymized records" />
-        <StatCard icon="woman" label="FEMALE SHARE" value={`${pct(female)}%`} sub={`${female.toLocaleString()} records`} />
-        <StatCard icon="man" label="MALE SHARE" value={`${pct(male)}%`} sub={`${male.toLocaleString()} records`} />
+        <StatCard icon="molecule" label="TOTAL PATIENTS" value={total.toLocaleString()} sub="Anonymized records" />
+        <StatCard icon="flask-purple" label="FEMALE SHARE" value={`${pct(female)}%`} sub={`${female.toLocaleString()} records`} />
+        <StatCard icon="flask-green" label="MALE SHARE" value={`${pct(male)}%`} sub={`${male.toLocaleString()} records`} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2 auto-rows-fr">
@@ -493,10 +493,10 @@ function InstitutionalTab({ data, query }: { data: any; query: string }) {
   return (
     <>
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4 auto-rows-fr">
-        <StatCard icon="hospital" label="FACILITY TYPES" value={fac.length} sub="Distinct categories" />
-        <StatCard icon="classical-building" label="PUBLIC" value={`${total ? Math.round(publicTotal / total * 100) : 0}%`} sub={`${publicTotal.toLocaleString()} records`} />
-        <StatCard icon="office-building" label="PRIVATE" value={`${total ? Math.round(privateTotal / total * 100) : 0}%`} sub={`${privateTotal.toLocaleString()} records`} />
-        <StatCard icon="card-index-dividers" label="TOTAL RECORDS" value={total.toLocaleString()} sub="Across all facilities" />
+        <StatCard icon="goggles" label="FACILITY TYPES" value={fac.length} sub="Distinct categories" />
+        <StatCard icon="flask-green" label="PUBLIC" value={`${total ? Math.round(publicTotal / total * 100) : 0}%`} sub={`${publicTotal.toLocaleString()} records`} />
+        <StatCard icon="flask-purple" label="PRIVATE" value={`${total ? Math.round(privateTotal / total * 100) : 0}%`} sub={`${privateTotal.toLocaleString()} records`} />
+        <StatCard icon="microscope" label="TOTAL RECORDS" value={total.toLocaleString()} sub="Across all facilities" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2 auto-rows-fr">
@@ -580,9 +580,9 @@ function TemporalTab({ data }: { data: any }) {
   return (
     <>
       <div className="grid gap-6 sm:grid-cols-3 auto-rows-fr">
-        <StatCard icon="trophy" label="PEAK YEAR" value={peak?.year ?? "—"} sub={peak ? `${peak.count.toLocaleString()} tests` : ""} />
-        <StatCard icon="chart-increasing" label="GROWTH" value={`${growth > 0 ? "+" : ""}${growth}%`} sub={`From ${first?.year} → ${last?.year}`} />
-        <StatCard icon="card-index-dividers" label="CUMULATIVE" value={(last?.cumulative ?? 0).toLocaleString()} sub="Through latest year" />
+        <StatCard icon="flask-purple" label="PEAK YEAR" value={peak?.year ?? "—"} sub={peak ? `${peak.count.toLocaleString()} tests` : ""} />
+        <StatCard icon="dropper" label="GROWTH" value={`${growth > 0 ? "+" : ""}${growth}%`} sub={`From ${first?.year} → ${last?.year}`} />
+        <StatCard icon="microscope" label="CUMULATIVE" value={(last?.cumulative ?? 0).toLocaleString()} sub="Through latest year" />
       </div>
 
       <Panel title="Annual Testing Volume" hint="Yearly counts with cumulative trend">
