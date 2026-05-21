@@ -240,23 +240,18 @@ function Home() {
               <div className="font-display text-base md:text-lg" style={{ color: "var(--green-deep)" }}>
                 The dataset behind the model
               </div>
-              <h2 className="display-lg uppercase mt-5 leading-[0.95]">
-                Our <span className="hl">highlights</span>
-                <br />of the moment
+              <h2 className="display-lg uppercase mt-5 leading-[1.1]">
+                Our
+                <br />
+                <span className="hl">highlights</span>
+                <br />
+                of the moment
               </h2>
               <p className="mt-6 text-sm md:text-base max-w-md leading-relaxed" style={{ color: "var(--green-deep)" }}>
                 A snapshot of what powers every GeneScope prediction — the data, the
                 models, and the indicators behind each calibrated probability.
               </p>
-              <Link
-                to="/dashboard"
-                className="mt-8 inline-flex items-center gap-3 rounded-full bg-green-deep text-cream px-6 py-3 font-display text-sm"
-              >
-                <span>Explore the dashboard</span>
-                <span className="h-9 w-9 rounded-full bg-coral flex items-center justify-center" style={{ color: "var(--green-deep)" }}>
-                  <ArrowDown className="h-4 w-4 -rotate-90" />
-                </span>
-              </Link>
+
             </div>
 
             {/* Right asymmetric stat grid */}
