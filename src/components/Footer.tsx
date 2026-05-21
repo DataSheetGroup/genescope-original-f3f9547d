@@ -29,7 +29,7 @@ export function Footer() {
         {/* Legal row */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-sm font-semibold" style={{ color: "var(--green-deep)" }}>
           <span>© {new Date().getFullYear()} GeneScope · FEU Institute of Technology</span>
-          <span>Data partner: Partnered Company</span>
+          <span>Data partner: Data Sheet Group</span>
           <span>RA 10173 compliant</span>
         </div>
       </div>
