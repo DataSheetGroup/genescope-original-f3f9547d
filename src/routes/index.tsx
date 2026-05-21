@@ -150,8 +150,6 @@ function Home() {
                 <br />
                 <span className="hl">Not the bewildered.</span>
               </h2>
-
-
             </div>
 
             <ol className="space-y-7">
@@ -288,8 +286,8 @@ function Home() {
               className="mt-6 text-base md:text-lg leading-relaxed max-w-xl mx-auto"
               style={{ color: "var(--green-deep)" }}
             >
-              A snapshot of what powers every GeneScope prediction — the data,
-              the models, and the indicators behind each calibrated probability.
+              A snapshot of what powers every GeneScope prediction — the data, the models, and the
+              indicators behind each calibrated probability.
             </p>
           </div>
 
@@ -339,15 +337,13 @@ function Home() {
                 <div
                   className="pointer-events-none absolute left-0 top-0 bottom-3 w-8 md:w-16 z-10"
                   style={{
-                    background:
-                      "linear-gradient(to right, var(--cream), transparent)",
+                    background: "linear-gradient(to right, var(--cream), transparent)",
                   }}
                 />
                 <div
                   className="pointer-events-none absolute right-0 top-0 bottom-3 w-8 md:w-16 z-10"
                   style={{
-                    background:
-                      "linear-gradient(to left, var(--cream), transparent)",
+                    background: "linear-gradient(to left, var(--cream), transparent)",
                   }}
                 />
 
@@ -362,16 +358,11 @@ function Home() {
                       style={{ background: s.bg, color: s.fg }}
                     >
                       <header className="flex items-center justify-between gap-4">
-                        <div
-                          className="font-display text-xs md:text-sm tracking-[0.25em] uppercase opacity-70"
-                        >
+                        <div className="font-display text-xs md:text-sm tracking-[0.25em] uppercase opacity-70">
                           {s.n} — {s.label}
                         </div>
-                        <div
-                          className="font-display text-xs md:text-sm opacity-40 tabular-nums"
-                        >
-                          {String(i + 1).padStart(2, "0")}/
-                          {String(stats.length).padStart(2, "0")}
+                        <div className="font-display text-xs md:text-sm opacity-40 tabular-nums">
+                          {String(i + 1).padStart(2, "0")}/{String(stats.length).padStart(2, "0")}
                         </div>
                       </header>
 
@@ -413,7 +404,6 @@ function Home() {
           })()}
         </div>
       </section>
-
 
       {/* ───────────── GREEN CTA CARDS (on cream) ───────────── */}
       <section className="slab-cream">
