@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 export function ChartCard({
   title,
@@ -11,6 +11,10 @@ export function ChartCard({
   children: ReactNode;
   className?: string;
 }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   return (
     <div className={`rounded-2xl bg-card text-card-foreground p-6 ${className}`}>
       <div className="mb-4">
@@ -19,7 +23,7 @@ export function ChartCard({
           <p className="mt-1 text-xs text-card-foreground/65">{description}</p>
         )}
       </div>
-      <div className="h-64 w-full">{children}</div>
+      <div className="h-64 w-full relative">{mounted ? children : null}</div>
     </div>
   );
 }
