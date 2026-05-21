@@ -75,10 +75,9 @@ function Home() {
       <section className="slab-cream">
         <div className="mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-10 py-20 md:py-24">
           <div
-            className="mx-auto max-w-[820px] rounded-3xl px-8 py-14 md:px-14 md:py-16 text-center"
+            className="mx-auto max-w-[820px] rounded-3xl px-8 py-14 md:px-14 md:py-16 text-center text-cream"
             style={{
-              background: "var(--coral)",
-              color: "var(--green-deep)",
+              background: "var(--green-deep)",
             }}
           >
             <div className="font-display text-xs md:text-sm uppercase tracking-[0.22em]">
