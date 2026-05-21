@@ -73,24 +73,30 @@ function Home() {
 
       {/* ───────────── PIONEERS band ───────────── */}
       <section className="slab-cream">
-        <div className="mx-auto max-w-[820px] px-4 sm:px-6 lg:px-10 py-24 md:py-28 text-center">
+        <div className="mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-10 py-20 md:py-24">
           <div
-            className="font-display text-xs md:text-sm uppercase tracking-[0.22em]"
-            style={{ color: "var(--green-deep)" }}
+            className="mx-auto max-w-[820px] rounded-3xl px-8 py-14 md:px-14 md:py-16 text-center"
+            style={{
+              background: "var(--coral)",
+              color: "var(--green-deep)",
+            }}
           >
-            Pioneering Research
+            <div className="font-display text-xs md:text-sm uppercase tracking-[0.22em]">
+              Pioneering Research
+            </div>
+            <h2 className="display-lg uppercase mt-5">
+              A <span className="hl">first</span> for
+              <br />
+              Philippine genetics.
+            </h2>
+            <p className="mt-5 max-w-md mx-auto text-sm md:text-base leading-relaxed">
+              One of the first locally-built decision-support systems for genetic
+              testing in the Philippines.
+            </p>
           </div>
-          <h2 className="display-lg uppercase mt-6">
-            A <span className="hl">first</span> for
-            <br />
-            Philippine genetics.
-          </h2>
-          <p className="mt-6 max-w-md mx-auto text-sm md:text-base leading-relaxed">
-            One of the first locally-built decision-support systems for genetic
-            testing in the Philippines.
-          </p>
         </div>
       </section>
+
 
 
 

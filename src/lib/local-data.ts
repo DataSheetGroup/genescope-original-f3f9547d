@@ -3,6 +3,7 @@
 // Naive Bayes classifier (Laplace-smoothed) trained on the same data.
 
 import csvText from "@/data/genetic_testing_data.csv?raw";
+import pklModel from "@/data/model-from-pkl.json";
 import type {
   EdaData,
   FeatureImportance,
@@ -10,6 +11,21 @@ import type {
   PredictPayload,
   PredictResponse,
 } from "./api-types";
+
+// Real trained-model metrics extracted from my_trained_model.pkl
+// at build time (see public/models/my_trained_model.pkl).
+type PklModelEntry = {
+  results: { Accuracy: number; Precision: number; Recall: number; "F1-Score": number; "ROC-AUC": number; cm: number[][] };
+  cv: { cv_roc_mean: number; cv_roc_std: number; cv_acc_mean: number; cv_acc_std: number; cv_folds: number[] };
+  feature_importance: { feature: string; importance: number }[];
+};
+type PklModel = {
+  best_model_name: string;
+  dataset_info: { total_records: number; train_records: number; test_records: number; n_features: number };
+  models: Record<string, PklModelEntry>;
+};
+const PKL: PklModel = pklModel as PklModel;
+const HAS_PKL = Boolean(PKL?.models && Object.keys(PKL.models).length);
 
 // ─────────────────────── CSV parsing ───────────────────────
 
@@ -465,7 +481,22 @@ function computeAllMetrics(): ModelMetrics[] {
 const METRICS_CACHE = computeAllMetrics();
 
 export function getMetricsLocal(): ModelMetrics[] {
+  if (HAS_PKL) return metricsFromPkl();
   return METRICS_CACHE;
+}
+
+function metricsFromPkl(): ModelMetrics[] {
+  return Object.entries(PKL.models).map(([name, m]) => ({
+    name,
+    accuracy: m.results.Accuracy,
+    precision: m.results.Precision,
+    recall: m.results.Recall,
+    f1: m.results["F1-Score"],
+    roc_auc: m.results["ROC-AUC"],
+    cv_mean: m.cv.cv_acc_mean,
+    cv_std: m.cv.cv_acc_std,
+    confusion_matrix: m.results.cm,
+  }));
 }
 
 // Feature importance via mutual information with the target
@@ -494,6 +525,15 @@ function mutualInfo(rows: Row[], feature: keyof Row): number {
 }
 
 export function getFeatureImportanceLocal(): FeatureImportance {
+  if (HAS_PKL) {
+    // Prefer the best model's grouped importances from the real .pkl
+    const best = PKL.models[PKL.best_model_name] ?? Object.values(PKL.models)[0];
+    if (best?.feature_importance?.length) return best.feature_importance;
+  }
+  return computeMutualInfoImportance();
+}
+
+function computeMutualInfoImportance(): FeatureImportance {
   const features: { feature: string; key: keyof Row }[] = [
     { feature: "Disease Category", key: "Disease_Category" },
     { feature: "Facility Type", key: "Facility_Type" },
