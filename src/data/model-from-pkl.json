@@ -1,0 +1,249 @@
+{
+  "best_model_name": "Random Forest",
+  "dataset_info": {
+    "total_records": 447,
+    "train_records": 357,
+    "test_records": 90,
+    "n_features": 14
+  },
+  "feature_columns": [
+    "Years_Since_2021",
+    "Sex_Male",
+    "Geographic_Region_Mindanao",
+    "Geographic_Region_Visayas",
+    "Disease_Category_Neurology",
+    "Disease_Category_Others",
+    "Disease_Category_Pediatrics",
+    "Facility_Type_Public",
+    "Mindanao_x_Neurology",
+    "Mindanao_x_Others",
+    "Mindanao_x_Pediatrics",
+    "Visayas_x_Neurology",
+    "Visayas_x_Others",
+    "Visayas_x_Pediatrics"
+  ],
+  "models": {
+    "Binary Logistic Regression": {
+      "results": {
+        "Accuracy": 0.8222222222222222,
+        "Precision": 0.8823529411764706,
+        "Recall": 0.8823529411764706,
+        "F1-Score": 0.8823529411764706,
+        "ROC-AUC": 0.7583556149732621,
+        "cm": [
+          [
+            14,
+            8
+          ],
+          [
+            8,
+            60
+          ]
+        ]
+      },
+      "cv": {
+        "cv_roc_mean": 0.827533725050065,
+        "cv_roc_std": 0.05665282322987818,
+        "cv_acc_mean": 0.8488654147104852,
+        "cv_acc_std": 0.02637339004562685,
+        "cv_folds": [
+          0.7946524064171123,
+          0.7983539094650206,
+          0.7559912854030502,
+          0.9003267973856209,
+          0.8883442265795206
+        ]
+      },
+      "feature_importance_raw": [
+        0.10700261244027937,
+        0.053199978726672856,
+        0.0,
+        0.0,
+        1.8288103101215818,
+        0.6793407927639334,
+        3.110397111079236,
+        0.01014552998991171,
+        0.7687626133520116,
+        0.0,
+        0.18635998032895504,
+        0.22426283227483523,
+        0.018443042371097344,
+        0.009827262976601105
+      ],
+      "feature_importance": [
+        {
+          "feature": "Disease Category",
+          "importance": 1.0
+        },
+        {
+          "feature": "Region \u00d7 Disease",
+          "importance": 0.215
+        },
+        {
+          "feature": "Year",
+          "importance": 0.019
+        },
+        {
+          "feature": "Sex",
+          "importance": 0.009
+        },
+        {
+          "feature": "Facility Type",
+          "importance": 0.002
+        },
+        {
+          "feature": "Geographic Region",
+          "importance": 0.0
+        }
+      ]
+    },
+    "Decision Tree": {
+      "results": {
+        "Accuracy": 0.8444444444444444,
+        "Precision": 0.8552631578947368,
+        "Recall": 0.9558823529411765,
+        "F1-Score": 0.9027777777777778,
+        "ROC-AUC": 0.7396390374331551,
+        "cm": [
+          [
+            11,
+            11
+          ],
+          [
+            3,
+            65
+          ]
+        ]
+      },
+      "cv": {
+        "cv_roc_mean": 0.8266723883717347,
+        "cv_roc_std": 0.06399219740973251,
+        "cv_acc_mean": 0.8404929577464788,
+        "cv_acc_std": 0.046989679258568964,
+        "cv_folds": [
+          0.7657754010695188,
+          0.8065843621399178,
+          0.7565359477124183,
+          0.9057734204793029,
+          0.8986928104575163
+        ]
+      },
+      "feature_importance_raw": [
+        0.12026397271561577,
+        0.006067491009071411,
+        0.0,
+        0.03961258907272903,
+        0.042982871724367724,
+        0.02482807841044349,
+        0.7233418009799212,
+        0.0,
+        0.03901916575346909,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0038840303343823657
+      ],
+      "feature_importance": [
+        {
+          "feature": "Disease Category",
+          "importance": 1.0
+        },
+        {
+          "feature": "Year",
+          "importance": 0.152
+        },
+        {
+          "feature": "Region \u00d7 Disease",
+          "importance": 0.054
+        },
+        {
+          "feature": "Geographic Region",
+          "importance": 0.05
+        },
+        {
+          "feature": "Sex",
+          "importance": 0.008
+        },
+        {
+          "feature": "Facility Type",
+          "importance": 0.0
+        }
+      ]
+    },
+    "Random Forest": {
+      "results": {
+        "Accuracy": 0.8111111111111111,
+        "Precision": 0.8591549295774648,
+        "Recall": 0.8970588235294118,
+        "F1-Score": 0.8776978417266187,
+        "ROC-AUC": 0.796457219251337,
+        "cm": [
+          [
+            12,
+            10
+          ],
+          [
+            7,
+            61
+          ]
+        ]
+      },
+      "cv": {
+        "cv_roc_mean": 0.8240960806320284,
+        "cv_roc_std": 0.07623897281573914,
+        "cv_acc_mean": 0.8544600938967136,
+        "cv_acc_std": 0.04361468937084992,
+        "cv_folds": [
+          0.7914438502673797,
+          0.823045267489712,
+          0.6998910675381264,
+          0.8959694989106753,
+          0.9101307189542484
+        ]
+      },
+      "feature_importance_raw": [
+        0.12794676765839263,
+        0.018062629065987976,
+        0.02291551061234352,
+        0.020989957936916524,
+        0.1437753845429803,
+        0.050826090441227934,
+        0.5094918294093013,
+        0.0058987765269731835,
+        0.030872082577757958,
+        0.0,
+        9.188052038973331e-05,
+        0.04730883521341319,
+        0.011554845800638132,
+        0.010265409693677712
+      ],
+      "feature_importance": [
+        {
+          "feature": "Disease Category",
+          "importance": 1.0
+        },
+        {
+          "feature": "Year",
+          "importance": 0.182
+        },
+        {
+          "feature": "Region \u00d7 Disease",
+          "importance": 0.142
+        },
+        {
+          "feature": "Geographic Region",
+          "importance": 0.062
+        },
+        {
+          "feature": "Sex",
+          "importance": 0.026
+        },
+        {
+          "feature": "Facility Type",
+          "importance": 0.008
+        }
+      ]
+    }
+  }
+}
