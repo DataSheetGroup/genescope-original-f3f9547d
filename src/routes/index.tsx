@@ -281,8 +281,7 @@ function Home() {
                 The dataset behind the model
               </span>
               <h2 className="display-lg uppercase leading-[0.95]">
-                Our{" "}
-                <span className="hl inline-block">highlights</span>
+                Our <span className="hl inline-block">highlights</span>
                 <br />
                 of the moment
               </h2>
@@ -292,8 +291,8 @@ function Home() {
                 className="text-base md:text-lg leading-relaxed max-w-md"
                 style={{ color: "var(--green-deep)" }}
               >
-                A snapshot of what powers every GeneScope prediction — the data,
-                the models, and the indicators behind each calibrated probability.
+                A snapshot of what powers every GeneScope prediction — the data, the models, and the
+                indicators behind each calibrated probability.
               </p>
             </div>
           </div>
@@ -307,7 +306,10 @@ function Home() {
                   01 — Records
                 </div>
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-cream/20 flex items-center justify-center shrink-0">
-                  <ArrowRight className="w-4 h-4 md:w-5 md:h-5" style={{ color: "var(--teal-soft)" }} />
+                  <ArrowRight
+                    className="w-4 h-4 md:w-5 md:h-5"
+                    style={{ color: "var(--teal-soft)" }}
+                  />
                 </div>
               </div>
               <div className="mt-10">
@@ -318,8 +320,7 @@ function Home() {
                   {totalRecords}
                 </div>
                 <p className="text-base md:text-xl lg:text-2xl font-light opacity-80 max-w-sm leading-snug">
-                  De-identified Philippine patient records powering the
-                  locally-trained model.
+                  De-identified Philippine patient records powering the locally-trained model.
                 </p>
               </div>
             </div>
@@ -368,7 +369,8 @@ function Home() {
                 style={{
                   background: "var(--teal-soft)",
                   color: "var(--green-deep)",
-                  boxShadow: "0 20px 40px -20px color-mix(in oklab, var(--teal-soft) 40%, transparent)",
+                  boxShadow:
+                    "0 20px 40px -20px color-mix(in oklab, var(--teal-soft) 40%, transparent)",
                 }}
               >
                 <div className="font-display text-xs md:text-sm tracking-widest uppercase mb-4 opacity-50">
@@ -389,7 +391,6 @@ function Home() {
           </div>
         </div>
       </section>
-
 
       {/* ───────────── GREEN CTA CARDS (on cream) ───────────── */}
       <section className="slab-cream">
