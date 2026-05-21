@@ -291,7 +291,7 @@ function Home() {
             </p>
           </div>
 
-          {/* Slidable stat carousel — matches numbered process cards */}
+          {/* Stat grid — 2x2 */}
           {(() => {
             const stats = [
               {
@@ -316,14 +316,11 @@ function Home() {
               },
             ];
             return (
-              <div
-                className="flex gap-6 md:gap-7 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10 scroll-smooth"
-                style={{ scrollbarWidth: "none" }}
-              >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-7">
                 {stats.map((s) => (
                   <article
                     key={s.n}
-                    className="snap-start shrink-0 w-[82%] sm:w-[60%] md:w-[45%] lg:w-[32%] rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-8 lg:p-10 flex items-start gap-6 md:gap-8"
+                    className="rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-8 lg:p-10 flex items-start gap-6"
                   >
                     <div
                       className="shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-full bg-coral flex items-center justify-center font-display text-xl md:text-2xl"
