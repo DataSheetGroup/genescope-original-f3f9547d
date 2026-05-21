@@ -332,78 +332,36 @@ function Home() {
               },
             ];
             return (
-              <div className="relative">
-                {/* Edge fades */}
-                <div
-                  className="pointer-events-none absolute left-0 top-0 bottom-3 w-8 md:w-16 z-10"
-                  style={{
-                    background: "linear-gradient(to right, var(--cream), transparent)",
-                  }}
-                />
-                <div
-                  className="pointer-events-none absolute right-0 top-0 bottom-3 w-8 md:w-16 z-10"
-                  style={{
-                    background: "linear-gradient(to left, var(--cream), transparent)",
-                  }}
-                />
-
-                <div
-                  className="flex gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-6 px-2 -mx-2 scroll-smooth"
-                  style={{ scrollbarWidth: "none" }}
-                >
-                  {stats.map((s, i) => (
-                    <article
-                      key={s.n}
-                      className="snap-center shrink-0 w-[78%] sm:w-[58%] md:w-[42%] lg:w-[32%] rounded-[2.25rem] p-7 md:p-9 flex flex-col justify-between min-h-[340px] md:min-h-[400px] shadow-[0_30px_60px_-30px_rgba(15,15,40,0.35)] transition-transform duration-300 hover:-translate-y-1"
-                      style={{ background: s.bg, color: s.fg }}
+              <div
+                className="flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10 scroll-smooth"
+                style={{ scrollbarWidth: "none" }}
+              >
+                {stats.map((s) => (
+                  <article
+                    key={s.n}
+                    className="snap-start shrink-0 w-[80%] sm:w-[55%] md:w-[40%] lg:w-[30%] rounded-[2rem] p-7 md:p-8 flex flex-col justify-between min-h-[300px] md:min-h-[340px]"
+                    style={{ background: s.bg, color: s.fg }}
+                  >
+                    <div className="font-display text-xs tracking-[0.2em] uppercase opacity-60">
+                      {s.n} — {s.label}
+                    </div>
+                    <div
+                      className="font-display tabular-nums leading-[0.85] tracking-tight text-6xl md:text-7xl my-6"
+                      style={{ color: s.accent }}
                     >
-                      <header className="flex items-center justify-between gap-4">
-                        <div className="font-display text-xs md:text-sm tracking-[0.25em] uppercase opacity-70">
-                          {s.n} — {s.label}
-                        </div>
-                        <div className="font-display text-xs md:text-sm opacity-40 tabular-nums">
-                          {String(i + 1).padStart(2, "0")}/{String(stats.length).padStart(2, "0")}
-                        </div>
-                      </header>
-
-                      <div className="my-6">
-                        <div
-                          className="font-display tabular-nums leading-[0.82] tracking-tighter text-[5.5rem] sm:text-[7rem] md:text-[8rem]"
-                          style={{ color: s.accent }}
-                        >
-                          {s.value}
-                        </div>
-                      </div>
-
-                      <footer>
-                        <div
-                          className="h-px w-12 mb-4 opacity-30"
-                          style={{ background: "currentColor" }}
-                        />
-                        <p className="text-sm md:text-base leading-snug font-medium opacity-90 max-w-[26ch]">
-                          {s.body}
-                        </p>
-                      </footer>
-                    </article>
-                  ))}
-                </div>
-
-                {/* Slide hint */}
-                <div
-                  className="mt-2 flex items-center justify-center gap-2 text-xs font-display uppercase tracking-[0.25em] opacity-50"
-                  style={{ color: "var(--green-deep)" }}
-                >
-                  <span>← slide</span>
-                  <span className="opacity-40">·</span>
-                  <span>{stats.length} highlights</span>
-                  <span className="opacity-40">·</span>
-                  <span>slide →</span>
-                </div>
+                      {s.value}
+                    </div>
+                    <p className="text-sm leading-snug opacity-85 max-w-[28ch]">
+                      {s.body}
+                    </p>
+                  </article>
+                ))}
               </div>
             );
           })()}
         </div>
       </section>
+
 
       {/* ───────────── GREEN CTA CARDS (on cream) ───────────── */}
       <section className="slab-cream">
