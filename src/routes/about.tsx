@@ -74,7 +74,7 @@ function AboutPage() {
               }
             />
             <Row k="Thesis Adviser" v="Mr. Jeneffer A. Sabonsolin" />
-            <Row k="Data Partner" v="Molave Trading Inc. (Confidential — MOA & NDA)" />
+            <Row k="Data Partner" v="partnered company (Confidential — MOA & NDA)" />
           </dl>
         </div>
 
