@@ -26,7 +26,10 @@ export const Route = createFileRoute("/")({
           "Locally-hosted decision-support system predicting Targeted Testing vs Comprehensive Profiling for Philippine patients.",
       },
       { property: "og:title", content: "GeneScope" },
-      { property: "og:description", content: "Predicting Genetic Testing Utilization in the Philippines." },
+      {
+        property: "og:description",
+        content: "Predicting Genetic Testing Utilization in the Philippines.",
+      },
     ],
   }),
   component: Home,
@@ -40,7 +43,6 @@ function Home() {
     <div className="">
       {/* ───────────── HERO (green) — centered, asymmetric illustrations ───────────── */}
       <section className="hero-green relative overflow-hidden -mt-px">
-
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-8 md:pt-12 pb-14 md:pb-20 relative">
           <div className="relative z-10 text-center max-w-3xl mx-auto">
             <div className="font-display text-sm md:text-base mb-4">
@@ -54,8 +56,8 @@ function Home() {
               the <span className="hl">guesswork</span>
             </h1>
             <p className="mt-5 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
-              GeneScope pairs every result with plain-language context, calibrated
-              probabilities, and feature attribution — so clinicians decide with clarity.
+              GeneScope pairs every result with plain-language context, calibrated probabilities,
+              and feature attribution — so clinicians decide with clarity.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Link to="/predict" className="pill pill-coral">
@@ -72,7 +74,10 @@ function Home() {
       {/* ───────────── MISSION header (cream) ───────────── */}
       <section className="slab-cream">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-32 pb-12 text-center">
-          <div className="font-display text-base md:text-lg text-teal-soft" style={{ color: "var(--green-deep)" }}>
+          <div
+            className="font-display text-base md:text-lg text-teal-soft"
+            style={{ color: "var(--green-deep)" }}
+          >
             Your clinic, with peace of mind
           </div>
           <h2 className="display-lg uppercase mt-6">
@@ -106,10 +111,16 @@ function Home() {
                 className={`rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-10 lg:p-12 flex items-start gap-6 ${c.offset}`}
               >
                 <div className="flex-1">
-                  <h3 className="font-display text-2xl md:text-3xl leading-tight" style={{ color: "var(--green-deep)" }}>
+                  <h3
+                    className="font-display text-2xl md:text-3xl leading-tight"
+                    style={{ color: "var(--green-deep)" }}
+                  >
                     {c.title}
                   </h3>
-                  <p className="mt-5 text-sm md:text-base leading-relaxed" style={{ color: "var(--green-deep)" }}>
+                  <p
+                    className="mt-5 text-sm md:text-base leading-relaxed"
+                    style={{ color: "var(--green-deep)" }}
+                  >
                     {c.body}
                   </p>
                 </div>
@@ -126,7 +137,10 @@ function Home() {
           <div className="grid lg:grid-cols-[1fr_1.2fr] gap-16 items-start">
             <div className="lg:sticky lg:top-28 relative">
               <img src={labFlask} alt="" className="w-20 md:w-24 object-contain mb-5" />
-              <div className="font-display text-base md:text-lg mb-6" style={{ color: "var(--green-deep)" }}>
+              <div
+                className="font-display text-base md:text-lg mb-6"
+                style={{ color: "var(--green-deep)" }}
+              >
                 Your needs, our solution
               </div>
               <h2 className="display-lg uppercase leading-[0.95]">
@@ -168,14 +182,23 @@ function Home() {
                   key={s.n}
                   className="rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-8 lg:p-10 flex items-start gap-6 md:gap-8"
                 >
-                  <div className="shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-full bg-coral flex items-center justify-center font-display text-xl md:text-2xl" style={{ color: "var(--green-deep)" }}>
+                  <div
+                    className="shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-full bg-coral flex items-center justify-center font-display text-xl md:text-2xl"
+                    style={{ color: "var(--green-deep)" }}
+                  >
                     {s.n}
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-2xl md:text-[2rem] leading-[1.05]" style={{ color: "var(--green-deep)" }}>
+                    <h3
+                      className="font-display text-2xl md:text-[2rem] leading-[1.05]"
+                      style={{ color: "var(--green-deep)" }}
+                    >
                       {s.t}
                     </h3>
-                    <p className="mt-4 text-sm md:text-base leading-relaxed" style={{ color: "var(--green-deep)" }}>
+                    <p
+                      className="mt-4 text-sm md:text-base leading-relaxed"
+                      style={{ color: "var(--green-deep)" }}
+                    >
                       {s.d}
                     </p>
                   </div>
@@ -190,7 +213,10 @@ function Home() {
       <section className="slab-cream">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pb-32">
           <div className="text-center mb-14">
-            <div className="font-display text-base md:text-lg" style={{ color: "var(--green-deep)" }}>
+            <div
+              className="font-display text-base md:text-lg"
+              style={{ color: "var(--green-deep)" }}
+            >
               And you?
             </div>
           </div>
@@ -200,14 +226,22 @@ function Home() {
               {
                 img: magnifier,
                 eyebrow: "Run a prediction",
-                title: (<>Ready to see <br /> a result?</>),
+                title: (
+                  <>
+                    Ready to see <br /> a result?
+                  </>
+                ),
                 to: "/predict",
                 cta: "Open the predictor",
               },
               {
                 img: heartPulse,
                 eyebrow: "Explore the model",
-                title: (<>Curious about <br /> performance?</>),
+                title: (
+                  <>
+                    Curious about <br /> performance?
+                  </>
+                ),
                 to: "/performance",
                 cta: "View metrics",
               },
@@ -218,7 +252,10 @@ function Home() {
                 className="group rounded-[2.5rem] bg-coral p-10 md:p-14 flex flex-col items-center text-center transition-transform hover:-translate-y-1"
               >
                 <img src={c.img} alt="" className="w-32 md:w-44 object-contain mb-6" />
-                <div className="font-display text-sm md:text-base mb-4" style={{ color: "var(--green-deep)" }}>
+                <div
+                  className="font-display text-sm md:text-base mb-4"
+                  style={{ color: "var(--green-deep)" }}
+                >
                   {c.eyebrow}
                 </div>
                 <h3 className="display-md uppercase mb-8" style={{ color: "var(--green-deep)" }}>
@@ -237,28 +274,33 @@ function Home() {
           <div className="grid lg:grid-cols-[1fr_1.3fr] gap-12 lg:gap-20 items-start">
             {/* Left intro */}
             <div className="lg:sticky lg:top-28">
-              <div className="font-display text-base md:text-lg" style={{ color: "var(--green-deep)" }}>
+              <div
+                className="font-display text-base md:text-lg"
+                style={{ color: "var(--green-deep)" }}
+              >
                 The dataset behind the model
               </div>
-              <h2 className="display-lg uppercase mt-5 leading-[1.1]">
-                Our
-                <br />
-                <span className="hl">highlights</span>
-                <br />
-                of the moment
+              <h2 className="display-lg uppercase mt-5 flex flex-col items-start gap-3 leading-none">
+                <span className="block">Our</span>
+                <span className="hl inline-block leading-none">highlights</span>
+                <span className="block">of the moment</span>
               </h2>
-              <p className="mt-6 text-sm md:text-base max-w-md leading-relaxed" style={{ color: "var(--green-deep)" }}>
-                A snapshot of what powers every GeneScope prediction — the data, the
-                models, and the indicators behind each calibrated probability.
+              <p
+                className="mt-6 text-sm md:text-base max-w-md leading-relaxed"
+                style={{ color: "var(--green-deep)" }}
+              >
+                A snapshot of what powers every GeneScope prediction — the data, the models, and the
+                indicators behind each calibrated probability.
               </p>
-
             </div>
 
             {/* Right asymmetric stat grid */}
-            <div className="grid grid-cols-6 gap-4 md:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 md:gap-5">
               {/* Big record card */}
-              <div className="col-span-6 md:col-span-4 rounded-[2rem] bg-green-deep text-cream p-8 md:p-10 relative overflow-hidden">
-                <div className="text-xs font-display uppercase tracking-widest text-cream/70">01 — Records</div>
+              <div className="sm:col-span-6 md:col-span-4 rounded-[2rem] bg-green-deep text-cream p-8 md:p-10 relative overflow-hidden">
+                <div className="text-xs font-display uppercase tracking-widest text-cream/70">
+                  01 — Records
+                </div>
                 <div className="font-display text-6xl md:text-7xl lg:text-8xl tabular-nums mt-3 leading-none">
                   {totalRecords}
                 </div>
@@ -268,24 +310,43 @@ function Home() {
               </div>
 
               {/* Years */}
-              <div className="col-span-3 md:col-span-2 rounded-[2rem] bg-coral p-6 md:p-7 md:translate-y-6" style={{ color: "var(--green-deep)" }}>
-                <div className="text-xs font-display uppercase tracking-widest opacity-70">02 — Coverage</div>
-                <div className="font-display text-4xl md:text-5xl tabular-nums mt-3 leading-none">2021–25</div>
+              <div
+                className="sm:col-span-3 md:col-span-2 rounded-[2rem] bg-coral p-6 md:p-7 md:translate-y-6"
+                style={{ color: "var(--green-deep)" }}
+              >
+                <div className="text-xs font-display uppercase tracking-widest opacity-70">
+                  02 — Coverage
+                </div>
+                <div className="font-display text-4xl md:text-5xl tabular-nums mt-3 leading-[0.95] break-words">
+                  2021–25
+                </div>
                 <div className="mt-3 text-xs md:text-sm font-semibold">Years covered</div>
               </div>
 
               {/* Models */}
-              <div className="col-span-3 md:col-span-2 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-6 md:p-7" style={{ color: "var(--green-deep)" }}>
-                <div className="text-xs font-display uppercase tracking-widest opacity-70">03 — Benchmarks</div>
-                <div className="font-display text-4xl md:text-5xl tabular-nums mt-3 leading-none">3</div>
+              <div
+                className="sm:col-span-3 md:col-span-2 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-6 md:p-7"
+                style={{ color: "var(--green-deep)" }}
+              >
+                <div className="text-xs font-display uppercase tracking-widest opacity-70">
+                  03 — Benchmarks
+                </div>
+                <div className="font-display text-4xl md:text-5xl tabular-nums mt-3 leading-none">
+                  3
+                </div>
                 <div className="mt-3 text-xs md:text-sm font-semibold">Models compared</div>
               </div>
 
               {/* Indicators */}
-              <div className="col-span-3 md:col-span-4 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-6 md:p-8 md:-translate-y-2 flex items-center gap-5" style={{ color: "var(--green-deep)" }}>
+              <div
+                className="sm:col-span-6 md:col-span-4 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-6 md:p-8 md:-translate-y-2 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5"
+                style={{ color: "var(--green-deep)" }}
+              >
                 <div className="font-display text-5xl md:text-6xl tabular-nums leading-none">6</div>
                 <div>
-                  <div className="text-xs font-display uppercase tracking-widest opacity-70">04 — Inputs</div>
+                  <div className="text-xs font-display uppercase tracking-widest opacity-70">
+                    04 — Inputs
+                  </div>
                   <div className="mt-1 text-sm md:text-base font-semibold leading-snug">
                     Structured clinical indicators per prediction
                   </div>
@@ -316,10 +377,7 @@ function Home() {
                 to: "/about",
               },
             ].map((c, i) => (
-              <div
-                key={i}
-                className="rounded-[2.5rem] bg-green-deep text-cream p-10 md:p-14"
-              >
+              <div key={i} className="rounded-[2.5rem] bg-green-deep text-cream p-10 md:p-14">
                 <img src={c.img} alt="" className="w-28 md:w-36 object-contain mb-6" />
                 <h3 className="display-md uppercase mb-5">{c.title}</h3>
                 <p className="text-base leading-relaxed mb-8 text-cream/85 max-w-md">{c.body}</p>
