@@ -200,7 +200,7 @@ function PerformancePage() {
           <div className="eyebrow text-coral mb-1">Comparison</div>
           <h2 className="font-display text-2xl">All five metrics, side by <span className="hl">side</span></h2>
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto pb-2">
           <table className="w-full text-sm">
             <thead className="bg-cream-dim text-xs uppercase tracking-wider text-card-foreground/65">
               <tr>
@@ -211,11 +211,11 @@ function PerformancePage() {
               </tr>
             </thead>
             <tbody>
-              {models.map((m) => (
-                <tr key={m.name} className="border-t border-card-foreground/10">
-                  <td className="px-7 py-4 font-display text-base">{m.name}</td>
+              {models.map((m, idx) => (
+                <tr key={m.name} className={idx > 0 ? "border-t border-card-foreground/10" : ""}>
+                  <td className="px-7 py-5 font-display text-base">{m.name}</td>
                   {METRIC_KEYS.map((k) => (
-                    <td key={k} className="px-7 py-4 text-right tabular-nums">{pct(m[k] as number)}</td>
+                    <td key={k} className="px-7 py-5 text-right tabular-nums">{pct(m[k] as number)}</td>
                   ))}
                 </tr>
               ))}
