@@ -1,79 +1,31 @@
-## Goals
+## 1. Fix diagonal x-axis labels
 
-1. Stop packing every map control into one drawer — distribute them as small framed pods around the map's edges.
-2. Make fullscreen actually fill the viewport reliably.
-3. Use the science stickers as glyphs on map controls.
-4. Fix the "at a glance" highlight so the word "at" is inside the marker too.
+In `src/routes/dashboard.tsx` (line 471, the **Disease Category × Test Type** chart), the XAxis is `angle={-15}` with `height={80}`. The labels (Pediatrics, Neurology, Others, Metabolic) are short enough to sit horizontally.
 
-## 1. Highlight fix (`src/routes/dashboard.tsx`, line 213)
+Change to: `angle={0}`, `textAnchor="middle"`, `height={40}`.
 
-Change:
-```
-The dataset, at <span className="hl">a glance.</span>
-```
-to:
-```
-The dataset, <span className="hl">at a glance.</span>
-```
+## 2. Add a proper "Pioneers" section on the home page
 
-## 2. Map control layout (`src/components/PhilippinesMap.tsx`)
+Not a small eyebrow tag — a real, dedicated section so the claim reads with weight.
 
-Replace the single "Layers & Filters" drawer with discrete pods anchored to the map frame. Each pod is its own small `absolute` panel with hairline border, solid paper bg, no shadow:
+**Placement:** new section inserted between the green hero and the cream MISSION section in `src/routes/index.tsx` (after line 72, before line 74). It will sit on its own band so it feels intentional, not tacked on.
 
-```text
-┌─────────────────────────────────────────────────────┐
-│ [🧪 Metric ▾]                       [🥽 Basemap ▾] │ top row
-│                                                     │
-│                    MAP CANVAS                       │
-│                                                     │
-│ [🧫 Bubbles|Regions|Heat]          [⊖ Min ──●── ⊕] │ mid-low
-│                                                     │
-│ [⟲ Reset] [⛶ Fullscreen]    [− 100% +]  [▶ Year ‣]│ bottom row
-└─────────────────────────────────────────────────────┘
-```
+**Treatment:**
+- Full-width band using the existing cream/teal palette (matches the surrounding sections, no new tokens)
+- Centered layout, max-width ~960px
+- Small uppercase eyebrow: **PIONEERING RESEARCH**
+- Large display headline using existing `display-lg uppercase` class:
+  > **The first locally-built decision-support system for genetic testing in the Philippines.**
+  with `<span class="hl">first</span>` highlight for emphasis
+- Supporting paragraph (~2 lines):
+  > "GeneScope is pioneering work at the intersection of clinical genetics and machine learning in the Philippine setting — built locally, validated locally, and designed to keep patient data on the workstation where it belongs."
+- Three small credibility chips/stats in a row underneath (using existing pill styling), e.g.:
+  - **First of its kind** · PH-built genetic testing DSS
+  - **Locally trained** · on Philippine clinical indicators
+  - **RA 10173 by design** · nothing leaves the machine
 
-- Top-left pod: Metric switcher (sticker: `flask-purple` as leading glyph).
-- Top-right pod: Basemap chips Light/Dark/Satellite (sticker: `goggles`).
-- Middle-left pod: Mode switcher Bubbles / Regions / Heat (sticker: `molecule`).
-- Middle-right pod: Min-value slider only (sticker: `magnet`).
-- Bottom-left pod: Reset + Fullscreen text buttons (stickers: `dropper` for reset, `microscope` for fullscreen).
-- Bottom-center pod: Zoom `[ − | + ]`.
-- Bottom-right pod: Year scrubber with Play/Pause and chips (sticker: `flask-green`).
-- Island-group toggles and label/dot toggles fold into the Basemap pod as a tiny secondary row (still framed, still small).
+This matches the visual rhythm of the existing landing page (eyebrow → display headline → supporting copy → chips/CTAs) and gives the "pioneers" claim the prominence the user asked for, rather than burying it as a note.
 
-Each pod uses the same primitive:
-```tsx
-<div className="absolute … rounded-xl border bg-[var(--paper)] px-2 py-1.5 flex items-center gap-2">
-  <img src={sticker} className="h-4 w-4" alt="" />
-  …controls…
-</div>
-```
-No gradients, no backdrop-blur, no shadow — matches the prior "flat" pass.
-
-Remove the existing drawer state, drawer container, and color-ramp caption (caption moves under the Metric pod as a single muted line).
-
-## 3. Fullscreen fix
-
-Current code only toggles `position: fixed` + a backdrop, which can be clipped by ancestor `overflow:hidden` / transforms and doesn't escape sticky headers reliably.
-
-Switch to the native Fullscreen API on the map wrapper ref:
-```tsx
-const wrapRef = useRef<HTMLDivElement>(null);
-const toggleFs = () => {
-  if (!document.fullscreenElement) wrapRef.current?.requestFullscreen();
-  else document.exitFullscreen();
-};
-useEffect(() => {
-  const onChange = () => setFullscreen(!!document.fullscreenElement);
-  document.addEventListener("fullscreenchange", onChange);
-  return () => document.removeEventListener("fullscreenchange", onChange);
-}, []);
-```
-- Drop the manual `position: fixed` overlay and backdrop div.
-- When `fullscreen` is true, the wrapper gets `h-screen w-screen bg-[var(--paper)]` so Leaflet fills the real fullscreen surface.
-- Call `map.invalidateSize()` after the fullscreen change so tiles re-layout.
-- Keep `Esc` handling via the browser (no custom listener needed); keep `F` shortcut calling `toggleFs`.
-
-## Out of scope
-
-Data, chart panels, color tokens, navbar, other routes.
+## Technical details
+- Files touched: `src/routes/index.tsx`, `src/routes/dashboard.tsx`
+- No new dependencies, no new design tokens — reuses `display-lg`, `hl`, `pill`, `slab-cream`/`hero-green`-style classes already in the project
