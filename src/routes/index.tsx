@@ -240,12 +240,10 @@ function Home() {
               <div className="font-display text-base md:text-lg" style={{ color: "var(--green-deep)" }}>
                 The dataset behind the model
               </div>
-              <h2 className="display-lg uppercase mt-5 leading-[1.1]">
-                Our
-                <br />
-                <span className="hl">highlights</span>
-                <br />
-                of the moment
+              <h2 className="display-lg uppercase mt-5 flex flex-col items-start gap-3 leading-none">
+                <span className="block">Our</span>
+                <span className="hl inline-block leading-none">highlights</span>
+                <span className="block">of the moment</span>
               </h2>
               <p className="mt-6 text-sm md:text-base max-w-md leading-relaxed" style={{ color: "var(--green-deep)" }}>
                 A snapshot of what powers every GeneScope prediction — the data, the
@@ -255,9 +253,9 @@ function Home() {
             </div>
 
             {/* Right asymmetric stat grid */}
-            <div className="grid grid-cols-6 gap-4 md:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 md:gap-5">
               {/* Big record card */}
-              <div className="col-span-6 md:col-span-4 rounded-[2rem] bg-green-deep text-cream p-8 md:p-10 relative overflow-hidden">
+              <div className="sm:col-span-6 md:col-span-4 rounded-[2rem] bg-green-deep text-cream p-8 md:p-10 relative overflow-hidden">
                 <div className="text-xs font-display uppercase tracking-widest text-cream/70">01 — Records</div>
                 <div className="font-display text-6xl md:text-7xl lg:text-8xl tabular-nums mt-3 leading-none">
                   {totalRecords}
@@ -268,21 +266,21 @@ function Home() {
               </div>
 
               {/* Years */}
-              <div className="col-span-3 md:col-span-2 rounded-[2rem] bg-coral p-6 md:p-7 md:translate-y-6" style={{ color: "var(--green-deep)" }}>
+              <div className="sm:col-span-3 md:col-span-2 rounded-[2rem] bg-coral p-6 md:p-7 md:translate-y-6" style={{ color: "var(--green-deep)" }}>
                 <div className="text-xs font-display uppercase tracking-widest opacity-70">02 — Coverage</div>
-                <div className="font-display text-4xl md:text-5xl tabular-nums mt-3 leading-none">2021–25</div>
+                <div className="font-display text-4xl md:text-5xl tabular-nums mt-3 leading-[0.95] break-words">2021–25</div>
                 <div className="mt-3 text-xs md:text-sm font-semibold">Years covered</div>
               </div>
 
               {/* Models */}
-              <div className="col-span-3 md:col-span-2 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-6 md:p-7" style={{ color: "var(--green-deep)" }}>
+              <div className="sm:col-span-3 md:col-span-2 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-6 md:p-7" style={{ color: "var(--green-deep)" }}>
                 <div className="text-xs font-display uppercase tracking-widest opacity-70">03 — Benchmarks</div>
                 <div className="font-display text-4xl md:text-5xl tabular-nums mt-3 leading-none">3</div>
                 <div className="mt-3 text-xs md:text-sm font-semibold">Models compared</div>
               </div>
 
               {/* Indicators */}
-              <div className="col-span-3 md:col-span-4 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-6 md:p-8 md:-translate-y-2 flex items-center gap-5" style={{ color: "var(--green-deep)" }}>
+              <div className="sm:col-span-6 md:col-span-4 rounded-[2rem] bg-white shadow-[0_10px_40px_-20px_rgba(15,61,46,0.25)] p-6 md:p-8 md:-translate-y-2 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5" style={{ color: "var(--green-deep)" }}>
                 <div className="font-display text-5xl md:text-6xl tabular-nums leading-none">6</div>
                 <div>
                   <div className="text-xs font-display uppercase tracking-widest opacity-70">04 — Inputs</div>
