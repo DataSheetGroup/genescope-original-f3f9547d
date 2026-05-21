@@ -385,10 +385,10 @@ function GeographicTab({ data, query }: { data: any; query: string }) {
       <Panel title="Regional Breakdown" hint="Counts per island group">
         <ChartBox>
           <ResponsiveContainer>
-            <BarChart data={filtered} layout="vertical" margin={{ ...chartMargin, left: 20 }}>
+            <BarChart data={filtered} layout="vertical" margin={{ top: 8, right: 24, bottom: 0, left: 0 }}>
               <CartesianGrid stroke={GRID} horizontal={false} />
               <XAxis type="number" tick={axisTick} axisLine={false} tickLine={false} />
-              <YAxis dataKey="name" type="category" tick={axisTick} width={130} axisLine={false} tickLine={false} />
+              <YAxis dataKey="name" type="category" tick={axisTick} width={90} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={tooltipStyle} />
               <Bar dataKey="value" fill={ACCENT} radius={[0, 6, 6, 0]} barSize={26} />
             </BarChart>
