@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import microscopeSticker from "@/assets/stickers/microscope.png";
 import moleculeSticker from "@/assets/stickers/molecule.png";
 import flaskPurpleSticker from "@/assets/stickers/flask-purple.png";
