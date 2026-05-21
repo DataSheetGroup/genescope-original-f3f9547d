@@ -150,9 +150,6 @@ function Home() {
                 <br />
                 <span className="hl">Not the bewildered.</span>
               </h2>
-              <Link to="/predict" className="mt-10 pill pill-coral inline-flex">
-                Discover the concept
-              </Link>
             </div>
 
             <ol className="space-y-7">
@@ -268,127 +265,143 @@ function Home() {
         </div>
       </section>
 
-      {/* ───────────── HIGHLIGHTS / STATS (cream) — editorial magazine grid ───────────── */}
+      {/* ───────────── HIGHLIGHTS / STATS (cream) — centered + slidable ───────────── */}
       <section className="slab-cream relative overflow-hidden">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10 pb-32 relative">
-          {/* Header */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:items-end mb-12 lg:mb-16">
-            <div className="lg:col-span-7">
-              <span
-                className="block font-display uppercase tracking-[0.2em] text-xs sm:text-sm mb-4 opacity-60"
-                style={{ color: "var(--green-deep)" }}
-              >
-                The dataset behind the model
-              </span>
-              <h2 className="display-lg uppercase leading-[0.95]">
-                Our <span className="hl inline-block">highlights</span>
-                <br />
-                of the moment
-              </h2>
-            </div>
-            <div className="lg:col-span-5 lg:pb-2">
-              <p
-                className="text-base md:text-lg leading-relaxed max-w-md"
-                style={{ color: "var(--green-deep)" }}
-              >
-                A snapshot of what powers every GeneScope prediction — the data, the models, and the
-                indicators behind each calibrated probability.
-              </p>
-            </div>
+          {/* Centered header */}
+          <div className="text-center max-w-3xl mx-auto mb-14 md:mb-20">
+            <span
+              className="block font-display uppercase tracking-[0.25em] text-xs sm:text-sm mb-5 opacity-60"
+              style={{ color: "var(--green-deep)" }}
+            >
+              The dataset behind the model
+            </span>
+            <h2 className="display-lg uppercase leading-[1.05]">
+              <span>Our </span>
+              <span className="hl inline-block">highlights</span>
+              <br />
+              <span>of the moment</span>
+            </h2>
+            <p
+              className="mt-6 text-base md:text-lg leading-relaxed max-w-xl mx-auto"
+              style={{ color: "var(--green-deep)" }}
+            >
+              A snapshot of what powers every GeneScope prediction — the data, the models, and the
+              indicators behind each calibrated probability.
+            </p>
           </div>
 
-          {/* Magazine stat grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-6">
-            {/* Featured: 01 Records */}
-            <div className="lg:col-span-8 bg-green-deep text-cream rounded-[2.5rem] p-8 md:p-12 lg:p-16 flex flex-col justify-between min-h-[360px] md:min-h-[440px] shadow-2xl shadow-[var(--green-deep)]/10">
-              <div className="flex justify-between items-start gap-4">
-                <div className="font-display text-base md:text-lg tracking-widest opacity-50 uppercase">
-                  01 — Records
-                </div>
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-cream/20 flex items-center justify-center shrink-0">
-                  <ArrowRight
-                    className="w-4 h-4 md:w-5 md:h-5"
-                    style={{ color: "var(--teal-soft)" }}
-                  />
-                </div>
-              </div>
-              <div className="mt-10">
+          {/* Slidable stat carousel */}
+          {(() => {
+            const stats = [
+              {
+                n: "01",
+                label: "Records",
+                value: String(totalRecords),
+                body: "De-identified Philippine patient records powering the locally-trained model.",
+                bg: "var(--green-deep)",
+                fg: "var(--cream)",
+                accent: "var(--teal-soft)",
+              },
+              {
+                n: "02",
+                label: "Coverage",
+                value: "2021–25",
+                body: "Years of clinical data covered by the training corpus.",
+                bg: "var(--coral)",
+                fg: "var(--cream)",
+                accent: "var(--cream)",
+              },
+              {
+                n: "03",
+                label: "Benchmarks",
+                value: "3",
+                body: "Candidate models compared head-to-head during evaluation.",
+                bg: "#ffffff",
+                fg: "var(--green-deep)",
+                accent: "var(--coral)",
+              },
+              {
+                n: "04",
+                label: "Inputs",
+                value: "6",
+                body: "Structured clinical indicators driving every prediction.",
+                bg: "var(--teal-soft)",
+                fg: "var(--green-deep)",
+                accent: "var(--green-deep)",
+              },
+            ];
+            return (
+              <div className="relative">
+                {/* Edge fades */}
                 <div
-                  className="font-display tabular-nums leading-[0.8] tracking-tighter mb-4 text-[6rem] sm:text-[8rem] md:text-[10rem] lg:text-[12rem]"
-                  style={{ color: "var(--teal-soft)" }}
+                  className="pointer-events-none absolute left-0 top-0 bottom-3 w-8 md:w-16 z-10"
+                  style={{
+                    background: "linear-gradient(to right, var(--cream), transparent)",
+                  }}
+                />
+                <div
+                  className="pointer-events-none absolute right-0 top-0 bottom-3 w-8 md:w-16 z-10"
+                  style={{
+                    background: "linear-gradient(to left, var(--cream), transparent)",
+                  }}
+                />
+
+                <div
+                  className="flex gap-5 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-6 px-2 -mx-2 scroll-smooth"
+                  style={{ scrollbarWidth: "none" }}
                 >
-                  {totalRecords}
-                </div>
-                <p className="text-base md:text-xl lg:text-2xl font-light opacity-80 max-w-sm leading-snug">
-                  De-identified Philippine patient records powering the locally-trained model.
-                </p>
-              </div>
-            </div>
+                  {stats.map((s, i) => (
+                    <article
+                      key={s.n}
+                      className="snap-center shrink-0 w-[78%] sm:w-[58%] md:w-[42%] lg:w-[32%] rounded-[2.25rem] p-7 md:p-9 flex flex-col justify-between min-h-[340px] md:min-h-[400px] shadow-[0_30px_60px_-30px_rgba(15,15,40,0.35)] transition-transform duration-300 hover:-translate-y-1"
+                      style={{ background: s.bg, color: s.fg }}
+                    >
+                      <header className="flex items-center justify-between gap-4">
+                        <div className="font-display text-xs md:text-sm tracking-[0.25em] uppercase opacity-70">
+                          {s.n} — {s.label}
+                        </div>
+                        <div className="font-display text-xs md:text-sm opacity-40 tabular-nums">
+                          {String(i + 1).padStart(2, "0")}/{String(stats.length).padStart(2, "0")}
+                        </div>
+                      </header>
 
-            {/* Secondary stack */}
-            <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-5 md:gap-6">
-              {/* 02 Coverage */}
-              <div className="bg-coral text-cream rounded-[2rem] p-6 md:p-8 flex flex-col justify-between min-h-[160px] shadow-xl shadow-[var(--coral)]/10">
-                <div className="font-display text-xs md:text-sm tracking-widest opacity-70 uppercase mb-4">
-                  02 — Coverage
-                </div>
-                <div>
-                  <div className="font-display text-4xl md:text-5xl tabular-nums leading-none mb-2">
-                    2021–25
-                  </div>
-                  <div className="text-xs md:text-sm font-medium uppercase tracking-wider opacity-80">
-                    Years covered
-                  </div>
-                </div>
-              </div>
+                      <div className="my-6">
+                        <div
+                          className="font-display tabular-nums leading-[0.82] tracking-tighter text-[5.5rem] sm:text-[7rem] md:text-[8rem]"
+                          style={{ color: s.accent }}
+                        >
+                          {s.value}
+                        </div>
+                      </div>
 
-              {/* 03 Benchmarks */}
-              <div
-                className="bg-white rounded-[2rem] p-6 md:p-8 flex flex-col justify-between min-h-[160px] border shadow-lg"
-                style={{
-                  color: "var(--green-deep)",
-                  borderColor: "color-mix(in oklab, var(--green-deep) 8%, transparent)",
-                }}
-              >
-                <div className="font-display text-xs md:text-sm tracking-widest uppercase mb-4 opacity-40">
-                  03 — Benchmarks
+                      <footer>
+                        <div
+                          className="h-px w-12 mb-4 opacity-30"
+                          style={{ background: "currentColor" }}
+                        />
+                        <p className="text-sm md:text-base leading-snug font-medium opacity-90 max-w-[26ch]">
+                          {s.body}
+                        </p>
+                      </footer>
+                    </article>
+                  ))}
                 </div>
-                <div>
-                  <div className="font-display text-6xl md:text-7xl tabular-nums leading-none mb-2">
-                    3
-                  </div>
-                  <div className="text-xs md:text-sm font-medium uppercase tracking-wider opacity-60">
-                    Models compared
-                  </div>
-                </div>
-              </div>
 
-              {/* 04 Inputs */}
-              <div
-                className="rounded-[2rem] p-6 md:p-8 flex flex-col justify-between min-h-[160px] shadow-xl"
-                style={{
-                  background: "var(--teal-soft)",
-                  color: "var(--green-deep)",
-                  boxShadow:
-                    "0 20px 40px -20px color-mix(in oklab, var(--teal-soft) 40%, transparent)",
-                }}
-              >
-                <div className="font-display text-xs md:text-sm tracking-widest uppercase mb-4 opacity-50">
-                  04 — Inputs
-                </div>
-                <div className="flex items-end gap-4">
-                  <div className="font-display text-6xl md:text-7xl tabular-nums leading-none">
-                    6
-                  </div>
-                  <div className="text-xs md:text-sm font-semibold uppercase leading-tight pb-1">
-                    Structured clinical
-                    <br />
-                    indicators per prediction
-                  </div>
+                {/* Slide hint */}
+                <div
+                  className="mt-2 flex items-center justify-center gap-2 text-xs font-display uppercase tracking-[0.25em] opacity-50"
+                  style={{ color: "var(--green-deep)" }}
+                >
+                  <span>← slide</span>
+                  <span className="opacity-40">·</span>
+                  <span>{stats.length} highlights</span>
+                  <span className="opacity-40">·</span>
+                  <span>slide →</span>
                 </div>
               </div>
-            </div>
-          </div>
+            );
+          })()}
         </div>
       </section>
 
