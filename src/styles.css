@@ -212,7 +212,7 @@
   line-height: 1.05;
 }
 /* Give headings that contain .hl a touch more vertical breathing room */
-h1:has(.hl), h2:has(.hl), h3:has(.hl) { line-height: 1.15; }
+h1:has(.hl), h2:has(.hl), h3:has(.hl) { line-height: 1.35; }
 
 /* Full-bleed cream slab on a green page */
 .slab-cream {
