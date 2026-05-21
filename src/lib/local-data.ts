@@ -525,6 +525,15 @@ function mutualInfo(rows: Row[], feature: keyof Row): number {
 }
 
 export function getFeatureImportanceLocal(): FeatureImportance {
+  if (HAS_PKL) {
+    // Prefer the best model's grouped importances from the real .pkl
+    const best = PKL.models[PKL.best_model_name] ?? Object.values(PKL.models)[0];
+    if (best?.feature_importance?.length) return best.feature_importance;
+  }
+  return computeMutualInfoImportance();
+}
+
+function computeMutualInfoImportance(): FeatureImportance {
   const features: { feature: string; key: keyof Row }[] = [
     { feature: "Disease Category", key: "Disease_Category" },
     { feature: "Facility Type", key: "Facility_Type" },
