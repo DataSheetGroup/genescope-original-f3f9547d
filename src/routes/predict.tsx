@@ -304,7 +304,10 @@ function PredictPage() {
             <StepBadge n={3} label="What this means" />
             <h3 className="display-md mb-6 pr-24"><span className="hl">{result.prediction}</span></h3>
             <div className="grid md:grid-cols-2 gap-8 items-start">
-              <p className="text-base leading-relaxed">{info.definition}</p>
+              <div>
+                <div className="eyebrow text-card-foreground/60 mb-3">Definition</div>
+                <p className="text-base leading-relaxed">{info.definition}</p>
+              </div>
               <div>
                 <div className="eyebrow text-card-foreground/60 mb-3">Common examples</div>
                 <ul className="space-y-2.5">
