@@ -302,8 +302,8 @@ function PredictPage() {
           <div className="mt-6 rounded-[2rem] bg-card text-card-foreground p-7 md:p-10 relative overflow-hidden">
             <img src={testTube} alt="" className="hidden md:block absolute right-6 top-6 w-20 opacity-80" />
             <StepBadge n={3} label="What this means" />
-            <h3 className="display-md mb-5"><span className="hl">{result.prediction}</span></h3>
-            <div className="grid md:grid-cols-2 gap-8">
+            <h3 className="display-md mb-6 pr-24"><span className="hl">{result.prediction}</span></h3>
+            <div className="grid md:grid-cols-2 gap-8 items-start">
               <p className="text-base leading-relaxed">{info.definition}</p>
               <div>
                 <div className="eyebrow text-card-foreground/60 mb-3">Common examples</div>
@@ -325,11 +325,11 @@ function PredictPage() {
           <div className="mt-6 rounded-[2rem] bg-card text-card-foreground p-7 md:p-10 relative overflow-hidden">
             <img src={chromosome} alt="" className="hidden md:block absolute right-6 top-6 w-20 opacity-80" />
             <StepBadge n={4} label="Indicator influence" />
-            <h3 className="font-display text-2xl mb-1">What drove this <span className="hl">prediction</span></h3>
+            <h3 className="font-display text-2xl mb-1 pr-24">What drove this <span className="hl">prediction</span></h3>
             <p className="text-sm text-card-foreground/65 mb-6 max-w-xl">
               Relative weight each indicator carried in the model's decision.
             </p>
-            <div className="h-64 max-w-3xl">
+            <div className="h-72 w-full">
               {fi.isLoading && (
                 <div className="h-full flex items-center justify-center text-sm">
                   <Loader2 className="h-4 w-4 animate-spin mr-2" /> Loading…
@@ -338,11 +338,11 @@ function PredictPage() {
               {fi.isError && <div className="text-xs text-card-foreground/65">Feature importance unavailable.</div>}
               {fi.data && (
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={fi.data} layout="vertical" margin={{ top: 8, right: 24, bottom: 0, left: 0 }}>
+                  <BarChart data={fi.data} layout="vertical" margin={{ top: 8, right: 32, bottom: 0, left: 8 }}>
                     <XAxis type="number" tick={{ fontSize: 11, fill: "var(--green-deep)" }} />
-                    <YAxis dataKey="feature" type="category" tick={{ fontSize: 11, fill: "var(--green-deep)" }} width={130} />
+                    <YAxis dataKey="feature" type="category" tick={{ fontSize: 12, fill: "var(--green-deep)" }} width={150} interval={0} />
                     <Tooltip contentStyle={{ background: "var(--green-deep)", color: "var(--cream)", border: "none", borderRadius: 12 }} />
-                    <Bar dataKey="importance" radius={[0, 999, 999, 0]}>
+                    <Bar dataKey="importance" radius={[0, 999, 999, 0]} barSize={18}>
                       {fi.data.map((_, i) => (
                         <Cell key={i} fill="var(--coral)" />
                       ))}
