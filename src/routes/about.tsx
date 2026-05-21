@@ -74,7 +74,7 @@ function AboutPage() {
               }
             />
             <Row k="Thesis Adviser" v="Mr. Jeneffer A. Sabonsolin" />
-            <Row k="Data Partner" v="Data Sheet Group (Confidential — MOA & NDA)" />
+            <Row k="Thesis Group" v="Data Sheet Group" />
           </dl>
         </div>
 
