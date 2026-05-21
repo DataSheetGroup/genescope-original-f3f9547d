@@ -340,7 +340,7 @@ function PredictPage() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={fi.data} layout="vertical" margin={{ top: 8, right: 24, bottom: 0, left: 0 }}>
                     <XAxis type="number" tick={{ fontSize: 11, fill: "var(--green-deep)" }} />
-                    <YAxis dataKey="feature" type="category" tick={{ fontSize: 11, fill: "var(--green-deep)" }} width={100} />
+                    <YAxis dataKey="feature" type="category" tick={{ fontSize: 11, fill: "var(--green-deep)" }} width={130} />
                     <Tooltip contentStyle={{ background: "var(--green-deep)", color: "var(--cream)", border: "none", borderRadius: 12 }} />
                     <Bar dataKey="importance" radius={[0, 999, 999, 0]}>
                       {fi.data.map((_, i) => (
