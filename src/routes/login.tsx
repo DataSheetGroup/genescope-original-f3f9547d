@@ -1,6 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState, type FormEvent } from "react";
+import { Eye, EyeOff, ArrowLeft, ArrowRight, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { login } from "@/lib/auth";
+
 import logo from "@/assets/genescope-logo.png";
 
 export const Route = createFileRoute("/login")({
@@ -35,9 +37,37 @@ const TESTIMONIALS = [
 ];
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [showPw, setShowPw] = useState(false);
   const [idx, setIdx] = useState(0);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const t = TESTIMONIALS[idx];
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (submitting) return;
+    setError(null);
+
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await login(email.trim(), password);
+      setSuccess(true);
+      // brief success state, then redirect
+      setTimeout(() => navigate({ to: "/dashboard" }), 400);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Sign-in failed.");
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div
@@ -61,20 +91,20 @@ function LoginPage() {
             Please enter your account details to continue.
           </p>
 
-          <form
-            className="mt-10 space-y-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
-          >
+          <form className="mt-10 space-y-6" onSubmit={handleSubmit} noValidate>
+
             <div>
               <label className="block text-sm font-medium text-cream mb-2">
                 Email
               </label>
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                disabled={submitting || success}
                 placeholder="johndoe@gmail.com"
-                className="w-full rounded-full bg-white/5 border border-white/15 px-5 py-3.5 text-cream placeholder:text-cream/35 outline-none transition focus:border-[var(--teal)] focus:bg-white/10"
+                className="w-full rounded-full bg-white/5 border border-white/15 px-5 py-3.5 text-cream placeholder:text-cream/35 outline-none transition focus:border-[var(--teal)] focus:bg-white/10 disabled:opacity-60"
               />
             </div>
 
@@ -85,8 +115,12 @@ function LoginPage() {
               <div className="relative">
                 <input
                   type={showPw ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  disabled={submitting || success}
                   placeholder="••••••••"
-                  className="w-full rounded-full bg-white/5 border border-white/15 px-5 py-3.5 pr-12 text-cream placeholder:text-cream/35 outline-none transition focus:border-[var(--teal)] focus:bg-white/10"
+                  className="w-full rounded-full bg-white/5 border border-white/15 px-5 py-3.5 pr-12 text-cream placeholder:text-cream/35 outline-none transition focus:border-[var(--teal)] focus:bg-white/10 disabled:opacity-60"
                 />
                 <button
                   type="button"
@@ -116,17 +150,40 @@ function LoginPage() {
               </Link>
             </div>
 
+            {error && (
+              <div
+                role="alert"
+                className="flex items-start gap-2 rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-100"
+              >
+                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {success && (
+              <div
+                role="status"
+                className="flex items-start gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
+              >
+                <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
+                <span>Signed in. Redirecting…</span>
+              </div>
+            )}
+
             <button
               type="submit"
-              className="w-full rounded-full py-4 font-display tracking-wide uppercase text-base text-cream transition hover:opacity-95"
+              disabled={submitting || success}
+              className="w-full rounded-full py-4 font-display tracking-wide uppercase text-base text-cream transition hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               style={{ background: "var(--gradient-brand)" }}
             >
-              Sign in
+              {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
+              {submitting ? "Signing in…" : success ? "Success" : "Sign in"}
             </button>
 
             <div className="flex items-center gap-4 text-xs text-cream/50">
               <div className="h-px flex-1 bg-white/15" />
               or continue with
+
               <div className="h-px flex-1 bg-white/15" />
             </div>
 
