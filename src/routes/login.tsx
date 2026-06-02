@@ -1,6 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState, type FormEvent } from "react";
+import { Eye, EyeOff, ArrowLeft, ArrowRight, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { login } from "@/lib/auth";
+
 import logo from "@/assets/genescope-logo.png";
 
 export const Route = createFileRoute("/login")({
@@ -35,9 +37,37 @@ const TESTIMONIALS = [
 ];
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [showPw, setShowPw] = useState(false);
   const [idx, setIdx] = useState(0);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const t = TESTIMONIALS[idx];
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (submitting) return;
+    setError(null);
+
+    if (!email || !password) {
+      setError("Please enter both email and password.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await login(email.trim(), password);
+      setSuccess(true);
+      // brief success state, then redirect
+      setTimeout(() => navigate({ to: "/dashboard" }), 400);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Sign-in failed.");
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div
@@ -61,12 +91,8 @@ function LoginPage() {
             Please enter your account details to continue.
           </p>
 
-          <form
-            className="mt-10 space-y-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
-          >
+          <form className="mt-10 space-y-6" onSubmit={handleSubmit} noValidate>
+
             <div>
               <label className="block text-sm font-medium text-cream mb-2">
                 Email
