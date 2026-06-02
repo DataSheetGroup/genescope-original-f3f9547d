@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PredictRouteImport } from './routes/predict'
 import { Route as PerformanceRouteImport } from './routes/performance'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AboutRouteImport } from './routes/about'
@@ -24,6 +25,11 @@ const PredictRoute = PredictRouteImport.update({
 const PerformanceRoute = PerformanceRouteImport.update({
   id: '/performance',
   path: '/performance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
+  '/login': typeof LoginRoute
   '/performance': typeof PerformanceRoute
   '/predict': typeof PredictRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
+  '/login': typeof LoginRoute
   '/performance': typeof PerformanceRoute
   '/predict': typeof PredictRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/dashboard': typeof DashboardRoute
   '/history': typeof HistoryRoute
+  '/login': typeof LoginRoute
   '/performance': typeof PerformanceRoute
   '/predict': typeof PredictRoute
 }
@@ -79,16 +88,25 @@ export interface FileRouteTypes {
     | '/about'
     | '/dashboard'
     | '/history'
+    | '/login'
     | '/performance'
     | '/predict'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/dashboard' | '/history' | '/performance' | '/predict'
+  to:
+    | '/'
+    | '/about'
+    | '/dashboard'
+    | '/history'
+    | '/login'
+    | '/performance'
+    | '/predict'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/dashboard'
     | '/history'
+    | '/login'
     | '/performance'
     | '/predict'
   fileRoutesById: FileRoutesById
@@ -98,6 +116,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   DashboardRoute: typeof DashboardRoute
   HistoryRoute: typeof HistoryRoute
+  LoginRoute: typeof LoginRoute
   PerformanceRoute: typeof PerformanceRoute
   PredictRoute: typeof PredictRoute
 }
@@ -116,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/performance'
       fullPath: '/performance'
       preLoaderRoute: typeof PerformanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -154,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   DashboardRoute: DashboardRoute,
   HistoryRoute: HistoryRoute,
+  LoginRoute: LoginRoute,
   PerformanceRoute: PerformanceRoute,
   PredictRoute: PredictRoute,
 }
