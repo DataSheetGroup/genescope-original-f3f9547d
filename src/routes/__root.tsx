@@ -13,6 +13,9 @@ import appCss from "../styles.css?url";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/lib/theme";
+import { AuthProvider } from "@/lib/auth-context";
+
+const AUTH_ROUTES = ["/login", "/register", "/forgot-password", "/reset-password"];
 
 function NotFoundComponent() {
   return (
@@ -107,19 +110,22 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAuthRoute = AUTH_ROUTES.includes(pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-1">
-            <div key={pathname} className="animate-page-in">
-              <Outlet />
-            </div>
-          </main>
-          <Footer />
-        </div>
+        <AuthProvider>
+          <div className="min-h-screen flex flex-col">
+            {!isAuthRoute && <Navbar />}
+            <main className="flex-1">
+              <div key={pathname} className="animate-page-in">
+                <Outlet />
+              </div>
+            </main>
+            {!isAuthRoute && <Footer />}
+          </div>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
