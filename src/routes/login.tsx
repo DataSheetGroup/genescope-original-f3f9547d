@@ -155,7 +155,7 @@ function LoginPage() {
                 Keep me logged in
               </label>
               <Link
-                to="/login"
+                to="/forgot-password"
                 className="font-medium underline underline-offset-4"
                 style={{ color: "var(--teal)" }}
               >
@@ -193,33 +193,15 @@ function LoginPage() {
               {submitting ? "Signing in…" : success ? "Success" : "Sign in"}
             </button>
 
-            <div className="flex items-center gap-4 text-xs text-cream/50">
-              <div className="h-px flex-1 bg-white/15" />
-              or continue with
-
-              <div className="h-px flex-1 bg-white/15" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                className="rounded-full border border-white/15 bg-white/5 py-3 text-sm text-cream hover:bg-white/10 transition"
-              >
-                Google
-              </button>
-              <button
-                type="button"
-                className="rounded-full border border-white/15 bg-white/5 py-3 text-sm text-cream hover:bg-white/10 transition"
-              >
-                Apple
-              </button>
-            </div>
-
             <p className="text-center text-sm text-cream/60">
               Don't have an account?{" "}
-              <Link to="/login" className="font-medium text-cream underline underline-offset-4">
-                Sign up
+              <Link to="/register" className="font-medium text-cream underline underline-offset-4">
+                Request access
               </Link>
+            </p>
+
+            <p className="text-center text-[11px] text-cream/40">
+              Restricted system. Access limited to authorized partner clinicians and developers.
             </p>
           </form>
         </div>
