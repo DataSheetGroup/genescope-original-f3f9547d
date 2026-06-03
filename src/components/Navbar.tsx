@@ -1,9 +1,10 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Menu, X } from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { getHealth } from "@/lib/api";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAuth } from "@/lib/auth-context";
 
 const leftLinks = [
   { to: "/predict", label: "Predict" },
@@ -44,6 +45,8 @@ function NavLink({ to, label, onClick }: { to: string; label: string; onClick?: 
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
   const { data, isError } = useQuery({
     queryKey: ["health"],
     queryFn: getHealth,
@@ -51,6 +54,11 @@ export function Navbar() {
     retry: 1,
   });
   const online = !!data && !isError;
+
+  const handleLogout = async () => {
+    await logout();
+    navigate({ to: "/login" });
+  };
 
   return (
     <header className="sticky top-0 z-40" style={{ background: "var(--nav-bg)", color: "var(--nav-fg)" }}>
@@ -80,6 +88,17 @@ export function Navbar() {
               {online ? "Online" : "Offline"}
             </span>
             <ThemeToggle />
+            {isAuthenticated && (
+              <button
+                onClick={handleLogout}
+                title={user?.email}
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition hover:opacity-90"
+                style={{ background: "var(--surface-strong)", color: "var(--nav-bg)" }}
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                Sign out
+              </button>
+            )}
           </div>
 
           {/* Mobile hamburger placed across grid */}
