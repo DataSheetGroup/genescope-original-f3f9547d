@@ -49,6 +49,8 @@ const TESTIMONIALS = [
 
 function LoginPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
+  const { login } = useAuth();
   const [showPw, setShowPw] = useState(false);
   const [idx, setIdx] = useState(0);
   const [email, setEmail] = useState("");
@@ -72,8 +74,8 @@ function LoginPage() {
     try {
       await login(email.trim(), password);
       setSuccess(true);
-      // brief success state, then redirect
-      setTimeout(() => navigate({ to: "/dashboard" }), 400);
+      const target = search.redirect ?? "/";
+      setTimeout(() => navigate({ to: target }), 400);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign-in failed.");
       setSubmitting(false);
