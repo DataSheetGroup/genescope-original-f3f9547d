@@ -13,7 +13,7 @@ import {
   ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 
-export const Route = createFileRoute("/performance")({
+export const Route = createFileRoute("/_authenticated/performance")({
   head: () => ({
     meta: [
       { title: "GeneScope" },

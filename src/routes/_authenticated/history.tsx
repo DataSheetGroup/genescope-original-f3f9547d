@@ -9,7 +9,7 @@ import pillCap from "@/assets/illustrations/pill-capsule.png";
 import magnifier from "@/assets/illustrations/magnifier-strand.png";
 import chromosome from "@/assets/illustrations/chromosome.png";
 
-export const Route = createFileRoute("/history")({
+export const Route = createFileRoute("/_authenticated/history")({
   head: () => ({
     meta: [
       { title: "GeneScope" },

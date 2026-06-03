@@ -29,7 +29,7 @@ import {
   BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell,
 } from "recharts";
 
-export const Route = createFileRoute("/predict")({
+export const Route = createFileRoute("/_authenticated/predict")({
   head: () => ({
     meta: [
       { title: "GeneScope" },

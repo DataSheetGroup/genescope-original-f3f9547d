@@ -8,7 +8,7 @@ import petriDish from "@/assets/illustrations/petri-dish.png";
 import magnifier from "@/assets/illustrations/magnifier-strand.png";
 import pillCap from "@/assets/illustrations/pill-capsule.png";
 
-export const Route = createFileRoute("/about")({
+export const Route = createFileRoute("/_authenticated/about")({
   head: () => ({
     meta: [
       { title: "GeneScope" },

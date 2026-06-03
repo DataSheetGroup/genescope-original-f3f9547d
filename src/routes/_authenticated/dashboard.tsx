@@ -17,7 +17,7 @@ import { getEdaData } from "@/lib/api";
 import { BackendOfflineNotice } from "@/components/BackendOfflineNotice";
 import { PhilippinesMap } from "@/components/PhilippinesMap";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "GeneScope — Dashboard" },
