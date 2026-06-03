@@ -8,15 +8,30 @@ const API_URL =
 const TOKEN_KEY = "genescope.access_token";
 
 export type LoginResponse = { access_token: string };
+export type AuthUser = {
+  id: string;
+  email: string;
+  role: "developer" | "client" | string;
+  full_name?: string | null;
+};
 
-export async function login(email: string, password: string): Promise<LoginResponse> {
+async function request<T>(
+  path: string,
+  init: RequestInit = {},
+  { auth = false }: { auth?: boolean } = {},
+): Promise<T> {
+  const headers = new Headers(init.headers);
+  if (init.body && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+  if (auth) {
+    const token = getToken();
+    if (token) headers.set("Authorization", `Bearer ${token}`);
+  }
+
   let res: Response;
   try {
-    res = await fetch(`${API_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    res = await fetch(`${API_URL}${path}`, { ...init, headers });
   } catch {
     throw new Error("Can't reach the server. Check your connection and try again.");
   }
@@ -25,27 +40,77 @@ export async function login(email: string, password: string): Promise<LoginRespo
   try {
     payload = await res.json();
   } catch {
-    /* non-JSON response */
+    /* non-JSON */
   }
 
   if (!res.ok) {
-    const msg =
-      payload?.message ||
-      payload?.error ||
-      (res.status === 401
+    const fallback =
+      res.status === 401
         ? "Invalid email or password."
+        : res.status === 403
+        ? "Your email domain is not authorized to access this system."
+        : res.status === 404
+        ? "Account not found."
+        : res.status === 409
+        ? "An account with that email already exists."
         : res.status === 429
         ? "Too many attempts. Please wait a moment."
-        : `Sign-in failed (${res.status}).`);
-    throw new Error(msg);
+        : `Request failed (${res.status}).`;
+    throw new Error(payload?.message || payload?.error || fallback);
   }
 
-  if (!payload?.access_token) {
-    throw new Error("Unexpected response from server.");
-  }
+  return payload as T;
+}
 
-  setToken(payload.access_token);
-  return payload as LoginResponse;
+export async function login(email: string, password: string): Promise<LoginResponse> {
+  const data = await request<LoginResponse>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+  if (!data?.access_token) throw new Error("Unexpected response from server.");
+  setToken(data.access_token);
+  return data;
+}
+
+export async function register(input: {
+  email: string;
+  password: string;
+  full_name?: string;
+}): Promise<LoginResponse> {
+  const data = await request<LoginResponse>("/auth/register", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+  if (data?.access_token) setToken(data.access_token);
+  return data;
+}
+
+export async function me(): Promise<AuthUser> {
+  return request<AuthUser>("/auth/me", { method: "GET" }, { auth: true });
+}
+
+export async function logout(): Promise<void> {
+  try {
+    await request<void>("/auth/logout", { method: "POST" }, { auth: true });
+  } catch {
+    /* ignore — we still clear token locally */
+  } finally {
+    clearToken();
+  }
+}
+
+export async function forgotPassword(email: string): Promise<void> {
+  await request<void>("/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resetPassword(token: string, password: string): Promise<void> {
+  await request<void>("/auth/reset-password", {
+    method: "POST",
+    body: JSON.stringify({ token, password }),
+  });
 }
 
 export function setToken(token: string) {
@@ -57,6 +122,7 @@ export function setToken(token: string) {
 }
 
 export function getToken(): string | null {
+  if (typeof window === "undefined") return null;
   try {
     return localStorage.getItem(TOKEN_KEY);
   } catch {

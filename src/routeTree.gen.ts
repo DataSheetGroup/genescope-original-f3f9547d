@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedPredictRouteImport } from './routes/_authenticated/predict'
 import { Route as AuthenticatedPerformanceRouteImport } from './routes/_authenticated/performance'
@@ -22,46 +23,50 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: '/_authenticated/',
-  path: '/',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPredictRoute = AuthenticatedPredictRouteImport.update({
-  id: '/_authenticated/predict',
+  id: '/predict',
   path: '/predict',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPerformanceRoute =
   AuthenticatedPerformanceRouteImport.update({
-    id: '/_authenticated/performance',
+    id: '/performance',
     path: '/performance',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
-  id: '/_authenticated/history',
+  id: '/history',
   path: '/history',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/_authenticated/dashboard',
+  id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAboutRoute = AuthenticatedAboutRouteImport.update({
-  id: '/_authenticated/about',
+  id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
   '/about': typeof AuthenticatedAboutRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/performance': typeof AuthenticatedPerformanceRoute
   '/predict': typeof AuthenticatedPredictRoute
-  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -74,6 +79,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/_authenticated/about': typeof AuthenticatedAboutRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -85,13 +91,13 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/login'
     | '/about'
     | '/dashboard'
     | '/history'
     | '/performance'
     | '/predict'
-    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -103,6 +109,7 @@ export interface FileRouteTypes {
     | '/'
   id:
     | '__root__'
+    | '/_authenticated'
     | '/login'
     | '/_authenticated/about'
     | '/_authenticated/dashboard'
@@ -113,13 +120,8 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
-  AuthenticatedAboutRoute: typeof AuthenticatedAboutRoute
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
-  AuthenticatedPerformanceRoute: typeof AuthenticatedPerformanceRoute
-  AuthenticatedPredictRoute: typeof AuthenticatedPredictRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -131,59 +133,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/': {
       id: '/_authenticated/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/predict': {
       id: '/_authenticated/predict'
       path: '/predict'
       fullPath: '/predict'
       preLoaderRoute: typeof AuthenticatedPredictRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/performance': {
       id: '/_authenticated/performance'
       path: '/performance'
       fullPath: '/performance'
       preLoaderRoute: typeof AuthenticatedPerformanceRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/history': {
       id: '/_authenticated/history'
       path: '/history'
       fullPath: '/history'
       preLoaderRoute: typeof AuthenticatedHistoryRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/about': {
       id: '/_authenticated/about'
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AuthenticatedAboutRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  LoginRoute: LoginRoute,
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAboutRoute: typeof AuthenticatedAboutRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
+  AuthenticatedPerformanceRoute: typeof AuthenticatedPerformanceRoute
+  AuthenticatedPredictRoute: typeof AuthenticatedPredictRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAboutRoute: AuthenticatedAboutRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedPerformanceRoute: AuthenticatedPerformanceRoute,
   AuthenticatedPredictRoute: AuthenticatedPredictRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
