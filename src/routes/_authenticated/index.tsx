@@ -16,7 +16,7 @@ import labFlask from "@/assets/illustrations/lab-flask.png";
 import chromosome from "@/assets/illustrations/chromosome.png";
 import petriDish from "@/assets/illustrations/petri-dish.png";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "GeneScope" },
