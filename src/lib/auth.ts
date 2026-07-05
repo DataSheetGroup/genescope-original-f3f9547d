@@ -6,6 +6,9 @@ const API_URL =
   "http://localhost:5000";
 
 const TOKEN_KEY = "genescope.access_token";
+const DEMO_TOKEN = "genescope.demo_access";
+export const DEMO_EMAIL = "demo@genescope.local";
+export const DEMO_PASSWORD = "genescope123";
 
 export type LoginResponse = { access_token: string };
 export type AuthUser = {
@@ -13,6 +16,13 @@ export type AuthUser = {
   email: string;
   role: "developer" | "client" | string;
   full_name?: string | null;
+};
+
+const DEMO_USER: AuthUser = {
+  id: "demo-user",
+  email: DEMO_EMAIL,
+  role: "developer",
+  full_name: "GeneScope Demo User",
 };
 
 async function request<T>(
@@ -48,14 +58,14 @@ async function request<T>(
       res.status === 401
         ? "Invalid email or password."
         : res.status === 403
-        ? "Your email domain is not authorized to access this system."
-        : res.status === 404
-        ? "Account not found."
-        : res.status === 409
-        ? "An account with that email already exists."
-        : res.status === 429
-        ? "Too many attempts. Please wait a moment."
-        : `Request failed (${res.status}).`;
+          ? "Your email domain is not authorized to access this system."
+          : res.status === 404
+            ? "Account not found."
+            : res.status === 409
+              ? "An account with that email already exists."
+              : res.status === 429
+                ? "Too many attempts. Please wait a moment."
+                : `Request failed (${res.status}).`;
     throw new Error(payload?.message || payload?.error || fallback);
   }
 
@@ -63,6 +73,11 @@ async function request<T>(
 }
 
 export async function login(email: string, password: string): Promise<LoginResponse> {
+  if (email.trim().toLowerCase() === DEMO_EMAIL && password === DEMO_PASSWORD) {
+    setToken(DEMO_TOKEN);
+    return { access_token: DEMO_TOKEN };
+  }
+
   const data = await request<LoginResponse>("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
@@ -86,10 +101,16 @@ export async function register(input: {
 }
 
 export async function me(): Promise<AuthUser> {
+  if (getToken() === DEMO_TOKEN) return DEMO_USER;
   return request<AuthUser>("/auth/me", { method: "GET" }, { auth: true });
 }
 
 export async function logout(): Promise<void> {
+  if (getToken() === DEMO_TOKEN) {
+    clearToken();
+    return;
+  }
+
   try {
     await request<void>("/auth/logout", { method: "POST" }, { auth: true });
   } catch {

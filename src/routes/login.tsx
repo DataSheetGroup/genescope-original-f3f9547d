@@ -1,7 +1,16 @@
-import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { Eye, EyeOff, ArrowLeft, ArrowRight, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
-import { isAuthenticated } from "@/lib/auth";
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  KeyRound,
+  Loader2,
+} from "lucide-react";
+import { DEMO_EMAIL, DEMO_PASSWORD, isAuthenticated } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
@@ -11,8 +20,11 @@ type Search = { redirect?: string };
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in · GeneScope" },
-      { name: "description", content: "Sign in to GeneScope to access the clinical decision-support workspace." },
+      { title: "Sign in | GeneScope" },
+      {
+        name: "description",
+        content: "Sign in to GeneScope to access the clinical decision-support workspace.",
+      },
     ],
   }),
   validateSearch: (search: Record<string, unknown>): Search => ({
@@ -29,7 +41,7 @@ export const Route = createFileRoute("/login")({
 const TESTIMONIALS = [
   {
     quote:
-      "GeneScope gave our clinicians a calibrated, explainable second opinion — without ever exposing patient data to the cloud.",
+      "GeneScope gave our clinicians a calibrated, explainable second opinion without ever exposing patient data to the cloud.",
     name: "Dr. A. Reyes",
     title: "Clinical Geneticist",
   },
@@ -60,6 +72,12 @@ function LoginPage() {
   const [success, setSuccess] = useState(false);
   const t = TESTIMONIALS[idx];
 
+  const fillDemoAccount = () => {
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    setError(null);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (submitting) return;
@@ -84,47 +102,37 @@ function LoginPage() {
 
   return (
     <div
-      className="relative min-h-[calc(100vh-4rem)] overflow-hidden"
+      className="relative min-h-screen overflow-hidden"
       style={{
         background:
           "radial-gradient(120% 80% at 0% 0%, color-mix(in oklab, var(--teal) 35%, var(--ink)) 0%, var(--ink) 55%, color-mix(in oklab, var(--purple) 40%, var(--ink)) 100%)",
       }}
     >
-      <div className="mx-auto max-w-[1400px] grid lg:grid-cols-2 gap-10 px-6 sm:px-10 lg:px-16 py-12 lg:py-20 items-center">
-        {/* LEFT — form */}
-        <div className="max-w-md w-full mx-auto lg:mx-0">
-          <div className="font-brand text-2xl tracking-wide text-cream/90 mb-12">
-            GeneScope
-          </div>
+      <div className="mx-auto grid max-w-[1400px] items-center gap-10 px-6 py-12 sm:px-10 lg:grid-cols-2 lg:px-16 lg:py-20">
+        <div className="mx-auto w-full max-w-md lg:mx-0">
+          <div className="mb-12 font-brand text-2xl tracking-wide text-cream/90">GeneScope</div>
 
-          <h1 className="display-xl uppercase text-cream leading-[0.95]">
-            Welcome back
-          </h1>
-          <p className="mt-4 text-sm md:text-base text-cream/70">
+          <h1 className="display-xl uppercase leading-[0.95] text-cream">Welcome back</h1>
+          <p className="mt-4 text-sm text-cream/70 md:text-base">
             Please enter your account details to continue.
           </p>
 
           <form className="mt-10 space-y-6" onSubmit={handleSubmit} noValidate>
-
             <div>
-              <label className="block text-sm font-medium text-cream mb-2">
-                Email
-              </label>
+              <label className="mb-2 block text-sm font-medium text-cream">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
                 disabled={submitting || success}
-                placeholder="johndoe@gmail.com"
-                className="w-full rounded-full bg-white/5 border border-white/15 px-5 py-3.5 text-cream placeholder:text-cream/35 outline-none transition focus:border-[var(--teal)] focus:bg-white/10 disabled:opacity-60"
+                placeholder={DEMO_EMAIL}
+                className="w-full rounded-full border border-white/15 bg-white/5 px-5 py-3.5 text-cream outline-none transition placeholder:text-cream/35 focus:border-[var(--teal)] focus:bg-white/10 disabled:opacity-60"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-cream mb-2">
-                Password
-              </label>
+              <label className="mb-2 block text-sm font-medium text-cream">Password</label>
               <div className="relative">
                 <input
                   type={showPw ? "text" : "password"}
@@ -132,8 +140,8 @@ function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
                   disabled={submitting || success}
-                  placeholder="••••••••"
-                  className="w-full rounded-full bg-white/5 border border-white/15 px-5 py-3.5 pr-12 text-cream placeholder:text-cream/35 outline-none transition focus:border-[var(--teal)] focus:bg-white/10 disabled:opacity-60"
+                  placeholder="********"
+                  className="w-full rounded-full border border-white/15 bg-white/5 px-5 py-3.5 pr-12 text-cream outline-none transition placeholder:text-cream/35 focus:border-[var(--teal)] focus:bg-white/10 disabled:opacity-60"
                 />
                 <button
                   type="button"
@@ -147,7 +155,7 @@ function LoginPage() {
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 text-cream/80 cursor-pointer select-none">
+              <label className="flex cursor-pointer select-none items-center gap-2 text-cream/80">
                 <input
                   type="checkbox"
                   className="h-4 w-4 rounded border-white/30 bg-white/5 accent-[var(--teal)]"
@@ -168,7 +176,7 @@ function LoginPage() {
                 role="alert"
                 className="flex items-start gap-2 rounded-2xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-100"
               >
-                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                 <span>{error}</span>
               </div>
             )}
@@ -178,19 +186,39 @@ function LoginPage() {
                 role="status"
                 className="flex items-start gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100"
               >
-                <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>Signed in. Redirecting…</span>
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>Signed in. Redirecting...</span>
               </div>
             )}
+
+            <div className="rounded-3xl border border-white/15 bg-white/5 p-4 text-sm text-cream/75">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <div className="font-semibold text-cream">Demo access</div>
+                  <div className="mt-1 text-xs text-cream/60">
+                    {DEMO_EMAIL} / {DEMO_PASSWORD}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={fillDemoAccount}
+                  disabled={submitting || success}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cream transition hover:bg-white/10 disabled:opacity-60"
+                >
+                  <KeyRound className="h-4 w-4" />
+                  Use demo account
+                </button>
+              </div>
+            </div>
 
             <button
               type="submit"
               disabled={submitting || success}
-              className="w-full rounded-full py-4 font-display tracking-wide uppercase text-base text-cream transition hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex w-full items-center justify-center gap-2 rounded-full py-4 font-display text-base uppercase tracking-wide text-cream transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
               style={{ background: "var(--gradient-brand)" }}
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-              {submitting ? "Signing in…" : success ? "Success" : "Sign in"}
+              {submitting ? "Signing in..." : success ? "Success" : "Sign in"}
             </button>
 
             <p className="text-center text-sm text-cream/60">
@@ -206,54 +234,53 @@ function LoginPage() {
           </form>
         </div>
 
-        {/* RIGHT — logo + testimonial card */}
         <div className="relative">
           <div
-            className="relative rounded-[2.5rem] p-10 md:p-14 overflow-hidden"
+            className="relative overflow-hidden rounded-[2.5rem] p-10 md:p-14"
             style={{
               background:
                 "linear-gradient(160deg, color-mix(in oklab, var(--ink) 88%, transparent), color-mix(in oklab, var(--purple-deep) 80%, transparent))",
               border: "1px solid color-mix(in oklab, var(--teal) 25%, transparent)",
             }}
           >
-            {/* Logo block — right side as requested */}
-            <div className="flex justify-center mb-8">
+            <div className="mb-8 flex justify-center">
               <div
-                className="w-32 h-32 md:w-40 md:h-40 rounded-3xl flex items-center justify-center p-5"
+                className="flex h-32 w-32 items-center justify-center rounded-3xl p-5 md:h-40 md:w-40"
                 style={{
                   background:
                     "radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--teal) 30%, transparent), transparent 70%)",
                   border: "1px solid color-mix(in oklab, var(--teal) 30%, transparent)",
                 }}
               >
-                <img src={logo} alt="GeneScope" className="w-full h-full object-contain" />
+                <img src={logo} alt="GeneScope" className="h-full w-full object-contain" />
               </div>
             </div>
 
             <div className="text-center">
-              <div
-                className="font-display text-4xl md:text-5xl leading-tight text-cream uppercase"
-              >
+              <div className="font-display text-4xl uppercase leading-tight text-cream md:text-5xl">
                 What clinicians
                 <br />
                 are saying.
               </div>
 
-              <p className="mt-8 text-base md:text-lg text-cream/80 leading-relaxed max-w-md mx-auto">
+              <p className="mx-auto mt-8 max-w-md text-base leading-relaxed text-cream/80 md:text-lg">
                 "{t.quote}"
               </p>
 
               <div className="mt-8">
                 <div className="font-display text-xl text-cream">{t.name}</div>
-                <div className="text-sm text-cream/60 mt-1">{t.title}</div>
+                <div className="mt-1 text-sm text-cream/60">{t.title}</div>
               </div>
 
               <div className="mt-10 flex items-center justify-center gap-3">
                 <button
                   type="button"
                   onClick={() => setIdx((i) => (i - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)}
-                  className="h-12 w-12 rounded-2xl flex items-center justify-center transition hover:opacity-90"
-                  style={{ background: "color-mix(in oklab, var(--teal) 85%, var(--ink))", color: "var(--ink)" }}
+                  className="flex h-12 w-12 items-center justify-center rounded-2xl transition hover:opacity-90"
+                  style={{
+                    background: "color-mix(in oklab, var(--teal) 85%, var(--ink))",
+                    color: "var(--ink)",
+                  }}
                   aria-label="Previous testimonial"
                 >
                   <ArrowLeft className="h-5 w-5" />
@@ -261,7 +288,7 @@ function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setIdx((i) => (i + 1) % TESTIMONIALS.length)}
-                  className="h-12 w-12 rounded-2xl flex items-center justify-center transition hover:opacity-90"
+                  className="flex h-12 w-12 items-center justify-center rounded-2xl transition hover:opacity-90"
                   style={{ background: "var(--purple)", color: "var(--cream)" }}
                   aria-label="Next testimonial"
                 >
@@ -276,7 +303,10 @@ function LoginPage() {
                     className="h-1.5 rounded-full transition-all"
                     style={{
                       width: i === idx ? 24 : 6,
-                      background: i === idx ? "var(--teal)" : "color-mix(in oklab, var(--cream) 30%, transparent)",
+                      background:
+                        i === idx
+                          ? "var(--teal)"
+                          : "color-mix(in oklab, var(--cream) 30%, transparent)",
                     }}
                   />
                 ))}
