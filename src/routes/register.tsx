@@ -1,12 +1,20 @@
 import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { AlertCircle, CheckCircle2, Loader2, ArrowRight } from "lucide-react";
+import { Loader2, ArrowRight } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { isAuthenticated } from "@/lib/auth";
 
 import logo from "@/assets/genescope-logo.png";
 import stickerHelix from "@/assets/stickers/molecule.png";
 import stickerMicroscope from "@/assets/stickers/microscope.png";
+
+type FieldErrors = {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  general?: string;
+};
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -33,23 +41,22 @@ function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (submitting) return;
-    setError(null);
+    setErrors({});
 
-    if (!email || !password || !confirmPassword) {
-      setError("Please fill in all fields.");
-      return;
-    }
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+    const next: FieldErrors = {};
+    if (!email.trim()) next.email = "Please enter your email.";
+    if (!password) next.password = "Please enter a password.";
+    else if (password.length < 8) next.password = "Password must be at least 8 characters.";
+    if (!confirmPassword) next.confirmPassword = "Please confirm your password.";
+    else if (password && password !== confirmPassword) next.confirmPassword = "Passwords do not match.";
+
+    if (Object.keys(next).length > 0) {
+      setErrors(next);
       return;
     }
 
@@ -59,16 +66,16 @@ function RegisterPage() {
       setSuccess(true);
       setTimeout(() => navigate({ to: "/" }), 400);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed.");
+      setErrors({ general: err instanceof Error ? err.message : "Registration failed." });
       setSubmitting(false);
     }
   };
 
   const inputStyle = { border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" } as const;
   const inputClass =
-    "w-full rounded-xl bg-white px-4 py-3.5 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60 [@media(max-height:700px)]:py-2.5";
+    "w-full rounded-xl bg-white px-4 py-3.5 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60 [@media(max-height:700px)]:py-2";
   const labelStyle = { color: "color-mix(in oklab, var(--ink) 75%, transparent)" } as const;
-  const labelClass = "block text-xs font-semibold uppercase tracking-wider mb-2 [@media(max-height:700px)]:mb-1";
+  const labelClass = "block text-xs font-semibold uppercase tracking-wider mb-2 [@media(max-height:700px)]:mb-0.5";
 
   return (
     <div
@@ -113,7 +120,7 @@ function RegisterPage() {
       </aside>
 
       {/* RIGHT — form */}
-      <section className="relative flex flex-col justify-between h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden [@media(max-height:700px)]:p-5 sm:[@media(max-height:700px)]:p-7 lg:[@media(max-height:700px)]:p-10">
+      <section className="relative flex flex-col justify-between h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden [@media(max-height:700px)]:p-5 sm:[@media(max-height:700px)]:px-7 sm:[@media(max-height:700px)]:py-5 lg:[@media(max-height:700px)]:px-10 lg:[@media(max-height:700px)]:py-5">
         <img
           src={stickerMicroscope}
           alt=""
@@ -131,14 +138,14 @@ function RegisterPage() {
           <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
             Request access
           </div>
-          <h2 className="mt-3 display-md">
+          <h2 className="mt-3 display-md [@media(max-height:700px)]:mt-2">
             Create <span className="hl">account</span>.
           </h2>
-          <p className="mt-4 text-sm lg:text-base [@media(max-height:700px)]:mt-2" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
+          <p className="mt-4 text-sm lg:text-base [@media(max-height:700px)]:mt-1" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
             Approved partner emails only.
           </p>
 
-          <form onSubmit={onSubmit} noValidate className="mt-8 lg:mt-10 space-y-5 [@media(max-height:700px)]:mt-5 [@media(max-height:700px)]:space-y-3">
+          <form onSubmit={onSubmit} noValidate className="mt-8 lg:mt-10 space-y-4 [@media(max-height:700px)]:mt-5 [@media(max-height:700px)]:space-y-2">
             <div>
               <label htmlFor="fullName" className={labelClass} style={labelStyle}>Full name</label>
               <input
@@ -162,9 +169,14 @@ function RegisterPage() {
                 autoComplete="email"
                 disabled={submitting || success}
                 placeholder="you@partner.org"
-                className={inputClass}
-                style={inputStyle}
+                className={`${inputClass} ${errors.email || errors.general ? "border-[var(--destructive)] focus:ring-[var(--destructive)]" : ""}`}
+                style={{ ...inputStyle, border: errors.email || errors.general ? "1.5px solid var(--destructive)" : inputStyle.border }}
               />
+              {(errors.email || errors.general) && (
+                <div className="mt-1 text-xs [@media(max-height:700px)]:text-[11px]" style={{ color: "var(--destructive)" }}>
+                  {errors.email || errors.general}
+                </div>
+              )}
             </div>
             <div>
               <label htmlFor="password" className={labelClass} style={labelStyle}>Password</label>
@@ -176,9 +188,14 @@ function RegisterPage() {
                 autoComplete="new-password"
                 disabled={submitting || success}
                 placeholder="At least 8 characters"
-                className={inputClass}
-                style={inputStyle}
+                className={`${inputClass} ${errors.password ? "border-[var(--destructive)] focus:ring-[var(--destructive)]" : ""}`}
+                style={{ ...inputStyle, border: errors.password ? "1.5px solid var(--destructive)" : inputStyle.border }}
               />
+              {errors.password && (
+                <div className="mt-1 text-xs [@media(max-height:700px)]:text-[11px]" style={{ color: "var(--destructive)" }}>
+                  {errors.password}
+                </div>
+              )}
             </div>
             <div>
               <label htmlFor="confirmPassword" className={labelClass} style={labelStyle}>Confirm password</label>
@@ -190,15 +207,20 @@ function RegisterPage() {
                 autoComplete="new-password"
                 disabled={submitting || success}
                 placeholder="Re-enter your password"
-                className={inputClass}
-                style={inputStyle}
+                className={`${inputClass} ${errors.confirmPassword ? "border-[var(--destructive)] focus:ring-[var(--destructive)]" : ""}`}
+                style={{ ...inputStyle, border: errors.confirmPassword ? "1.5px solid var(--destructive)" : inputStyle.border }}
               />
+              {errors.confirmPassword && (
+                <div className="mt-1 text-xs [@media(max-height:700px)]:text-[11px]" style={{ color: "var(--destructive)" }}>
+                  {errors.confirmPassword}
+                </div>
+              )}
             </div>
 
             <button
               type="submit"
               disabled={submitting || success}
-              className="group w-full rounded-full py-4 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 [@media(max-height:700px)]:py-3"
+              className="group w-full rounded-full py-4 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 [@media(max-height:700px)]:py-2.5"
               style={{ background: "var(--ink)", color: "var(--cream)" }}
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -206,24 +228,9 @@ function RegisterPage() {
               {!submitting && !success && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />}
             </button>
           </form>
-
-          <div className="mt-5 min-h-[58px] [@media(max-height:700px)]:mt-3 [@media(max-height:700px)]:min-h-12">
-            {error && (
-              <div role="alert" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm animate-in fade-in duration-200" style={{ background: "color-mix(in oklab, var(--destructive) 12%, transparent)", color: "var(--destructive)", border: "1px solid color-mix(in oklab, var(--destructive) 35%, transparent)" }}>
-                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
-            {success && (
-              <div role="status" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm animate-in fade-in duration-200" style={{ background: "color-mix(in oklab, var(--teal) 15%, transparent)", color: "var(--teal-deep)", border: "1px solid color-mix(in oklab, var(--teal) 35%, transparent)" }}>
-                <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>Account created. Redirecting…</span>
-              </div>
-            )}
-          </div>
         </div>
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm mb-2" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
           Already have an account?{" "}
           <Link to="/login" className="font-semibold underline underline-offset-4" style={{ color: "var(--ink)" }}>
             Sign in
