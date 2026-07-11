@@ -10,11 +10,13 @@ type Props = {
   headline: ReactNode; // supports <span className="hl"> for highlight
   intro: string;
   brandTagline?: ReactNode;
+  brandNote?: ReactNode; // extra text below the tagline on the left slab
   children: ReactNode; // form
   footer: ReactNode;
 };
 
-export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, children, footer }: Props) {
+export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, brandNote, children, footer }: Props) {
+
   return (
     <div
       className="min-h-screen w-full grid lg:grid-cols-2 lg:h-screen lg:overflow-hidden"
