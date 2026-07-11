@@ -91,10 +91,6 @@ export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, childre
           <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
             {eyebrow}
           </div>
-
-          <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
-            {eyebrow}
-          </div>
           <h2 className="mt-3 display-md">{headline}</h2>
           <p className="mt-4 text-sm lg:text-base" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
             {intro}
