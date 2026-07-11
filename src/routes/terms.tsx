@@ -3,7 +3,6 @@ import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 import logo from "@/assets/genescope-logo.png";
 import stickerHelix from "@/assets/stickers/molecule.png";
-import stickerMicroscope from "@/assets/stickers/microscope.png";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -67,14 +66,6 @@ function TermsPage() {
 
       {/* RIGHT — terms summary */}
       <section className="relative flex flex-col h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden">
-        <img
-          src={stickerMicroscope}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute right-10 top-10 w-24 opacity-70 sm:right-16 sm:top-12 lg:right-20 lg:top-20 animate-drift"
-          style={{ transform: "rotate(8deg)", ["--rot" as string]: "8deg" }}
-        />
-
         <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex-1 flex flex-col justify-center min-h-0">
           {/* mobile brand */}
           <Link to="/" className="lg:hidden mb-6 inline-flex items-center gap-2">
