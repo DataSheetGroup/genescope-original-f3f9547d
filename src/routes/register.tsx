@@ -138,14 +138,14 @@ function RegisterPage() {
           <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
             Request access
           </div>
-          <h2 className="mt-3 display-md">
+          <h2 className="mt-3 display-md [@media(max-height:700px)]:mt-1">
             Create <span className="hl">account</span>.
           </h2>
           <p className="mt-4 text-sm lg:text-base [@media(max-height:700px)]:mt-1" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
             Approved partner emails only.
           </p>
 
-          <form onSubmit={onSubmit} noValidate className="mt-8 lg:mt-10 space-y-5 [@media(max-height:700px)]:mt-5 [@media(max-height:700px)]:space-y-2">
+          <form onSubmit={onSubmit} noValidate className="mt-8 lg:mt-10 space-y-5 [@media(max-height:700px)]:mt-4 [@media(max-height:700px)]:space-y-1.5">
             <div>
               <label htmlFor="fullName" className={labelClass} style={labelStyle}>Full name</label>
               <input
