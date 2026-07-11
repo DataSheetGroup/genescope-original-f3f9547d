@@ -220,7 +220,7 @@ function RegisterPage() {
             <button
               type="submit"
               disabled={submitting || success}
-              className="group w-full rounded-full py-4 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 [@media(max-height:700px)]:py-2.5"
+              className="group w-full rounded-full py-3.5 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 [@media(max-height:700px)]:py-2"
               style={{ background: "var(--ink)", color: "var(--cream)" }}
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
