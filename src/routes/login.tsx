@@ -129,9 +129,10 @@ function LoginPage() {
           src={stickerMagnet}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute -bottom-6 -left-6 w-20 sm:w-24 opacity-70 animate-float"
-          style={{ transform: "rotate(-14deg)" }}
+          className="pointer-events-none select-none absolute -bottom-6 -right-6 w-20 sm:w-24 opacity-70 animate-float"
+          style={{ transform: "rotate(14deg)" }}
         />
+
 
         <div className="relative w-full max-w-sm">
           {/* mobile brand */}
