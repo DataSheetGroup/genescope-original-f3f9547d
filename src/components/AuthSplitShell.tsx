@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import logo from "@/assets/genescope-logo.png";
 import stickerHelix from "@/assets/stickers/molecule.png";
