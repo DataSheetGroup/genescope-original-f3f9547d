@@ -104,7 +104,7 @@ function LoginPage() {
       </aside>
 
       {/* RIGHT — form */}
-      <section className="relative flex flex-col justify-between h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden">
+      <section className="relative flex flex-col h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden">
         {/* One quiet sticker placed inside the empty upper area */}
         <img
           src={stickerMicroscope}
@@ -114,7 +114,7 @@ function LoginPage() {
           style={{ transform: "rotate(8deg)" }}
         />
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg">
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex-1 flex flex-col justify-center min-h-0">
           {/* mobile brand */}
           <Link to="/" className="lg:hidden mb-6 inline-flex items-center gap-2">
             <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
