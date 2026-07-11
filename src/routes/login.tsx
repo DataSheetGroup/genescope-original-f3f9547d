@@ -104,37 +104,36 @@ function LoginPage() {
       </aside>
 
       {/* RIGHT — form */}
-      <section className="relative flex items-center justify-center p-6 sm:p-10 lg:p-12 xl:p-14 h-screen overflow-hidden">
+      <section className="relative flex flex-col justify-between h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden">
         {/* One quiet sticker placed inside the empty upper area */}
         <img
           src={stickerPotion}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute right-10 top-10 w-16 opacity-70 sm:right-16 sm:top-12 sm:w-20"
+          className="pointer-events-none select-none absolute right-10 top-10 w-16 opacity-70 sm:right-16 sm:top-12 sm:w-20 lg:right-20 lg:top-20"
           style={{ transform: "rotate(8deg)" }}
         />
 
-        <div className="relative w-full max-w-sm">
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg">
           {/* mobile brand */}
-          <Link to="/" className="lg:hidden mb-8 inline-flex items-center gap-2">
+          <Link to="/" className="lg:hidden mb-6 inline-flex items-center gap-2">
             <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
             <span className="font-brand text-xl">GeneScope</span>
           </Link>
 
-
           <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
             Sign in
           </div>
-          <h2 className="mt-2 font-display text-4xl leading-tight">
+          <h2 className="mt-3 display-md">
             Welcome <span className="hl">back</span>.
           </h2>
-          <p className="mt-3 text-sm" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
+          <p className="mt-4 text-sm lg:text-base" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
             Enter your credentials to continue.
           </p>
 
-          <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-4">
+          <form onSubmit={handleSubmit} noValidate className="mt-8 lg:mt-10 space-y-5">
             <div>
-              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
+              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
                 Email
               </label>
               <input
@@ -145,13 +144,13 @@ function LoginPage() {
                 autoComplete="email"
                 disabled={submitting || success}
                 placeholder="you@clinic.org"
-                className="w-full rounded-xl bg-white px-4 py-3 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
+                className="w-full rounded-xl bg-white px-4 py-3.5 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
                 style={{ border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" }}
               />
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center justify-between mb-2">
                 <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
                   Password
                 </label>
@@ -168,7 +167,7 @@ function LoginPage() {
                   autoComplete="current-password"
                   disabled={submitting || success}
                   placeholder="••••••••"
-                  className="w-full rounded-xl bg-white px-4 py-3 pr-11 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
+                  className="w-full rounded-xl bg-white px-4 py-3.5 pr-11 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
                   style={{ border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" }}
                 />
                 <button
@@ -203,21 +202,21 @@ function LoginPage() {
             <button
               type="submit"
               disabled={submitting || success}
-              className="group w-full rounded-full py-3.5 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="group w-full rounded-full py-4 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               style={{ background: "var(--ink)", color: "var(--cream)" }}
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
               {submitting ? "Signing in…" : success ? "Success" : "Sign in"}
               {!submitting && !success && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />}
             </button>
-
-            <div className="text-center text-sm" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
-              No account?{" "}
-              <Link to="/register" className="font-semibold underline underline-offset-4" style={{ color: "var(--ink)" }}>
-                Request access
-              </Link>
-            </div>
           </form>
+        </div>
+
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg pt-6 text-center text-sm" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
+          No account?{" "}
+          <Link to="/register" className="font-semibold underline underline-offset-4" style={{ color: "var(--ink)" }}>
+            Request access
+          </Link>
         </div>
       </section>
     </div>
