@@ -7,7 +7,10 @@ import {
   logout as apiLogout,
   me as apiMe,
   register as apiRegister,
+  updateMe as apiUpdateMe,
+  changePassword as apiChangePassword,
   type AuthUser,
+  type ProfileUpdate,
 } from "@/lib/auth";
 
 type AuthState = {
@@ -18,6 +21,8 @@ type AuthState = {
   register: (input: { email: string; password: string; full_name?: string }) => Promise<AuthUser>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
+  updateProfile: (input: ProfileUpdate) => Promise<AuthUser>;
+  changePassword: (current: string, next: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -70,6 +75,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.invalidate();
   };
 
+  const updateProfile: AuthState["updateProfile"] = async (input) => {
+    const u = await apiUpdateMe(input);
+    setUser(u);
+    return u;
+  };
+
+  const changePassword: AuthState["changePassword"] = async (current, next) => {
+    await apiChangePassword(current, next);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -80,6 +95,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         refresh: loadMe,
+        updateProfile,
+        changePassword,
       }}
     >
       {children}
