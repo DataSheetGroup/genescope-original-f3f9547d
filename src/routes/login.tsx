@@ -121,7 +121,21 @@ function LoginPage() {
       </aside>
 
       {/* RIGHT — form */}
-      <section className="flex items-center justify-center px-6 py-8 sm:px-10 h-screen overflow-y-auto lg:overflow-hidden">
+      <section className="relative flex items-center justify-center px-6 py-8 sm:px-10 h-screen overflow-y-auto lg:overflow-hidden">
+        <img
+          src={stickerPotion}
+          alt=""
+          aria-hidden
+          className="pointer-events-none select-none absolute top-6 right-6 w-20 opacity-80 animate-drift hidden sm:block"
+          style={{ ["--rot" as never]: "10deg", transform: "rotate(10deg)" }}
+        />
+        <img
+          src={stickerMagnet}
+          alt=""
+          aria-hidden
+          className="pointer-events-none select-none absolute bottom-6 left-6 w-16 opacity-70 animate-float hidden sm:block"
+          style={{ ["--rot" as never]: "-12deg", transform: "rotate(-12deg)" }}
+        />
         <div className="w-full max-w-sm">
           {/* mobile brand */}
           <Link to="/" className="lg:hidden mb-8 inline-flex items-center gap-2">
