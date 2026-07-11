@@ -192,7 +192,7 @@ function RegisterPage() {
                 style={{ ...inputStyle, border: errors.password ? "1.5px solid var(--destructive)" : inputStyle.border }}
               />
               {errors.password && (
-                <div className="mt-1.5 text-xs" style={{ color: "var(--destructive)" }}>
+                <div className="mt-1 text-xs [@media(max-height:700px)]:text-[11px]" style={{ color: "var(--destructive)" }}>
                   {errors.password}
                 </div>
               )}
@@ -211,7 +211,7 @@ function RegisterPage() {
                 style={{ ...inputStyle, border: errors.confirmPassword ? "1.5px solid var(--destructive)" : inputStyle.border }}
               />
               {errors.confirmPassword && (
-                <div className="mt-1.5 text-xs" style={{ color: "var(--destructive)" }}>
+                <div className="mt-1 text-xs [@media(max-height:700px)]:text-[11px]" style={{ color: "var(--destructive)" }}>
                   {errors.confirmPassword}
                 </div>
               )}
