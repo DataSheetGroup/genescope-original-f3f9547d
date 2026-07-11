@@ -17,6 +17,7 @@ export const Route = createFileRoute("/register")({
       throw redirect({ to: "/" });
     }
   },
+  ssr: false,
   component: RegisterPage,
 });
 

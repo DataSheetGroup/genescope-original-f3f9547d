@@ -13,6 +13,7 @@ export const Route = createFileRoute("/reset-password")({
   validateSearch: (search: Record<string, unknown>): Search => ({
     token: typeof search.token === "string" ? search.token : undefined,
   }),
+  ssr: false,
   component: ResetPasswordPage,
 });
 

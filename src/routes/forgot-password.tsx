@@ -8,6 +8,7 @@ export const Route = createFileRoute("/forgot-password")({
   head: () => ({
     meta: [{ title: "Forgot password · GeneScope" }],
   }),
+  ssr: false,
   component: ForgotPasswordPage,
 });
 
