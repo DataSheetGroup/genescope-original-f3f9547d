@@ -104,7 +104,7 @@ function LoginPage() {
       </aside>
 
       {/* RIGHT — form */}
-      <section className="relative flex items-center justify-center px-6 py-8 sm:px-10 h-screen overflow-hidden">
+      <section className="relative flex items-center justify-center p-6 sm:p-10 lg:p-12 xl:p-14 h-screen overflow-hidden">
         {/* One quiet sticker placed inside the empty upper area */}
         <img
           src={stickerPotion}
