@@ -86,7 +86,7 @@ function RegisterPage() {
 
           <form onSubmit={handleSubmit} noValidate className="space-y-5 max-w-xl">
             <div>
-              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-2 text-muted-foreground">
+              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-2 text-card-foreground/70">
                 Email
               </label>
               <input
@@ -102,7 +102,7 @@ function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider mb-2 text-muted-foreground">
+              <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider mb-2 text-card-foreground/70">
                 Password
               </label>
               <div className="relative">
