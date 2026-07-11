@@ -17,19 +17,19 @@ type Props = {
 export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, children, footer }: Props) {
   return (
     <div
-      className="h-screen w-full grid lg:grid-cols-2 overflow-hidden"
+      className="min-h-screen w-full grid lg:grid-cols-2 lg:h-screen lg:overflow-hidden"
       style={{ background: "var(--cream)", color: "var(--ink)" }}
     >
       {/* LEFT — brand slab */}
       <aside
-        className="relative hidden lg:flex flex-col justify-between p-12 xl:p-14 overflow-hidden"
+        className="relative hidden lg:flex flex-col justify-between p-10 xl:p-14 overflow-hidden"
         style={{ background: "var(--ink)", color: "var(--cream)" }}
       >
         <img
           src={stickerHelix}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute right-20 top-20 w-24 opacity-70"
+          className="pointer-events-none select-none absolute right-14 top-14 w-20 xl:w-24 opacity-70"
           style={{ transform: "rotate(-10deg)" }}
         />
 
@@ -39,7 +39,7 @@ export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, childre
         </Link>
 
         <div className="relative">
-          <div className="eyebrow mb-5 opacity-75">Clinical decision-support</div>
+          <div className="eyebrow mb-4 opacity-75">Clinical decision-support</div>
           <h1 className="display-lg leading-[0.95]">
             {brandTagline ?? (
               <>
@@ -51,7 +51,7 @@ export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, childre
               </>
             )}
           </h1>
-          <p className="mt-6 max-w-sm text-sm leading-relaxed opacity-80">
+          <p className="mt-5 max-w-sm text-sm leading-relaxed opacity-80">
             Restricted workspace for authorized partner clinicians and developers.
           </p>
         </div>
@@ -62,17 +62,17 @@ export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, childre
       </aside>
 
       {/* RIGHT — form */}
-      <section className="relative flex flex-col justify-between h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden">
+      <section className="relative flex flex-col h-full min-h-screen lg:min-h-0 lg:overflow-y-auto">
         <img
           src={stickerMicroscope}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute right-10 top-10 w-24 opacity-70 sm:right-16 sm:top-12 lg:right-20 lg:top-20"
+          className="pointer-events-none select-none absolute right-6 top-6 w-16 opacity-70 sm:right-10 sm:top-10 sm:w-20 lg:right-14 lg:top-14 xl:w-24"
           style={{ transform: "rotate(8deg)" }}
         />
 
         {/* Top bar — back link so users can leave auth pages */}
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex items-center justify-between">
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex items-center justify-between px-6 pt-6 sm:px-10 sm:pt-8 lg:px-0 lg:pt-10 xl:pt-14">
           <Link
             to="/"
             className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider hover:opacity-70 transition"
@@ -87,19 +87,19 @@ export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, childre
           </Link>
         </div>
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg">
+        <div className="relative flex-1 flex flex-col justify-center w-full max-w-md mx-auto lg:max-w-lg px-6 py-8 sm:px-10 lg:px-0 lg:py-10">
           <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
             {eyebrow}
           </div>
           <h2 className="mt-3 display-md">{headline}</h2>
-          <p className="mt-4 text-sm lg:text-base" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
+          <p className="mt-3 text-sm lg:text-base" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
             {intro}
           </p>
 
-          <div className="mt-8 lg:mt-10">{children}</div>
+          <div className="mt-6 lg:mt-8">{children}</div>
         </div>
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm px-6 pb-6 sm:px-10 sm:pb-8 lg:px-0 lg:pb-10 xl:pb-14" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
           {footer}
         </div>
       </section>
