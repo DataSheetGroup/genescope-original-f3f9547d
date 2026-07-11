@@ -5,6 +5,11 @@ import { isAuthenticated } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
+import stickerHelix from "@/assets/stickers/molecule.png";
+import stickerFlask from "@/assets/stickers/flask-purple.png";
+import stickerMicroscope from "@/assets/stickers/microscope.png";
+import stickerPotion from "@/assets/stickers/potion-blue.png";
+import stickerMagnet from "@/assets/stickers/magnet.png";
 
 type Search = { redirect?: string };
 
