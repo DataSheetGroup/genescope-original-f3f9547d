@@ -16,7 +16,7 @@ import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/lib/theme";
 import { AuthProvider } from "@/lib/auth-context";
 
-const AUTH_ROUTES = ["/login", "/register", "/forgot-password", "/reset-password"];
+const AUTH_ROUTES = ["/login", "/register", "/forgot-password", "/reset-password", "/terms"];
 
 function NotFoundComponent() {
   return (
