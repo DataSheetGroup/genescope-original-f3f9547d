@@ -219,7 +219,7 @@ function LoginPage() {
             <button
               type="submit"
               disabled={submitting || success}
-              className="group w-full rounded-full py-3.5 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="group w-full rounded-full py-3 font-display uppercase tracking-wider text-xs transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               style={{ background: "var(--ink)", color: "var(--cream)" }}
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -230,7 +230,7 @@ function LoginPage() {
             </button>
 
             <div
-              className="text-center text-sm"
+              className="text-right text-sm"
               style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}
             >
               No account?{" "}
