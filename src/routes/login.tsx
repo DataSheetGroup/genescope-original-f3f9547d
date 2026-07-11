@@ -150,14 +150,9 @@ function LoginPage() {
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
-                  Password
-                </label>
-                <Link to="/forgot-password" className="text-xs font-semibold hover:underline underline-offset-4" style={{ color: "var(--ink)" }}>
-                  Forgot?
-                </Link>
-              </div>
+              <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
+                Password
+              </label>
               <div className="relative">
                 <input
                   id="password"
@@ -179,12 +174,17 @@ function LoginPage() {
                   {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-            </div>
 
-            <label className="flex items-center gap-2 text-sm cursor-pointer select-none" style={{ color: "color-mix(in oklab, var(--ink) 78%, transparent)" }}>
-              <input type="checkbox" className="h-4 w-4 rounded accent-[var(--ink)]" />
-              Keep me signed in
-            </label>
+              <div className="flex items-center justify-between mt-3">
+                <label className="flex items-center gap-2 text-sm cursor-pointer select-none" style={{ color: "color-mix(in oklab, var(--ink) 78%, transparent)" }}>
+                  <input type="checkbox" className="h-4 w-4 rounded accent-[var(--ink)]" />
+                  Keep me signed in
+                </label>
+                <Link to="/forgot-password" className="text-sm font-semibold hover:underline underline-offset-4" style={{ color: "var(--ink)" }}>
+                  Forgot Password?
+                </Link>
+              </div>
+            </div>
 
             <button
               type="submit"
