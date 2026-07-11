@@ -96,7 +96,7 @@ export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, brandNo
           <div className="mt-4 lg:mt-5">{children}</div>
         </div>
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm px-6 pb-5 sm:px-10 sm:pb-6 lg:px-0 lg:pb-8" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm px-6 pb-5 sm:px-10 sm:pb-6 lg:px-0 lg:pb-10 xl:pb-14" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
           {footer}
         </div>
 
