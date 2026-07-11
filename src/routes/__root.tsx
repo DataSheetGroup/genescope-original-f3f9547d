@@ -8,15 +8,22 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/lib/theme";
 import { AuthProvider } from "@/lib/auth-context";
-import { useHydrated } from "@/hooks/useHydrated";
 
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password", "/reset-password"];
+const AUTH_ROUTE_SCRIPT = `(() => {
+  const authRoutes = ${JSON.stringify(AUTH_ROUTES)};
+  const setAuthRoute = () => {
+    document.documentElement.dataset.authRoute = authRoutes.includes(window.location.pathname) ? "true" : "false";
+  };
+  setAuthRoute();
+})();`;
 
 function NotFoundComponent() {
   return (
@@ -98,6 +105,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: AUTH_ROUTE_SCRIPT }} />
+        <style>{`html[data-auth-route="true"], html[data-auth-route="true"] body { overflow: hidden; } html[data-auth-route="true"] .auth-chrome { display: none !important; }`}</style>
         <HeadContent />
       </head>
       <body>
@@ -111,20 +120,27 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const { pathname } = useLocation();
-  const isAuthRoute = AUTH_ROUTES.includes(pathname);
+
+  useEffect(() => {
+    document.documentElement.dataset.authRoute = AUTH_ROUTES.includes(pathname) ? "true" : "false";
+  }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
           <div className="min-h-screen flex flex-col">
-            {!isAuthRoute && <Navbar />}
+            <div className="auth-chrome contents">
+              <Navbar />
+            </div>
             <main className="flex-1">
               <div key={pathname} className="animate-page-in">
                 <Outlet />
               </div>
             </main>
-            {!isAuthRoute && <Footer />}
+            <div className="auth-chrome contents">
+              <Footer />
+            </div>
           </div>
         </AuthProvider>
       </ThemeProvider>
