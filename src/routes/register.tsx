@@ -4,9 +4,7 @@ import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, ArrowRight } from "luc
 import { isAuthenticated } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
-import logo from "@/assets/genescope-logo.png";
-import stickerHelix from "@/assets/stickers/molecule.png";
-import stickerMicroscope from "@/assets/stickers/microscope.png";
+import helixCheck from "@/assets/illustrations/helix-check.png";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
@@ -63,77 +61,32 @@ function RegisterPage() {
   };
 
   return (
-    <div
-      className="h-screen w-full grid lg:grid-cols-2 overflow-hidden"
-      style={{ background: "var(--cream)", color: "var(--ink)" }}
-    >
-      {/* LEFT — brand slab */}
-      <aside
-        className="relative hidden lg:flex flex-col justify-between p-12 xl:p-14 overflow-hidden"
-        style={{ background: "var(--ink)", color: "var(--cream)" }}
-      >
-        <img
-          src={stickerHelix}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute right-20 top-20 w-24 opacity-70"
-          style={{ transform: "rotate(-10deg)" }}
-        />
-
-        <Link to="/" className="relative inline-flex items-center gap-3 w-fit">
-          <img src={logo} alt="GeneScope" className="h-9 w-9 object-contain" />
-          <span className="font-brand text-2xl">GeneScope</span>
-        </Link>
-
-        <div className="relative">
-          <div className="eyebrow mb-5 opacity-75">Partner onboarding</div>
-          <h1 className="display-lg leading-[0.95]">
-            Join the
+    <div className="min-h-screen relative overflow-hidden flex flex-col">
+      <div className="flex-1 flex flex-col justify-center mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-10 py-12 space-y-8 z-10">
+        <div className="max-w-3xl">
+          <div className="eyebrow text-coral mb-3">Partner onboarding</div>
+          <h1 className="display-lg">
+            Request
             <br />
-            <span className="hl">restricted</span>
-            <br />
-            workspace.
+            <span className="hl">access.</span>
           </h1>
-          <p className="mt-6 max-w-sm text-sm leading-relaxed opacity-80">
-            Request access using your approved partner-domain email.
-          </p>
         </div>
 
-        <div className="relative text-xs opacity-60">
-          © 2026 Data Sheet Group · RA 10173-aligned
-        </div>
-      </aside>
-
-      {/* RIGHT — form */}
-      <section className="relative flex flex-col h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden">
-        <img
-          src={stickerMicroscope}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute right-10 top-10 w-24 opacity-70 sm:right-16 sm:top-12 lg:right-20 lg:top-20"
-          style={{ transform: "rotate(8deg)" }}
-        />
-
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex-1 flex flex-col justify-center min-h-0">
-          {/* mobile brand */}
-          <Link to="/" className="lg:hidden mb-6 inline-flex items-center gap-2">
-            <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
-            <span className="font-brand text-xl">GeneScope</span>
-          </Link>
-
-          <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
-            Request access
-          </div>
-          <h2 className="mt-3 display-md">
-            Create <span className="hl">account</span>.
+        <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
+          <img
+            src={helixCheck}
+            alt=""
+            aria-hidden
+            className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90"
+          />
+          <div className="eyebrow text-coral mb-2">Account</div>
+          <h2 className="font-display text-3xl mb-6">
+            Create <span className="hl">workspace.</span>
           </h2>
-          <p className="mt-4 text-sm lg:text-base" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
-            Approved partner emails only.
-          </p>
 
-          <form onSubmit={handleSubmit} noValidate className="mt-8 lg:mt-10 space-y-5">
+          <form onSubmit={handleSubmit} noValidate className="space-y-5 max-w-xl">
             <div>
-              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
+              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-2 text-card-foreground/70">
                 Email
               </label>
               <input
@@ -144,13 +97,12 @@ function RegisterPage() {
                 autoComplete="email"
                 disabled={submitting || success}
                 placeholder="you@partner.org"
-                className="w-full rounded-xl bg-white px-4 py-3.5 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
-                style={{ border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" }}
+                className="w-full rounded-xl bg-cream-dim px-4 py-3.5 text-card-foreground placeholder:text-card-foreground/40 outline-none transition focus:ring-2 focus:ring-ink disabled:opacity-60"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
+              <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider mb-2 text-card-foreground/70">
                 Password
               </label>
               <div className="relative">
@@ -162,13 +114,12 @@ function RegisterPage() {
                   autoComplete="new-password"
                   disabled={submitting || success}
                   placeholder="At least 8 characters"
-                  className="w-full rounded-xl bg-white px-4 py-3.5 pr-11 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
-                  style={{ border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" }}
+                  className="w-full rounded-xl bg-cream-dim px-4 py-3.5 pr-11 text-card-foreground placeholder:text-card-foreground/40 outline-none transition focus:ring-2 focus:ring-ink disabled:opacity-60"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPw((v) => !v)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[color-mix(in_oklab,var(--ink)_55%,transparent)] hover:text-[var(--ink)]"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-card-foreground/60 hover:text-card-foreground"
                   aria-label={showPw ? "Hide password" : "Show password"}
                 >
                   {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -176,17 +127,17 @@ function RegisterPage() {
               </div>
             </div>
 
-            <label className="flex items-start gap-3 text-sm cursor-pointer select-none" style={{ color: "color-mix(in oklab, var(--ink) 78%, transparent)" }}>
+            <label className="flex items-start gap-3 text-sm cursor-pointer select-none text-card-foreground/80">
               <input
                 type="checkbox"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
                 disabled={submitting || success}
-                className="mt-0.5 h-4 w-4 rounded accent-[var(--ink)] shrink-0"
+                className="mt-0.5 h-4 w-4 rounded accent-ink shrink-0"
               />
               <span>
                 I agree to the{" "}
-                <Link to="/terms" className="font-semibold hover:underline underline-offset-4" style={{ color: "var(--ink)" }}>
+                <Link to="/terms" className="font-semibold hover:underline underline-offset-4 text-card-foreground">
                   Terms and Conditions
                 </Link>
               </span>
@@ -195,8 +146,7 @@ function RegisterPage() {
             <button
               type="submit"
               disabled={submitting || success}
-              className="group w-full rounded-full py-4 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              style={{ background: "var(--ink)", color: "var(--cream)" }}
+              className="group w-full rounded-full py-4 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 bg-ink text-cream"
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
               {submitting ? "Creating…" : success ? "Success" : "Create account"}
@@ -204,15 +154,15 @@ function RegisterPage() {
             </button>
           </form>
 
-          <div className="mt-5 min-h-[58px]">
+          <div className="mt-5 min-h-[58px] max-w-xl">
             {error && (
-              <div role="alert" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm" style={{ background: "color-mix(in oklab, var(--destructive) 12%, transparent)", color: "var(--destructive)", border: "1px solid color-mix(in oklab, var(--destructive) 35%, transparent)" }}>
+              <div role="alert" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm bg-destructive/10 text-destructive border border-destructive/30">
                 <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
                 <span>{error}</span>
               </div>
             )}
             {success && (
-              <div role="status" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm" style={{ background: "color-mix(in oklab, var(--teal) 15%, transparent)", color: "var(--teal-deep)", border: "1px solid color-mix(in oklab, var(--teal) 35%, transparent)" }}>
+              <div role="status" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm bg-success/15 text-success-foreground border border-success/30">
                 <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
                 <span>Account created. Redirecting…</span>
               </div>
@@ -220,13 +170,13 @@ function RegisterPage() {
           </div>
         </div>
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
+        <div className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link to="/login" className="font-semibold underline underline-offset-4" style={{ color: "var(--ink)" }}>
+          <Link to="/login" className="font-semibold underline underline-offset-4 text-foreground">
             Sign in
           </Link>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
