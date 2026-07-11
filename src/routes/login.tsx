@@ -5,8 +5,8 @@ import { isAuthenticated } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
-import stickerHelix from "@/assets/stickers/molecule.png";
-import stickerMicroscope from "@/assets/stickers/microscope.png";
+import stickerHelix from "@/assets/illustrations/helix-doodle.png";
+import stickerMicroscope from "@/assets/illustrations/microscope-doodle.png";
 
 type Search = { redirect?: string };
 
