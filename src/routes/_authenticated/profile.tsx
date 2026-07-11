@@ -97,13 +97,13 @@ function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="relative overflow-hidden">
-        <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10 py-16 text-center text-foreground/70 z-10">
-          Loading your profile…
-        </div>
+    <div className="relative overflow-hidden" style={{ background: "var(--paper)", color: "var(--ink)" }}>
+      <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10 py-16 text-center text-foreground/70 z-10">
+        Loading your profile…
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   const displayName = user.full_name?.trim() || user.email.split("@")[0];
 
