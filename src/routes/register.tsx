@@ -173,7 +173,7 @@ function RegisterPage() {
                 style={{ ...inputStyle, border: errors.email || errors.general ? "1.5px solid var(--destructive)" : inputStyle.border }}
               />
               {(errors.email || errors.general) && (
-                <div className="mt-1.5 text-xs" style={{ color: "var(--destructive)" }}>
+                <div className="mt-1 text-xs [@media(max-height:700px)]:text-[11px]" style={{ color: "var(--destructive)" }}>
                   {errors.email || errors.general}
                 </div>
               )}
