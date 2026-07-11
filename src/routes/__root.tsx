@@ -111,10 +111,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const { pathname } = useLocation();
-  const hydrated = useHydrated();
-  // Avoid hydration mismatches by rendering the same shell on the first pass,
-  // then hide the layout on auth routes once the client has hydrated.
-  const isAuthRoute = hydrated && AUTH_ROUTES.includes(pathname);
+  const isAuthRoute = AUTH_ROUTES.includes(pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
