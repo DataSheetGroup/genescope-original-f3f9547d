@@ -133,7 +133,7 @@ function RegisterPage() {
             Approved partner emails only.
           </p>
 
-          <form onSubmit={onSubmit} noValidate className="mt-6 lg:mt-8 space-y-4">
+          <form onSubmit={onSubmit} noValidate className="mt-8 lg:mt-10 space-y-5">
             <div>
               <label htmlFor="fullName" className={labelClass} style={labelStyle}>Full name</label>
               <input
