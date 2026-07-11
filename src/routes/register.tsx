@@ -129,22 +129,26 @@ function RegisterPage() {
           style={{ transform: "rotate(8deg)" }}
         />
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex-1 flex flex-col justify-center min-h-0">
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex-1 flex flex-col justify-between min-h-0">
           <Link to="/" className="lg:hidden mb-6 inline-flex items-center gap-2">
             <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
             <span className="font-brand text-xl">GeneScope</span>
           </Link>
 
-          <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
-            Request access
+          {/* Top content group */}
+          <div>
+            <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
+              Request access
+            </div>
+            <h2 className="mt-3 display-md [@media(max-height:700px)]:mt-2">
+              Create <span className="hl">account</span>.
+            </h2>
+            <p className="mt-4 text-sm lg:text-base [@media(max-height:700px)]:mt-2" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
+              Approved partner emails only.
+            </p>
           </div>
-          <h2 className="mt-3 display-md [@media(max-height:700px)]:mt-2">
-            Create <span className="hl">account</span>.
-          </h2>
-          <p className="mt-4 text-sm lg:text-base [@media(max-height:700px)]:mt-2" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
-            Approved partner emails only.
-          </p>
 
+          {/* Form group */}
           <form onSubmit={onSubmit} noValidate className="mt-8 lg:mt-10 space-y-5 [@media(max-height:700px)]:mt-6 [@media(max-height:700px)]:space-y-3">
             <div>
               <label htmlFor="fullName" className={labelClass} style={labelStyle}>Full name</label>
@@ -228,13 +232,14 @@ function RegisterPage() {
               {!submitting && !success && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />}
             </button>
           </form>
-        </div>
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
-          Already have an account?{" "}
-          <Link to="/login" className="font-semibold underline underline-offset-4" style={{ color: "var(--ink)" }}>
-            Sign in
-          </Link>
+          {/* Bottom link group */}
+          <div className="text-center text-sm" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
+            Already have an account?{" "}
+            <Link to="/login" className="font-semibold underline underline-offset-4" style={{ color: "var(--ink)" }}>
+              Sign in
+            </Link>
+          </div>
         </div>
       </section>
     </div>
