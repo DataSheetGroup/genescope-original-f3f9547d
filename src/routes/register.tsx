@@ -30,6 +30,7 @@ function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,12 +40,16 @@ function RegisterPage() {
     if (submitting) return;
     setError(null);
 
-    if (!email || !password) {
-      setError("Email and password are required.");
+    if (!email || !password || !confirmPassword) {
+      setError("Please fill in all fields.");
       return;
     }
     if (password.length < 8) {
       setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
 
@@ -175,6 +180,20 @@ function RegisterPage() {
                 style={inputStyle}
               />
             </div>
+            <div>
+              <label htmlFor="confirmPassword" className={labelClass} style={labelStyle}>Confirm password</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="new-password"
+                disabled={submitting || success}
+                placeholder="Re-enter your password"
+                className={inputClass}
+                style={inputStyle}
+              />
+            </div>
 
             <button
               type="submit"
@@ -204,7 +223,7 @@ function RegisterPage() {
           </div>
         </div>
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm mb-2" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
           Already have an account?{" "}
           <Link to="/login" className="font-semibold underline underline-offset-4" style={{ color: "var(--ink)" }}>
             Sign in
