@@ -5,7 +5,6 @@ import { forgotPassword } from "@/lib/auth";
 
 import logo from "@/assets/genescope-logo.png";
 import stickerHelix from "@/assets/stickers/molecule.png";
-import stickerMicroscope from "@/assets/stickers/microscope.png";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -86,14 +85,6 @@ function ForgotPasswordPage() {
 
       {/* RIGHT — form */}
       <section className="relative flex flex-col h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden">
-        <img
-          src={stickerMicroscope}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute right-10 top-10 w-24 opacity-70 sm:right-16 sm:top-12 lg:right-20 lg:top-20"
-          style={{ transform: "rotate(8deg)" }}
-        />
-
         <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex-1 flex flex-col justify-center min-h-0">
           <Link to="/" className="lg:hidden mb-6 inline-flex items-center gap-2">
             <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
