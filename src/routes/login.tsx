@@ -5,8 +5,8 @@ import { isAuthenticated } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
-import stickerHelix from "@/assets/stickers/molecule.png";
-import stickerPotion from "@/assets/stickers/potion-blue.png";
+import stickerFlask from "@/assets/stickers/flask-green.png";
+import stickerMicroscope from "@/assets/stickers/microscope.png";
 
 type Search = { redirect?: string };
 
@@ -61,80 +61,69 @@ function LoginPage() {
 
   return (
     <div
-      className="h-screen w-full grid lg:grid-cols-2 overflow-hidden"
-      style={{ background: "var(--cream)", color: "var(--ink)" }}
+      className="relative h-screen w-full overflow-hidden flex flex-col"
+      style={{ background: "var(--ink)", color: "var(--cream)" }}
     >
-      {/* LEFT — brand slab (matches hero-green) */}
-      <aside
-        className="relative hidden lg:flex flex-col justify-between p-12 xl:p-14 overflow-hidden"
-        style={{ background: "var(--ink)", color: "var(--cream)" }}
-      >
-        {/* One quiet sticker placed in unused space, not on the edge or seam */}
-        <img
-          src={stickerHelix}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute right-20 top-20 w-24 opacity-70"
-          style={{ transform: "rotate(-10deg)" }}
-        />
-
-        <Link to="/" className="relative inline-flex items-center gap-3 w-fit">
-          <img src={logo} alt="GeneScope" className="h-9 w-9 object-contain" />
-          <span className="font-brand text-2xl">GeneScope</span>
+      {/* Top bar — centered logo like phamily */}
+      <header className="relative z-10 flex items-center justify-center pt-6 sm:pt-8 shrink-0">
+        <Link to="/" className="inline-flex items-center gap-2">
+          <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
+          <span className="font-brand text-xl sm:text-2xl tracking-wide">GeneScope</span>
         </Link>
+      </header>
 
-        <div className="relative">
-          <div className="eyebrow mb-5 opacity-75">Clinical decision-support</div>
-          <h1 className="display-lg leading-[0.95]">
-            Decisions
-            <br />
-            <span className="hl">without</span>
-            <br />
-            the guesswork.
-          </h1>
-          <p className="mt-6 max-w-sm text-sm leading-relaxed opacity-80">
-            Sign in to access the restricted workspace for authorized partner
-            clinicians and developers.
-          </p>
-        </div>
+      {/* Decorative stickers — anchored to outer corners with generous margin,
+          hidden on very small screens so they never collide with the card */}
+      <img
+        src={stickerMicroscope}
+        alt=""
+        aria-hidden
+        className="pointer-events-none select-none hidden md:block absolute w-28 lg:w-40 xl:w-52 opacity-90"
+        style={{ left: "3.5rem", bottom: "3rem", transform: "rotate(-8deg)" }}
+      />
+      <img
+        src={stickerFlask}
+        alt=""
+        aria-hidden
+        className="pointer-events-none select-none hidden md:block absolute w-28 lg:w-40 xl:w-52 opacity-90"
+        style={{ right: "3.5rem", top: "6rem", transform: "rotate(10deg)" }}
+      />
 
-        <div className="relative text-xs opacity-60">
-          © 2026 Data Sheet Group · RA 10173-aligned
-        </div>
-      </aside>
-
-      {/* RIGHT — form */}
-      <section className="relative flex items-center justify-center px-6 py-8 sm:px-10 h-screen overflow-hidden">
-        {/* One quiet sticker placed inside the empty upper area */}
-        <img
-          src={stickerPotion}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute right-10 top-10 w-16 opacity-70 sm:right-16 sm:top-12 sm:w-20"
-          style={{ transform: "rotate(8deg)" }}
-        />
-
-        <div className="relative w-full max-w-sm">
-          {/* mobile brand */}
-          <Link to="/" className="lg:hidden mb-8 inline-flex items-center gap-2">
-            <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
-            <span className="font-brand text-xl">GeneScope</span>
-          </Link>
-
-
-          <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
-            Sign in
+      {/* Center — form card */}
+      <main className="relative z-10 flex-1 flex items-center justify-center px-5">
+        <div
+          className="w-full max-w-md rounded-3xl p-7 sm:p-9 shadow-2xl"
+          style={{
+            background: "var(--cream)",
+            color: "var(--ink)",
+            border: "1px solid color-mix(in oklab, var(--ink) 12%, transparent)",
+          }}
+        >
+          <div className="text-center">
+            <div
+              className="eyebrow"
+              style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}
+            >
+              Restricted access
+            </div>
+            <h1 className="mt-1 font-display text-3xl sm:text-4xl leading-tight">
+              Welcome <span className="hl">back</span>.
+            </h1>
+            <p
+              className="mt-2 text-sm"
+              style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}
+            >
+              Sign in to continue to the workspace.
+            </p>
           </div>
-          <h2 className="mt-2 font-display text-4xl leading-tight">
-            Welcome <span className="hl">back</span>.
-          </h2>
-          <p className="mt-3 text-sm" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
-            Enter your credentials to continue.
-          </p>
 
-          <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-4">
+          <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
             <div>
-              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
+              <label
+                htmlFor="email"
+                className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}
+              >
                 Email
               </label>
               <input
@@ -152,10 +141,18 @@ function LoginPage() {
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wider" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
+                <label
+                  htmlFor="password"
+                  className="block text-xs font-semibold uppercase tracking-wider"
+                  style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}
+                >
                   Password
                 </label>
-                <Link to="/forgot-password" className="text-xs font-semibold hover:underline underline-offset-4" style={{ color: "var(--ink)" }}>
+                <Link
+                  to="/forgot-password"
+                  className="text-xs font-semibold hover:underline underline-offset-4"
+                  style={{ color: "var(--ink)" }}
+                >
                   Forgot?
                 </Link>
               </div>
@@ -182,19 +179,38 @@ function LoginPage() {
               </div>
             </div>
 
-            <label className="flex items-center gap-2 text-sm cursor-pointer select-none" style={{ color: "color-mix(in oklab, var(--ink) 78%, transparent)" }}>
+            <label
+              className="flex items-center gap-2 text-sm cursor-pointer select-none"
+              style={{ color: "color-mix(in oklab, var(--ink) 78%, transparent)" }}
+            >
               <input type="checkbox" className="h-4 w-4 rounded accent-[var(--ink)]" />
               Keep me signed in
             </label>
 
             {error && (
-              <div role="alert" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm" style={{ background: "color-mix(in oklab, var(--destructive) 12%, transparent)", color: "var(--destructive)", border: "1px solid color-mix(in oklab, var(--destructive) 35%, transparent)" }}>
+              <div
+                role="alert"
+                className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm"
+                style={{
+                  background: "color-mix(in oklab, var(--destructive) 12%, transparent)",
+                  color: "var(--destructive)",
+                  border: "1px solid color-mix(in oklab, var(--destructive) 35%, transparent)",
+                }}
+              >
                 <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
                 <span>{error}</span>
               </div>
             )}
             {success && (
-              <div role="status" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm" style={{ background: "color-mix(in oklab, var(--teal) 15%, transparent)", color: "var(--teal-deep)", border: "1px solid color-mix(in oklab, var(--teal) 35%, transparent)" }}>
+              <div
+                role="status"
+                className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm"
+                style={{
+                  background: "color-mix(in oklab, var(--teal) 15%, transparent)",
+                  color: "var(--teal-deep)",
+                  border: "1px solid color-mix(in oklab, var(--teal) 35%, transparent)",
+                }}
+              >
                 <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
                 <span>Signed in. Redirecting…</span>
               </div>
@@ -208,18 +224,32 @@ function LoginPage() {
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
               {submitting ? "Signing in…" : success ? "Success" : "Sign in"}
-              {!submitting && !success && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />}
+              {!submitting && !success && (
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              )}
             </button>
 
-            <div className="text-center text-sm" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
+            <div
+              className="text-center text-sm"
+              style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}
+            >
               No account?{" "}
-              <Link to="/register" className="font-semibold underline underline-offset-4" style={{ color: "var(--ink)" }}>
+              <Link
+                to="/register"
+                className="font-semibold underline underline-offset-4"
+                style={{ color: "var(--ink)" }}
+              >
                 Request access
               </Link>
             </div>
           </form>
         </div>
-      </section>
+      </main>
+
+      {/* Footer note */}
+      <footer className="relative z-10 pb-5 text-center text-[11px] opacity-70 shrink-0">
+        © 2026 Data Sheet Group · RA 10173-aligned · Authorized personnel only
+      </footer>
     </div>
   );
 }
