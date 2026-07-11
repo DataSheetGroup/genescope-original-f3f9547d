@@ -14,6 +14,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/lib/theme";
 import { AuthProvider } from "@/lib/auth-context";
+import { useHydrated } from "@/hooks/useHydrated";
 
 const AUTH_ROUTES = ["/login", "/register", "/forgot-password", "/reset-password"];
 
@@ -110,7 +111,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const { pathname } = useLocation();
-  const isAuthRoute = AUTH_ROUTES.includes(pathname);
+  const hydrated = useHydrated();
+  // Avoid hydration mismatches by rendering the same shell on the first pass,
+  // then hide the layout on auth routes once the client has hydrated.
+  const isAuthRoute = hydrated && AUTH_ROUTES.includes(pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
