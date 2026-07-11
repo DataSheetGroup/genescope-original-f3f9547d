@@ -176,6 +176,22 @@ function RegisterPage() {
               </div>
             </div>
 
+            <label className="flex items-start gap-3 text-sm cursor-pointer select-none" style={{ color: "color-mix(in oklab, var(--ink) 78%, transparent)" }}>
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                disabled={submitting || success}
+                className="mt-0.5 h-4 w-4 rounded accent-[var(--ink)] shrink-0"
+              />
+              <span>
+                I agree to the{" "}
+                <Link to="/terms" className="font-semibold hover:underline underline-offset-4" style={{ color: "var(--ink)" }}>
+                  Terms and Conditions
+                </Link>
+              </span>
+            </label>
+
             <button
               type="submit"
               disabled={submitting || success}
