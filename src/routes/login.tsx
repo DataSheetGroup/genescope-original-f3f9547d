@@ -116,35 +116,22 @@ function LoginPage() {
 
       {/* RIGHT — form */}
       <section className="relative flex items-center justify-center px-6 py-8 sm:px-10 h-screen overflow-hidden">
-        {/* Stickers — always visible, framing the form */}
+        {/* Stickers — two corner accents, tucked off-edge */}
         <img
           src={stickerPotion}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute top-4 right-4 w-16 sm:w-20 opacity-80 animate-drift"
-          style={{ transform: "rotate(10deg)" }}
+          className="pointer-events-none select-none absolute -top-6 -right-6 w-24 sm:w-28 opacity-75 animate-drift"
+          style={{ transform: "rotate(12deg)" }}
         />
         <img
           src={stickerMagnet}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute bottom-4 left-4 w-14 sm:w-16 opacity-70 animate-float"
-          style={{ transform: "rotate(-12deg)" }}
+          className="pointer-events-none select-none absolute -bottom-6 -left-6 w-20 sm:w-24 opacity-70 animate-float"
+          style={{ transform: "rotate(-14deg)" }}
         />
-        <img
-          src={stickerHelix}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute -bottom-6 -right-6 w-28 sm:w-32 opacity-60 animate-float lg:hidden"
-          style={{ transform: "rotate(18deg)" }}
-        />
-        <img
-          src={stickerFlask}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute -top-4 -left-4 w-20 sm:w-24 opacity-70 animate-drift lg:hidden"
-          style={{ transform: "rotate(-16deg)" }}
-        />
+
         <div className="relative w-full max-w-sm">
           {/* mobile brand */}
           <Link to="/" className="lg:hidden mb-8 inline-flex items-center gap-2">
