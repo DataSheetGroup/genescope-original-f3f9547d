@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
 import stickerHelix from "@/assets/stickers/molecule.png";
-import stickerPotion from "@/assets/stickers/potion-blue.png";
+import stickerMicroscope from "@/assets/stickers/microscope.png";
 
 type Search = { redirect?: string };
 
@@ -107,10 +107,10 @@ function LoginPage() {
       <section className="relative flex flex-col justify-between h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden">
         {/* One quiet sticker placed inside the empty upper area */}
         <img
-          src={stickerPotion}
+          src={stickerMicroscope}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute right-10 top-10 w-16 opacity-70 sm:right-16 sm:top-12 sm:w-20 lg:right-20 lg:top-20"
+          className="pointer-events-none select-none absolute right-10 top-10 w-24 opacity-70 sm:right-16 sm:top-12 lg:right-20 lg:top-20"
           style={{ transform: "rotate(8deg)" }}
         />
 
