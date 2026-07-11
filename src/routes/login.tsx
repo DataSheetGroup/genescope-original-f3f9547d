@@ -6,10 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
 import stickerHelix from "@/assets/stickers/molecule.png";
-import stickerFlask from "@/assets/stickers/flask-purple.png";
-import stickerMicroscope from "@/assets/stickers/microscope.png";
 import stickerPotion from "@/assets/stickers/potion-blue.png";
-import stickerMagnet from "@/assets/stickers/magnet.png";
 
 type Search = { redirect?: string };
 
@@ -72,23 +69,14 @@ function LoginPage() {
         className="relative hidden lg:flex flex-col justify-between p-12 xl:p-14 overflow-hidden"
         style={{ background: "var(--ink)", color: "var(--cream)" }}
       >
-        {/* Stickers — outer corners only, away from the center seam */}
+        {/* One quiet sticker placed in unused space, not on the edge or seam */}
         <img
           src={stickerHelix}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute -top-8 -left-8 w-32 opacity-80 animate-float"
-          style={{ transform: "rotate(-14deg)" }}
+          className="pointer-events-none select-none absolute right-20 top-20 w-24 opacity-70"
+          style={{ transform: "rotate(-10deg)" }}
         />
-        <img
-          src={stickerFlask}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute -bottom-6 -left-6 w-24 opacity-80 animate-drift"
-          style={{ transform: "rotate(-12deg)" }}
-        />
-
-
 
         <Link to="/" className="relative inline-flex items-center gap-3 w-fit">
           <img src={logo} alt="GeneScope" className="h-9 w-9 object-contain" />
@@ -117,22 +105,14 @@ function LoginPage() {
 
       {/* RIGHT — form */}
       <section className="relative flex items-center justify-center px-6 py-8 sm:px-10 h-screen overflow-hidden">
-        {/* Stickers — two corner accents, tucked off-edge */}
+        {/* One quiet sticker placed inside the empty upper area */}
         <img
           src={stickerPotion}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute -top-6 -right-6 w-24 sm:w-28 opacity-75 animate-drift"
-          style={{ transform: "rotate(12deg)" }}
+          className="pointer-events-none select-none absolute right-10 top-10 w-16 opacity-70 sm:right-16 sm:top-12 sm:w-20"
+          style={{ transform: "rotate(8deg)" }}
         />
-        <img
-          src={stickerMagnet}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute -bottom-6 -right-6 w-20 sm:w-24 opacity-70 animate-float"
-          style={{ transform: "rotate(14deg)" }}
-        />
-
 
         <div className="relative w-full max-w-sm">
           {/* mobile brand */}
