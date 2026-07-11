@@ -54,8 +54,9 @@ export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, brandNo
             )}
           </h1>
           <p className="mt-5 max-w-sm text-sm leading-relaxed opacity-80">
-            Restricted workspace for authorized partner clinicians and developers.
+            {brandNote ?? "Restricted workspace for authorized partner clinicians and developers."}
           </p>
+
         </div>
 
         <div className="relative text-xs opacity-60">
