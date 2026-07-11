@@ -120,7 +120,7 @@ function RegisterPage() {
       </aside>
 
       {/* RIGHT — form */}
-      <section className="relative flex flex-col h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden [@media(max-height:700px)]:p-5 sm:[@media(max-height:700px)]:px-7 sm:[@media(max-height:700px)]:py-5 lg:[@media(max-height:700px)]:px-10 lg:[@media(max-height:700px)]:py-5">
+      <section className="relative flex flex-col h-full p-6 sm:p-10 lg:p-12 xl:p-14 overflow-hidden">
         <img
           src={stickerMicroscope}
           alt=""
@@ -130,7 +130,7 @@ function RegisterPage() {
         />
 
         <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex-1 flex flex-col justify-center min-h-0">
-          <Link to="/" className="lg:hidden mb-6 inline-flex items-center gap-2 [@media(max-height:700px)]:mb-4">
+          <Link to="/" className="lg:hidden mb-6 inline-flex items-center gap-2">
             <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
             <span className="font-brand text-xl">GeneScope</span>
           </Link>
@@ -138,14 +138,14 @@ function RegisterPage() {
           <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
             Request access
           </div>
-          <h2 className="mt-3 display-md [@media(max-height:700px)]:mt-2">
+          <h2 className="mt-3 display-md">
             Create <span className="hl">account</span>.
           </h2>
-          <p className="mt-4 text-sm lg:text-base [@media(max-height:700px)]:mt-1" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
+          <p className="mt-4 text-sm lg:text-base" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
             Approved partner emails only.
           </p>
 
-          <form onSubmit={onSubmit} noValidate className="mt-8 lg:mt-10 space-y-4 [@media(max-height:700px)]:mt-5 [@media(max-height:700px)]:space-y-2">
+          <form onSubmit={onSubmit} noValidate className="mt-8 lg:mt-10 space-y-5">
             <div>
               <label htmlFor="fullName" className={labelClass} style={labelStyle}>Full name</label>
               <input
