@@ -72,13 +72,13 @@ function LoginPage() {
         className="relative hidden lg:flex flex-col justify-between p-12 xl:p-14 overflow-hidden"
         style={{ background: "var(--ink)", color: "var(--cream)" }}
       >
-        {/* Stickers — tucked corner accents, never overlapping copy */}
+        {/* Stickers — outer corners only, away from the center seam */}
         <img
           src={stickerHelix}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute -top-8 -right-8 w-32 opacity-80 animate-float"
-          style={{ transform: "rotate(14deg)" }}
+          className="pointer-events-none select-none absolute -top-8 -left-8 w-32 opacity-80 animate-float"
+          style={{ transform: "rotate(-14deg)" }}
         />
         <img
           src={stickerFlask}
@@ -87,6 +87,7 @@ function LoginPage() {
           className="pointer-events-none select-none absolute -bottom-6 -left-6 w-24 opacity-80 animate-drift"
           style={{ transform: "rotate(-12deg)" }}
         />
+
 
 
         <Link to="/" className="relative inline-flex items-center gap-3 w-fit">
@@ -128,9 +129,10 @@ function LoginPage() {
           src={stickerMagnet}
           alt=""
           aria-hidden
-          className="pointer-events-none select-none absolute -bottom-6 -left-6 w-20 sm:w-24 opacity-70 animate-float"
-          style={{ transform: "rotate(-14deg)" }}
+          className="pointer-events-none select-none absolute -bottom-6 -right-6 w-20 sm:w-24 opacity-70 animate-float"
+          style={{ transform: "rotate(14deg)" }}
         />
+
 
         <div className="relative w-full max-w-sm">
           {/* mobile brand */}
