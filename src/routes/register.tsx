@@ -145,7 +145,7 @@ function RegisterPage() {
             Approved partner emails only.
           </p>
 
-          <form onSubmit={onSubmit} noValidate className="mt-8 lg:mt-10 space-y-5 [@media(max-height:700px)]:mt-5 [@media(max-height:700px)]:space-y-3">
+          <form onSubmit={onSubmit} noValidate className="mt-8 lg:mt-10 space-y-4 [@media(max-height:700px)]:mt-5 [@media(max-height:700px)]:space-y-3">
             <div>
               <label htmlFor="fullName" className={labelClass} style={labelStyle}>Full name</label>
               <input
@@ -169,9 +169,14 @@ function RegisterPage() {
                 autoComplete="email"
                 disabled={submitting || success}
                 placeholder="you@partner.org"
-                className={inputClass}
-                style={inputStyle}
+                className={`${inputClass} ${errors.email || errors.general ? "border-[var(--destructive)] focus:ring-[var(--destructive)]" : ""}`}
+                style={{ ...inputStyle, border: errors.email || errors.general ? "1.5px solid var(--destructive)" : inputStyle.border }}
               />
+              {(errors.email || errors.general) && (
+                <div className="mt-1.5 text-xs" style={{ color: "var(--destructive)" }}>
+                  {errors.email || errors.general}
+                </div>
+              )}
             </div>
             <div>
               <label htmlFor="password" className={labelClass} style={labelStyle}>Password</label>
@@ -183,9 +188,14 @@ function RegisterPage() {
                 autoComplete="new-password"
                 disabled={submitting || success}
                 placeholder="At least 8 characters"
-                className={inputClass}
-                style={inputStyle}
+                className={`${inputClass} ${errors.password ? "border-[var(--destructive)] focus:ring-[var(--destructive)]" : ""}`}
+                style={{ ...inputStyle, border: errors.password ? "1.5px solid var(--destructive)" : inputStyle.border }}
               />
+              {errors.password && (
+                <div className="mt-1.5 text-xs" style={{ color: "var(--destructive)" }}>
+                  {errors.password}
+                </div>
+              )}
             </div>
             <div>
               <label htmlFor="confirmPassword" className={labelClass} style={labelStyle}>Confirm password</label>
@@ -197,15 +207,20 @@ function RegisterPage() {
                 autoComplete="new-password"
                 disabled={submitting || success}
                 placeholder="Re-enter your password"
-                className={inputClass}
-                style={inputStyle}
+                className={`${inputClass} ${errors.confirmPassword ? "border-[var(--destructive)] focus:ring-[var(--destructive)]" : ""}`}
+                style={{ ...inputStyle, border: errors.confirmPassword ? "1.5px solid var(--destructive)" : inputStyle.border }}
               />
+              {errors.confirmPassword && (
+                <div className="mt-1.5 text-xs" style={{ color: "var(--destructive)" }}>
+                  {errors.confirmPassword}
+                </div>
+              )}
             </div>
 
             <button
               type="submit"
               disabled={submitting || success}
-              className="group w-full rounded-full py-4 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 [@media(max-height:700px)]:py-3"
+              className="group w-full rounded-full py-3.5 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 [@media(max-height:700px)]:py-3"
               style={{ background: "var(--ink)", color: "var(--cream)" }}
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -213,24 +228,9 @@ function RegisterPage() {
               {!submitting && !success && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />}
             </button>
           </form>
-
-          <div className="mt-5 min-h-[58px] [@media(max-height:700px)]:mt-3 [@media(max-height:700px)]:min-h-12">
-            {error && (
-              <div role="alert" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm animate-in fade-in duration-200" style={{ background: "color-mix(in oklab, var(--destructive) 12%, transparent)", color: "var(--destructive)", border: "1px solid color-mix(in oklab, var(--destructive) 35%, transparent)" }}>
-                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
-            {success && (
-              <div role="status" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm animate-in fade-in duration-200" style={{ background: "color-mix(in oklab, var(--teal) 15%, transparent)", color: "var(--teal-deep)", border: "1px solid color-mix(in oklab, var(--teal) 35%, transparent)" }}>
-                <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>Account created. Redirecting…</span>
-              </div>
-            )}
-          </div>
         </div>
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm mb-2" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg text-center text-sm mb-3" style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}>
           Already have an account?{" "}
           <Link to="/login" className="font-semibold underline underline-offset-4" style={{ color: "var(--ink)" }}>
             Sign in
