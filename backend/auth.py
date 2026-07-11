@@ -114,6 +114,47 @@ def me():
     return jsonify({"user": request.user.to_public()})
 
 
+@bp.put("/me")
+@require_auth
+def update_me():
+    data = request.get_json(force=True) or {}
+    user = request.user
+
+    def clean(v):
+        if v is None:
+            return None
+        v = str(v).strip()
+        return v or None
+
+    if "full_name" in data:
+        user.full_name = clean(data.get("full_name"))
+    if "phone" in data:
+        user.phone = clean(data.get("phone"))
+    if "organization" in data:
+        user.organization = clean(data.get("organization"))
+    if "bio" in data:
+        user.bio = clean(data.get("bio"))
+
+    db.session.commit()
+    return jsonify({"user": user.to_public()})
+
+
+@bp.post("/change-password")
+@require_auth
+def change_password():
+    data = request.get_json(force=True) or {}
+    current = data.get("current_password") or ""
+    new_pw = data.get("new_password") or ""
+    if len(new_pw) < 8:
+        return jsonify({"error": "Password must be at least 8 characters"}), 400
+    user = request.user
+    if not verify_password(current, user.password_hash):
+        return jsonify({"error": "Current password is incorrect"}), 401
+    user.password_hash = hash_password(new_pw)
+    db.session.commit()
+    return jsonify({"ok": True})
+
+
 @bp.post("/logout")
 @require_auth
 def logout():
