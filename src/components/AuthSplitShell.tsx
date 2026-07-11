@@ -63,13 +63,7 @@ export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, childre
 
       {/* RIGHT — form */}
       <section className="relative flex flex-col h-full min-h-screen lg:min-h-0 lg:overflow-y-auto">
-        <img
-          src={stickerMicroscope}
-          alt=""
-          aria-hidden
-          className="pointer-events-none select-none absolute right-6 top-6 w-16 opacity-70 sm:right-10 sm:top-10 sm:w-20 lg:right-14 lg:top-14 xl:w-24"
-          style={{ transform: "rotate(8deg)" }}
-        />
+
 
         {/* Top bar — back link so users can leave auth pages */}
         <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex items-center justify-between px-6 pt-6 sm:px-10 sm:pt-8 lg:px-0 lg:pt-10 xl:pt-14">
