@@ -5,8 +5,12 @@ import { isAuthenticated } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
-import microscope from "@/assets/stickers/microscope.png";
-import molecule from "@/assets/stickers/molecule.png";
+import helix from "@/assets/illustrations/helix-doodle.png";
+import microscope from "@/assets/illustrations/microscope-doodle.png";
+import dnaStrand from "@/assets/illustrations/dna-strand.png";
+import testTube from "@/assets/illustrations/test-tube.png";
+import labFlask from "@/assets/illustrations/lab-flask.png";
+import dropper from "@/assets/illustrations/dropper.png";
 
 type Search = { redirect?: string };
 
@@ -60,91 +64,50 @@ function LoginPage() {
   };
 
   return (
-    <div className="h-screen w-full overflow-hidden" style={{ background: "var(--green-deep)" }}>
-      <div className="h-full w-full grid lg:grid-cols-2">
-        {/* LEFT — hero-green editorial slab */}
-        <aside
-          className="hidden lg:flex relative flex-col justify-between p-12 xl:p-16 text-cream overflow-hidden"
-        >
-          {/* stickers */}
-          <img
-            src={microscope}
-            alt=""
-            aria-hidden
-            className="absolute top-10 right-10 w-24 opacity-90 animate-float"
-            style={{ ["--rot" as never]: "-8deg" }}
-          />
-          <img
-            src={molecule}
-            alt=""
-            aria-hidden
-            className="absolute bottom-10 right-16 w-20 opacity-90 animate-drift"
-            style={{ ["--rot" as never]: "10deg" }}
-          />
+    <div
+      className="hero-green relative min-h-screen w-full overflow-hidden flex flex-col"
+      style={{ borderRadius: 0 }}
+    >
+      {/* ────── scattered stickers, exactly like the home hero ────── */}
+      <img src={helix} alt="" aria-hidden className="hidden md:block absolute -top-6 -left-6 w-40 opacity-90 animate-drift" style={{ ["--rot" as never]: "-14deg" }} />
+      <img src={microscope} alt="" aria-hidden className="hidden md:block absolute top-10 right-10 w-32 opacity-90 animate-float" style={{ ["--rot" as never]: "10deg" }} />
+      <img src={dnaStrand} alt="" aria-hidden className="hidden md:block absolute bottom-16 left-12 w-28 opacity-90 animate-float" style={{ ["--rot" as never]: "-8deg" }} />
+      <img src={testTube} alt="" aria-hidden className="hidden md:block absolute bottom-24 right-24 w-20 opacity-90 animate-drift" style={{ ["--rot" as never]: "14deg" }} />
+      <img src={labFlask} alt="" aria-hidden className="hidden lg:block absolute top-1/2 -left-4 w-24 opacity-80 animate-drift" style={{ ["--rot" as never]: "18deg" }} />
+      <img src={dropper} alt="" aria-hidden className="hidden lg:block absolute top-1/3 right-4 w-16 opacity-80 animate-float" style={{ ["--rot" as never]: "-12deg" }} />
 
-          <Link to="/" className="inline-flex items-center gap-3 w-fit relative z-10">
-            <img src={logo} alt="GeneScope" className="h-9 w-9 object-contain" />
-            <span className="font-brand text-2xl">GeneScope</span>
-          </Link>
+      {/* ────── minimal top bar ────── */}
+      <header className="relative z-10 mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-10 pt-6 md:pt-8 flex items-center justify-between">
+        <Link to="/" className="inline-flex items-center gap-2">
+          <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
+          <span className="font-brand text-xl">GeneScope</span>
+        </Link>
+        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-cream/70 hidden sm:inline">
+          Restricted access
+        </span>
+      </header>
 
-          <div className="relative z-10">
-            <div className="font-display text-sm md:text-base mb-4">
+      {/* ────── centered card ────── */}
+      <main className="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-6 py-8">
+        <div className="w-full max-w-[440px]">
+          <div className="text-center mb-5">
+            <div className="font-display text-xs md:text-sm mb-3">
               A confident clinical decision
             </div>
-            <h1 className="display-lg uppercase leading-[0.95]">
-              Decisions
-              <br />
-              <span className="hl">without</span>
-              <br />
-              the guesswork.
+            <h1 className="display-md uppercase leading-[1]">
+              Welcome <span className="hl">back</span>
             </h1>
-            <p className="mt-6 max-w-sm text-sm leading-relaxed text-cream/80">
-              Sign in to access the restricted workspace for authorized partner
-              clinicians and developers.
-            </p>
           </div>
 
-          <div className="relative z-10 text-xs text-cream/60">
-            © 2026 Data Sheet Group · RA 10173-aligned
-          </div>
-        </aside>
-
-        {/* RIGHT — cream slab with white card */}
-        <section
-          className="relative flex items-center justify-center px-6 py-8 sm:px-10 h-screen overflow-y-auto lg:overflow-hidden slab-cream"
-          style={{
-            borderTopLeftRadius: "2.5rem",
-            borderBottomLeftRadius: "2.5rem",
-          }}
-        >
           <div
-            className="w-full max-w-sm rounded-[2rem] bg-white p-8 md:p-10"
-            style={{ boxShadow: "0 20px 60px -30px rgba(15,61,46,0.35)" }}
+            className="rounded-[2rem] bg-white p-7 md:p-9"
+            style={{ boxShadow: "0 30px 80px -30px rgba(0,0,0,0.45)" }}
           >
-            {/* mobile brand */}
-            <Link to="/" className="lg:hidden mb-6 inline-flex items-center gap-2">
-              <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
-              <span className="font-brand text-xl" style={{ color: "var(--green-deep)" }}>GeneScope</span>
-            </Link>
-
-            <div className="eyebrow" style={{ color: "var(--green-deep)", opacity: 0.65 }}>
-              Sign in
-            </div>
-            <h2
-              className="mt-2 font-display text-3xl md:text-4xl uppercase leading-tight"
-              style={{ color: "var(--green-deep)" }}
-            >
-              Welcome <span className="hl">back</span>.
-            </h2>
-            <p className="mt-3 text-sm" style={{ color: "var(--green-deep)", opacity: 0.7 }}>
-              Enter your credentials to continue.
-            </p>
-
-            <form onSubmit={handleSubmit} noValidate className="mt-7 space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-xs font-semibold uppercase tracking-wider mb-1.5"
+                  className="block text-[11px] font-semibold uppercase tracking-[0.14em] mb-1.5"
                   style={{ color: "var(--green-deep)", opacity: 0.75 }}
                 >
                   Email
@@ -160,7 +123,7 @@ function LoginPage() {
                   className="w-full rounded-xl bg-[var(--cream)] px-4 py-3 outline-none transition focus:ring-2 focus:ring-[var(--green-deep)] disabled:opacity-60"
                   style={{
                     color: "var(--green-deep)",
-                    border: "1.5px solid color-mix(in oklab, var(--green-deep) 15%, transparent)",
+                    border: "1.5px solid color-mix(in oklab, var(--green-deep) 14%, transparent)",
                   }}
                 />
               </div>
@@ -169,14 +132,14 @@ function LoginPage() {
                 <div className="flex items-center justify-between mb-1.5">
                   <label
                     htmlFor="password"
-                    className="block text-xs font-semibold uppercase tracking-wider"
+                    className="block text-[11px] font-semibold uppercase tracking-[0.14em]"
                     style={{ color: "var(--green-deep)", opacity: 0.75 }}
                   >
                     Password
                   </label>
                   <Link
                     to="/forgot-password"
-                    className="text-xs font-semibold hover:underline underline-offset-4"
+                    className="text-[11px] font-semibold hover:underline underline-offset-4"
                     style={{ color: "var(--coral)" }}
                   >
                     Forgot?
@@ -194,7 +157,7 @@ function LoginPage() {
                     className="w-full rounded-xl bg-[var(--cream)] px-4 py-3 pr-11 outline-none transition focus:ring-2 focus:ring-[var(--green-deep)] disabled:opacity-60"
                     style={{
                       color: "var(--green-deep)",
-                      border: "1.5px solid color-mix(in oklab, var(--green-deep) 15%, transparent)",
+                      border: "1.5px solid color-mix(in oklab, var(--green-deep) 14%, transparent)",
                     }}
                   />
                   <button
@@ -249,13 +212,14 @@ function LoginPage() {
               <button
                 type="submit"
                 disabled={submitting || success}
-                className="pill pill-coral w-full justify-center !py-3.5"
+                className="pill pill-coral w-full justify-center"
+                style={{ padding: "0.95rem 1.5rem" }}
               >
                 {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
                 {submitting ? "Signing in…" : success ? "Success" : "Sign in"}
               </button>
 
-              <div className="text-center text-sm" style={{ color: "var(--green-deep)", opacity: 0.7 }}>
+              <div className="text-center text-sm pt-1" style={{ color: "var(--green-deep)", opacity: 0.7 }}>
                 No account?{" "}
                 <Link
                   to="/register"
@@ -267,8 +231,12 @@ function LoginPage() {
               </div>
             </form>
           </div>
-        </section>
-      </div>
+
+          <p className="mt-5 text-center text-[11px] text-cream/60">
+            © 2026 Data Sheet Group · Authorized clinicians and developers only
+          </p>
+        </div>
+      </main>
     </div>
   );
 }
