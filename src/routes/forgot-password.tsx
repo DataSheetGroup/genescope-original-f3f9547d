@@ -83,7 +83,7 @@ function ForgotPasswordPage() {
         </button>
       </form>
 
-      <div className="mt-5 min-h-[58px]">
+      <div className="mt-3 min-h-[44px]">
         {error && (
           <div role="alert" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm" style={{ background: "color-mix(in oklab, var(--destructive) 12%, transparent)", color: "var(--destructive)", border: "1px solid color-mix(in oklab, var(--destructive) 35%, transparent)" }}>
             <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
