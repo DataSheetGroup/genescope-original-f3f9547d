@@ -1,9 +1,8 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { LogOut, Menu, X } from "lucide-react";
+import { UserRound, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { getHealth } from "@/lib/api";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/auth-context";
 
 const leftLinks = [
@@ -45,8 +44,7 @@ function NavLink({ to, label, onClick }: { to: string; label: string; onClick?: 
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { data, isError } = useQuery({
     queryKey: ["health"],
     queryFn: getHealth,
@@ -55,10 +53,7 @@ export function Navbar() {
   });
   const online = !!data && !isError;
 
-  const handleLogout = async () => {
-    await logout();
-    navigate({ to: "/login" });
-  };
+  const displayName = user?.full_name?.trim() || user?.email?.split("@")[0] || "Profile";
 
   return (
     <header className="sticky top-0 z-40" style={{ background: "var(--nav-bg)", color: "var(--nav-fg)" }}>
@@ -87,17 +82,17 @@ export function Navbar() {
               <span className={`h-1.5 w-1.5 rounded-full ${online ? "animate-pulse" : ""}`} style={{ background: "var(--nav-bg)" }} />
               {online ? "Online" : "Offline"}
             </span>
-            <ThemeToggle />
             {isAuthenticated && (
-              <button
-                onClick={handleLogout}
+              <Link
+                to="/profile"
                 title={user?.email}
+                activeProps={{ style: { background: "var(--coral)", color: "var(--nav-bg)" } }}
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition hover:opacity-90"
                 style={{ background: "var(--surface-strong)", color: "var(--nav-bg)" }}
               >
-                <LogOut className="h-3.5 w-3.5" />
-                Sign out
-              </button>
+                <UserRound className="h-3.5 w-3.5" />
+                <span className="max-w-[120px] truncate">{displayName}</span>
+              </Link>
             )}
           </div>
 
@@ -126,6 +121,15 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            {isAuthenticated && (
+              <Link
+                to="/profile"
+                onClick={() => setOpen(false)}
+                className="block rounded-full px-4 py-2.5 text-sm font-semibold uppercase tracking-wider text-foreground/75"
+              >
+                Profile
+              </Link>
+            )}
             <div className="px-4 pt-3 flex items-center gap-3">
               <span
                 className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider"
@@ -134,7 +138,6 @@ export function Navbar() {
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--nav-bg)" }} />
                 {online ? "Model Online" : "Server Offline"}
               </span>
-              <ThemeToggle />
             </div>
           </div>
         )}

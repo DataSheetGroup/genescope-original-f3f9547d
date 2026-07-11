@@ -9,10 +9,13 @@ const TOKEN_KEY = "genescope.access_token";
 
 export type LoginResponse = { access_token: string };
 export type AuthUser = {
-  id: string;
+  id: string | number;
   email: string;
   role: "developer" | "client" | string;
   full_name?: string | null;
+  phone?: string | null;
+  organization?: string | null;
+  bio?: string | null;
 };
 
 async function request<T>(
@@ -62,6 +65,11 @@ async function request<T>(
   return payload as T;
 }
 
+function unwrapUser(payload: any): AuthUser {
+  const u = payload?.user ?? payload;
+  return u as AuthUser;
+}
+
 export async function login(email: string, password: string): Promise<LoginResponse> {
   const data = await request<LoginResponse>("/auth/login", {
     method: "POST",
@@ -86,7 +94,32 @@ export async function register(input: {
 }
 
 export async function me(): Promise<AuthUser> {
-  return request<AuthUser>("/auth/me", { method: "GET" }, { auth: true });
+  const raw = await request<any>("/auth/me", { method: "GET" }, { auth: true });
+  return unwrapUser(raw);
+}
+
+export type ProfileUpdate = {
+  full_name?: string | null;
+  phone?: string | null;
+  organization?: string | null;
+  bio?: string | null;
+};
+
+export async function updateMe(input: ProfileUpdate): Promise<AuthUser> {
+  const raw = await request<any>(
+    "/auth/me",
+    { method: "PUT", body: JSON.stringify(input) },
+    { auth: true },
+  );
+  return unwrapUser(raw);
+}
+
+export async function changePassword(current_password: string, new_password: string): Promise<void> {
+  await request<void>(
+    "/auth/change-password",
+    { method: "POST", body: JSON.stringify({ current_password, new_password }) },
+    { auth: true },
+  );
 }
 
 export async function logout(): Promise<void> {
