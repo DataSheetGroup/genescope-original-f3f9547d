@@ -61,7 +61,7 @@ function RegisterPage() {
 
   const inputStyle = { border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" } as const;
   const inputClass =
-    "w-full rounded-xl bg-white px-4 py-3.5 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60";
+    "w-full rounded-xl bg-white px-4 py-3 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60";
   const labelStyle = { color: "color-mix(in oklab, var(--ink) 75%, transparent)" } as const;
   const labelClass = "block text-xs font-semibold uppercase tracking-wider mb-2";
 
