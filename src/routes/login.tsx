@@ -99,21 +99,21 @@ function LoginPage() {
             border: "1px solid color-mix(in oklab, var(--ink) 12%, transparent)",
           }}
         >
-          <div className="text-left">
+          <div className="text-center">
             <div
               className="eyebrow"
               style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}
             >
               Restricted access
             </div>
-            <h1 className="mt-1 font-display text-2xl sm:text-3xl leading-tight">
+            <h1 className="mt-1 font-display text-3xl sm:text-4xl leading-tight">
               Welcome <span className="hl">back</span>.
             </h1>
             <p
               className="mt-2 text-sm"
               style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}
             >
-              Enter your credentials to continue.
+              Sign in to continue to the workspace.
             </p>
           </div>
 
@@ -219,7 +219,7 @@ function LoginPage() {
             <button
               type="submit"
               disabled={submitting || success}
-              className="group w-full rounded-full py-3 font-display uppercase tracking-wider text-xs transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="group w-full rounded-full py-3.5 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               style={{ background: "var(--ink)", color: "var(--cream)" }}
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -230,7 +230,7 @@ function LoginPage() {
             </button>
 
             <div
-              className="text-right text-sm"
+              className="text-center text-sm"
               style={{ color: "color-mix(in oklab, var(--ink) 65%, transparent)" }}
             >
               No account?{" "}
