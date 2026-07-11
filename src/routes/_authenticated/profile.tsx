@@ -105,10 +105,9 @@ function ProfilePage() {
   return (
     <div className="mx-auto max-w-[1200px] px-6 py-12 lg:py-16">
       {/* Editorial header */}
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-end gap-6 border-b border-foreground/10 pb-8 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-end gap-6 pb-2 mb-10">
         <div>
-          <div className="text-[11px] uppercase tracking-[0.28em] text-foreground/60">§ Account · Profile</div>
-          <h1 className="mt-3 font-display text-4xl md:text-5xl leading-[1.05]">Your profile</h1>
+          <h1 className="font-display text-4xl md:text-5xl leading-[1.05]">Your profile</h1>
           <p className="mt-3 text-sm text-foreground/70 max-w-lg">
             Manage the identity attached to your GeneScope workspace.
           </p>
@@ -147,12 +146,7 @@ function ProfilePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Personal info */}
         <form onSubmit={handleSave} className="rounded-3xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8 flex flex-col">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-foreground/60">
-            <UserRound className="h-3.5 w-3.5" />
-            <span>01 · Personal info</span>
-          </div>
-          <h2 className="mt-3 font-display text-2xl">Identity</h2>
-          <p className="mt-1 text-xs text-foreground/60">Stored securely in your GeneScope database.</p>
+          <h2 className="font-display text-2xl">Identity</h2>
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Email" icon={<Mail className="h-3.5 w-3.5" />} value={user.email} readOnly />
@@ -193,12 +187,7 @@ function ProfilePage() {
 
         {/* Password */}
         <form onSubmit={handlePassword} className="rounded-3xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8 flex flex-col">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-foreground/60">
-            <KeyRound className="h-3.5 w-3.5" />
-            <span>02 · Security</span>
-          </div>
-          <h2 className="mt-3 font-display text-2xl">Change password</h2>
-          <p className="mt-1 text-xs text-foreground/60">Use at least 8 characters. You'll stay signed in.</p>
+          <h2 className="font-display text-2xl">Change password</h2>
 
           <div className="mt-6 space-y-4">
             <Field label="Current password" type="password" value={currentPw} onChange={setCurrentPw} />
