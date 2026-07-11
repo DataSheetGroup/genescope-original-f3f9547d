@@ -99,7 +99,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
 
   return (
-    <html lang="en" data-auth-route={isAuthRoute ? "true" : undefined}>
+    <html lang="en" data-auth-route={isAuthRoute ? "true" : undefined} suppressHydrationWarning>
       <head>
         <style>{`html[data-auth-route="true"], html[data-auth-route="true"] body { overflow: hidden; } html[data-auth-route="true"] .auth-chrome { display: none !important; }`}</style>
         <HeadContent />
