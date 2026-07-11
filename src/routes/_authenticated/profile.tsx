@@ -103,142 +103,128 @@ function ProfilePage() {
   const displayName = user.full_name?.trim() || user.email.split("@")[0];
 
   return (
-    <div className="pb-16">
-      {/* Editorial header — cream slab, green text */}
-      <section className="slab-cream">
-        <div className="mx-auto max-w-[1200px] px-6 pt-12 lg:pt-16 pb-10">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-end gap-6">
-            <div>
-              <div className="text-[11px] uppercase tracking-[0.28em]" style={{ color: "var(--green-deep)", opacity: 0.7 }}>
-                § Account · Profile
-              </div>
-              <h1 className="mt-3 font-display text-4xl md:text-5xl leading-[1.05]" style={{ color: "var(--green-deep)" }}>
-                Your <span className="hl">profile</span>
-              </h1>
-              <p className="mt-3 text-sm max-w-lg" style={{ color: "var(--green-deep)", opacity: 0.75 }}>
-                Manage the identity attached to your GeneScope workspace.
-              </p>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[12px] font-semibold uppercase tracking-wider transition hover:opacity-90 justify-self-start md:justify-self-end"
-              style={{ background: "var(--coral)", color: "var(--paper)" }}
+    <div className="mx-auto max-w-[1200px] px-6 py-12 lg:py-16">
+      {/* Editorial header */}
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] items-end gap-6 border-b border-foreground/10 pb-8 mb-10">
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.28em] text-foreground/60">§ Account · Profile</div>
+          <h1 className="mt-3 font-display text-4xl md:text-5xl leading-[1.05]">Your profile</h1>
+          <p className="mt-3 text-sm text-foreground/70 max-w-lg">
+            Manage the identity attached to your GeneScope workspace.
+          </p>
+        </div>
+        <button
+          onClick={handleLogout}
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[12px] font-semibold uppercase tracking-wider transition hover:opacity-90 justify-self-start md:justify-self-end"
+          style={{ background: "var(--coral)", color: "var(--nav-bg)" }}
+        >
+          <LogOut className="h-4 w-4" />
+          Sign out
+        </button>
+      </div>
+
+      {/* Identity summary — full width, symmetric */}
+      <section className="rounded-3xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+          <div className="flex items-center gap-4 md:col-span-2">
+            <div
+              className="h-16 w-16 shrink-0 rounded-full flex items-center justify-center text-2xl font-bold"
+              style={{ background: "var(--coral)", color: "var(--nav-bg)" }}
             >
-              <LogOut className="h-4 w-4" />
-              Sign out
-            </button>
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+            <div className="min-w-0">
+              <div className="font-display text-2xl truncate">{displayName}</div>
+              <div className="text-xs text-foreground/60 truncate">{user.email}</div>
+            </div>
           </div>
+          <Stat icon={<UserRound className="h-3.5 w-3.5" />} label="Role" value={user.role} />
+          <Stat icon={<ShieldCheck className="h-3.5 w-3.5" />} label="Status" value="Active" />
         </div>
       </section>
 
-      {/* Main content on dark background */}
-      <div className="mx-auto max-w-[1200px] px-6 py-10 lg:py-14">
-        {/* Identity summary — full width, symmetric, coral accent */}
-        <section className="rounded-3xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8 mb-8 overflow-hidden relative">
-          <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ background: "var(--coral)" }} />
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
-            <div className="flex items-center gap-4 md:col-span-2">
-              <div
-                className="h-16 w-16 shrink-0 rounded-full flex items-center justify-center text-2xl font-bold"
-                style={{ background: "var(--coral)", color: "var(--paper)" }}
-              >
-                {displayName.charAt(0).toUpperCase()}
-              </div>
-              <div className="min-w-0">
-                <div className="font-display text-2xl truncate">{displayName}</div>
-                <div className="text-xs text-foreground/60 truncate">{user.email}</div>
-              </div>
-            </div>
-            <Stat icon={<UserRound className="h-3.5 w-3.5" />} label="Role" value={user.role} />
-            <Stat icon={<ShieldCheck className="h-3.5 w-3.5" />} label="Status" value="Active" />
+      {/* Two symmetric cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Personal info */}
+        <form onSubmit={handleSave} className="rounded-3xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8 flex flex-col">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-foreground/60">
+            <UserRound className="h-3.5 w-3.5" />
+            <span>01 · Personal info</span>
           </div>
-        </section>
+          <h2 className="mt-3 font-display text-2xl">Identity</h2>
+          <p className="mt-1 text-xs text-foreground/60">Stored securely in your GeneScope database.</p>
 
-        {/* Two symmetric cards with colored accents */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Personal info — teal accent */}
-          <form onSubmit={handleSave} className="rounded-3xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8 flex flex-col overflow-hidden relative">
-            <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ background: "var(--teal)" }} />
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.24em]" style={{ color: "var(--teal)" }}>
-              <UserRound className="h-3.5 w-3.5" />
-              <span>01 · Personal info</span>
-            </div>
-            <h2 className="mt-3 font-display text-2xl">Identity</h2>
-            <p className="mt-1 text-xs text-foreground/60">Stored securely in your GeneScope database.</p>
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Email" icon={<Mail className="h-3.5 w-3.5" />} value={user.email} readOnly />
+            <Field label="Full name" icon={<UserRound className="h-3.5 w-3.5" />} value={fullName} onChange={setFullName} placeholder="Jane Dela Cruz" />
+            <Field label="Phone" icon={<Phone className="h-3.5 w-3.5" />} value={phone} onChange={setPhone} placeholder="+63 900 000 0000" />
+            <Field label="Organization" icon={<Building2 className="h-3.5 w-3.5" />} value={organization} onChange={setOrganization} placeholder="FEU Institute of Technology" />
+          </div>
+          <div className="mt-4">
+            <label className="block text-[11px] uppercase tracking-[0.2em] text-foreground/60 mb-1.5">Bio</label>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              rows={4}
+              placeholder="A short description of your role or research focus."
+              className="w-full rounded-2xl border border-foreground/15 bg-background/40 px-4 py-3 text-sm focus:outline-none focus:border-coral resize-none"
+            />
+          </div>
 
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field label="Email" icon={<Mail className="h-3.5 w-3.5" />} value={user.email} readOnly />
-              <Field label="Full name" icon={<UserRound className="h-3.5 w-3.5" />} value={fullName} onChange={setFullName} placeholder="Jane Dela Cruz" />
-              <Field label="Phone" icon={<Phone className="h-3.5 w-3.5" />} value={phone} onChange={setPhone} placeholder="+63 900 000 0000" />
-              <Field label="Organization" icon={<Building2 className="h-3.5 w-3.5" />} value={organization} onChange={setOrganization} placeholder="FEU Institute of Technology" />
+          <div className="mt-auto pt-6 flex items-center gap-4 min-h-[52px]">
+            <div className="flex-1 min-h-[20px]">
+              {status && (
+                <span className={`text-xs ${status.kind === "ok" ? "text-emerald-400" : "text-coral"}`}>
+                  {status.msg}
+                </span>
+              )}
             </div>
-            <div className="mt-4">
-              <label className="block text-[11px] uppercase tracking-[0.2em] text-foreground/60 mb-1.5">Bio</label>
-              <textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                rows={4}
-                placeholder="A short description of your role or research focus."
-                className="w-full rounded-2xl border border-foreground/15 bg-background/40 px-4 py-3 text-sm focus:outline-none focus:border-coral resize-none"
-              />
-            </div>
+            <button
+              type="submit"
+              disabled={saving}
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[12px] font-semibold uppercase tracking-wider disabled:opacity-50 transition hover:opacity-90"
+              style={{ background: "var(--surface-strong)", color: "var(--nav-bg)" }}
+            >
+              <Save className="h-4 w-4" />
+              {saving ? "Saving…" : "Save changes"}
+            </button>
+          </div>
+        </form>
 
-            <div className="mt-auto pt-6 flex items-center gap-4 min-h-[52px]">
-              <div className="flex-1 min-h-[20px]">
-                {status && (
-                  <span className={`text-xs ${status.kind === "ok" ? "text-emerald-400" : "text-coral"}`}>
-                    {status.msg}
-                  </span>
-                )}
-              </div>
-              <button
-                type="submit"
-                disabled={saving}
-                className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[12px] font-semibold uppercase tracking-wider disabled:opacity-50 transition hover:opacity-90"
-                style={{ background: "var(--surface-strong)", color: "var(--nav-bg)" }}
-              >
-                <Save className="h-4 w-4" />
-                {saving ? "Saving…" : "Save changes"}
-              </button>
-            </div>
-          </form>
+        {/* Password */}
+        <form onSubmit={handlePassword} className="rounded-3xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8 flex flex-col">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-foreground/60">
+            <KeyRound className="h-3.5 w-3.5" />
+            <span>02 · Security</span>
+          </div>
+          <h2 className="mt-3 font-display text-2xl">Change password</h2>
+          <p className="mt-1 text-xs text-foreground/60">Use at least 8 characters. You'll stay signed in.</p>
 
-          {/* Password — purple/coral accent */}
-          <form onSubmit={handlePassword} className="rounded-3xl border border-foreground/10 bg-foreground/[0.02] p-6 md:p-8 flex flex-col overflow-hidden relative">
-            <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ background: "var(--purple)" }} />
-            <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.24em]" style={{ color: "var(--purple)" }}>
-              <KeyRound className="h-3.5 w-3.5" />
-              <span>02 · Security</span>
-            </div>
-            <h2 className="mt-3 font-display text-2xl">Change password</h2>
-            <p className="mt-1 text-xs text-foreground/60">Use at least 8 characters. You'll stay signed in.</p>
+          <div className="mt-6 space-y-4">
+            <Field label="Current password" type="password" value={currentPw} onChange={setCurrentPw} />
+            <Field label="New password" type="password" value={newPw} onChange={setNewPw} />
+            <Field label="Confirm new password" type="password" value={confirmPw} onChange={setConfirmPw} />
+          </div>
 
-            <div className="mt-6 space-y-4">
-              <Field label="Current password" type="password" value={currentPw} onChange={setCurrentPw} />
-              <Field label="New password" type="password" value={newPw} onChange={setNewPw} />
-              <Field label="Confirm new password" type="password" value={confirmPw} onChange={setConfirmPw} />
+          <div className="mt-auto pt-6 flex items-center gap-4 min-h-[52px]">
+            <div className="flex-1 min-h-[20px]">
+              {pwStatus && (
+                <span className={`text-xs ${pwStatus.kind === "ok" ? "text-emerald-400" : "text-coral"}`}>
+                  {pwStatus.msg}
+                </span>
+              )}
             </div>
-
-            <div className="mt-auto pt-6 flex items-center gap-4 min-h-[52px]">
-              <div className="flex-1 min-h-[20px]">
-                {pwStatus && (
-                  <span className={`text-xs ${pwStatus.kind === "ok" ? "text-emerald-400" : "text-coral"}`}>
-                    {pwStatus.msg}
-                  </span>
-                )}
-              </div>
-              <button
-                type="submit"
-                disabled={pwSaving || !currentPw || !newPw}
-                className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[12px] font-semibold uppercase tracking-wider disabled:opacity-50 transition hover:opacity-90"
-                style={{ background: "var(--surface-strong)", color: "var(--nav-bg)" }}
-              >
-                <KeyRound className="h-4 w-4" />
-                {pwSaving ? "Updating…" : "Update password"}
-              </button>
-            </div>
-          </form>
-        </div>
+            <button
+              type="submit"
+              disabled={pwSaving || !currentPw || !newPw}
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[12px] font-semibold uppercase tracking-wider disabled:opacity-50 transition hover:opacity-90"
+              style={{ background: "var(--surface-strong)", color: "var(--nav-bg)" }}
+            >
+              <KeyRound className="h-4 w-4" />
+              {pwSaving ? "Updating…" : "Update password"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
