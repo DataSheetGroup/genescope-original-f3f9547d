@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import logo from "@/assets/genescope-logo.png";
 import stickerHelix from "@/assets/stickers/molecule.png";
@@ -70,12 +71,23 @@ export function AuthSplitShell({ eyebrow, headline, intro, brandTagline, childre
           style={{ transform: "rotate(8deg)" }}
         />
 
-        <div className="relative w-full max-w-md mx-auto lg:max-w-lg">
-          <Link to="/" className="lg:hidden mb-6 inline-flex items-center gap-2">
-            <img src={logo} alt="GeneScope" className="h-8 w-8 object-contain" />
-            <span className="font-brand text-xl">GeneScope</span>
+        {/* Top bar — back link so users can leave auth pages */}
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg flex items-center justify-between">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider hover:opacity-70 transition"
+            style={{ color: "color-mix(in oklab, var(--ink) 70%, transparent)" }}
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back to home
           </Link>
+          <Link to="/" className="lg:hidden inline-flex items-center gap-2">
+            <img src={logo} alt="GeneScope" className="h-7 w-7 object-contain" />
+            <span className="font-brand text-lg">GeneScope</span>
+          </Link>
+        </div>
 
+        <div className="relative w-full max-w-md mx-auto lg:max-w-lg">
           <div className="eyebrow" style={{ color: "color-mix(in oklab, var(--ink) 60%, transparent)" }}>
             {eyebrow}
           </div>
