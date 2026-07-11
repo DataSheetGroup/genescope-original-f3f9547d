@@ -1,12 +1,20 @@
 import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
-import { AlertCircle, CheckCircle2, Loader2, ArrowRight } from "lucide-react";
+import { Loader2, ArrowRight } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { isAuthenticated } from "@/lib/auth";
 
 import logo from "@/assets/genescope-logo.png";
 import stickerHelix from "@/assets/stickers/molecule.png";
 import stickerMicroscope from "@/assets/stickers/microscope.png";
+
+type FieldErrors = {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  general?: string;
+};
 
 export const Route = createFileRoute("/register")({
   head: () => ({
