@@ -339,3 +339,12 @@ function PerformancePage() {
     </div>
   );
 }
+
+import { RoleGate } from "@/components/RoleGate";
+function PerformancePageGated() {
+  return (
+    <RoleGate permission="performance.view" title="Model performance is researcher-only">
+      <PerformancePage />
+    </RoleGate>
+  );
+}
