@@ -1,67 +1,20 @@
-## Goal
+## Plan
 
-When someone registers with an email that isn't on the `ALLOWED_EMAILS` allowlist, don't reject them. Instead, create a **pending** account you can approve or deny directly in Neon. Approved users can log in; pending/denied users cannot. No changes to the login/register page UI.
+1. **Stop pending registrations from being treated as logged in**
+   - Ensure `/register` clears any existing token before creating a new access request.
+   - If the backend returns `202 pending`, show the pending message and keep the user on the request-access page instead of redirecting.
 
-## Backend changes
+2. **Strengthen the auth gate**
+   - Update protected-route access so it does not trust only “a token exists”.
+   - Use the authenticated user state when available, so a stale/old token cannot immediately open the dashboard after a pending registration.
 
-### 1. `backend/models.py` — add a status field to `User`
+3. **Block pending/denied users even if they already have an old token**
+   - Update the backend auth check used by protected endpoints so `pending` and `denied` users are rejected, not just login/register.
+   - This prevents old sessions from continuing after you change a user to pending/denied in Neon.
 
-Add:
-```python
-status = db.Column(db.String(16), default="active", nullable=False)
-# values: "active" | "pending" | "denied"
-```
+4. **Clean up outdated allowlist wording**
+   - Remove old frontend/backend text that still says “approved partner emails/domain only,” because the new rule is: every account starts pending until approved.
 
-Include `status` in `to_public()` so the frontend knows (optional; used only for a clearer error).
-
-### 2. `backend/auth.py` — change registration + login gates
-
-**`/auth/register`:**
-- Remove the `403 "This email is not authorized"` rejection.
-- If email is on the allowlist → create user with `status="active"` (current behavior).
-- If NOT on allowlist → create user with `status="pending"`, do **not** issue a token, return `202` with a message like `"Your access request has been submitted for review."`
-
-**`/auth/login`:**
-- After password check, before issuing token:
-  - `status == "pending"` → `403 "Your access request is still pending approval."`
-  - `status == "denied"` → `403 "Your access request was denied."`
-  - `status == "active"` → proceed normally.
-- Keep the existing `is_active` check as-is.
-
-The frontend already surfaces `error` strings from these endpoints in the existing red alert box, so no UI change is needed — the same alert will show "pending approval" / "submitted for review" messages.
-
-### 3. Migration for existing rows
-
-One-time SQL you run in Neon (also documented in `backend/README.md`):
-```sql
-ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(16) NOT NULL DEFAULT 'active';
-```
-Existing users stay `active`. `db.create_all()` handles new installs.
-
-## How you approve/deny in Neon
-
-Just run SQL in the Neon console:
-```sql
--- see pending requests
-SELECT id, email, full_name, created_at FROM users WHERE status = 'pending';
-
--- approve
-UPDATE users SET status = 'active' WHERE email = 'someone@example.com';
-
--- deny
-UPDATE users SET status = 'denied' WHERE email = 'someone@example.com';
-```
-
-No admin UI is built in this pass — you asked to manage it from the Neon database directly.
-
-## Out of scope (per your request)
-
-- No changes to `src/routes/login.tsx` or `src/routes/register.tsx` UI/layout.
-- No admin dashboard route.
-- No email notifications on approval (can add later if you want).
-
-## Files touched
-
-- `backend/models.py` — add `status` column
-- `backend/auth.py` — update `/register` and `/login` logic
-- `backend/README.md` — document the `ALTER TABLE` and approval SQL
+5. **Add clear deployment/database reminder**
+   - Keep the code compatible with the current Neon `status` column.
+   - After applying, you will still need to redeploy the Flask backend on Render and make sure new rows show `status = 'pending'` in Neon.

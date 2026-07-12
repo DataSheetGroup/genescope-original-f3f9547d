@@ -1,7 +1,7 @@
-import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, redirect, isRedirect } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
-import { isAuthenticated } from "@/lib/auth";
+import { clearToken, isAuthenticated, me as apiMe } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
@@ -15,9 +15,17 @@ export const Route = createFileRoute("/register")({
       { name: "description", content: "Request access to the GeneScope clinical decision-support workspace." },
     ],
   }),
-  beforeLoad: () => {
-    if (typeof window !== "undefined" && isAuthenticated()) {
-      throw redirect({ to: "/" });
+  beforeLoad: async () => {
+    if (typeof window === "undefined" || !isAuthenticated()) return;
+    try {
+      const user = await apiMe();
+      if (!user?.status || user.status === "active") {
+        throw redirect({ to: "/" });
+      }
+      clearToken();
+    } catch (error) {
+      if (isRedirect(error)) throw error;
+      clearToken();
     }
   },
   ssr: false,
@@ -51,6 +59,7 @@ function RegisterPage() {
       setError("Please agree to the Terms and Conditions.");
       return;
     }
+    clearToken();
     setSubmitting(true);
     try {
       const res = await register({ email: email.trim(), password });
@@ -100,7 +109,7 @@ function RegisterPage() {
             workspace.
           </h1>
           <p className="mt-6 max-w-sm text-sm leading-relaxed opacity-80">
-            Request access using your approved partner-domain email.
+            Request access and wait for administrator approval.
           </p>
         </div>
 
@@ -133,7 +142,7 @@ function RegisterPage() {
             Create <span className="hl">account</span>.
           </h2>
           <p className="mt-4 text-sm lg:text-base" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
-            Approved partner emails only.
+            New accounts stay pending until approved in the database.
           </p>
 
           <form onSubmit={handleSubmit} noValidate className="mt-8 lg:mt-10 space-y-5">

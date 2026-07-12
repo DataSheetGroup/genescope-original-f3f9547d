@@ -1,7 +1,7 @@
-import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, redirect, isRedirect } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
-import { isAuthenticated } from "@/lib/auth";
+import { clearToken, isAuthenticated, me as apiMe } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
@@ -20,9 +20,17 @@ export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>): Search => ({
     redirect: typeof search.redirect === "string" ? search.redirect : undefined,
   }),
-  beforeLoad: ({ search }) => {
-    if (typeof window !== "undefined" && isAuthenticated()) {
-      throw redirect({ to: (search as Search).redirect ?? "/" });
+  beforeLoad: async ({ search }) => {
+    if (typeof window === "undefined" || !isAuthenticated()) return;
+    try {
+      const user = await apiMe();
+      if (!user?.status || user.status === "active") {
+        throw redirect({ to: (search as Search).redirect ?? "/" });
+      }
+      clearToken();
+    } catch (error) {
+      if (isRedirect(error)) throw error;
+      clearToken();
     }
   },
   component: LoginPage,
@@ -94,8 +102,7 @@ function LoginPage() {
             the guesswork.
           </h1>
           <p className="mt-6 max-w-sm text-sm leading-relaxed opacity-80">
-            Sign in to access the restricted workspace for authorized partner
-            clinicians and developers.
+            Sign in after your account has been approved by an administrator.
           </p>
         </div>
 

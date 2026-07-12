@@ -8,7 +8,7 @@ export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
       { title: "Terms and Conditions · GeneScope" },
-      { name: "description", content: "GeneScope terms and conditions for authorized partner access." },
+      { name: "description", content: "GeneScope terms and conditions for approved account access." },
     ],
   }),
   ssr: false,
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/terms")({
 });
 
 const TERMS = [
-  "Authorized partners only — keep credentials private.",
+  "Approved accounts only — keep credentials private.",
   "Predictions are decision aids, not clinical diagnoses.",
   "Use must follow RA 10173 and institutional policies.",
 ];

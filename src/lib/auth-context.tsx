@@ -62,14 +62,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register: AuthState["register"] = async (input) => {
+    clearToken();
+    setUser(null);
     const res = await apiRegister(input);
-    if (!res?.access_token) {
-      return { pending: true, message: res?.message || "Your access request has been submitted for review." };
-    }
-    const u = await apiMe();
-    setUser(u);
     router.invalidate();
-    return u;
+    return { pending: true, message: res?.message || "Your access request has been submitted for review." };
   };
 
   const logout = async () => {

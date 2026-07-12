@@ -1,9 +1,9 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { isAuthenticated } from "@/lib/auth";
+import { clearToken, isAuthenticated, me as apiMe } from "@/lib/auth";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
-  beforeLoad: ({ location }) => {
+  beforeLoad: async ({ location }) => {
     if (typeof window === "undefined") return;
     if (!isAuthenticated()) {
       const isRoot = location.pathname === "/" && !location.searchStr;
@@ -11,6 +11,32 @@ export const Route = createFileRoute("/_authenticated")({
         to: "/login",
         search: isRoot ? {} : { redirect: location.href },
       });
+    }
+
+    let blockedByStatus = false;
+    const sessionToken = window.sessionStorage.getItem("genescope.session_token");
+    const localToken = window.localStorage.getItem("genescope.access_token");
+    const token = sessionToken || localToken;
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1] || ""));
+        blockedByStatus = Boolean(payload?.status && payload.status !== "active");
+      } catch (error) {
+        blockedByStatus = false;
+      }
+    }
+
+    try {
+      const user = await apiMe();
+      blockedByStatus = blockedByStatus || Boolean(user?.status && user.status !== "active");
+    } catch {
+      clearToken();
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+
+    if (blockedByStatus) {
+      clearToken();
+      throw redirect({ to: "/login", search: { redirect: location.href } });
     }
   },
   component: () => <Outlet />,

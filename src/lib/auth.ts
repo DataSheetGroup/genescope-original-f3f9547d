@@ -17,6 +17,7 @@ export type AuthUser = {
   phone?: string | null;
   organization?: string | null;
   bio?: string | null;
+  status?: "active" | "pending" | "denied" | string;
 };
 
 async function request<T>(
@@ -52,7 +53,7 @@ async function request<T>(
       res.status === 401
         ? "Invalid email or password."
         : res.status === 403
-        ? "Your email domain is not authorized to access this system."
+        ? "Your account is not approved yet."
         : res.status === 404
         ? "Account not found."
         : res.status === 409
@@ -89,16 +90,20 @@ export async function register(input: {
   email: string;
   password: string;
   full_name?: string;
-}): Promise<LoginResponse & { pending?: boolean; message?: string }> {
-  const data = await request<LoginResponse & { pending?: boolean; message?: string }>(
+}): Promise<{ pending: true; message: string }> {
+  clearToken();
+  const data = await request<Partial<LoginResponse> & { pending?: boolean; message?: string }>(
     "/auth/register",
     {
       method: "POST",
       body: JSON.stringify(input),
     },
   );
-  if (data?.access_token) setToken(data.access_token, true);
-  return data;
+  clearToken();
+  return {
+    pending: true,
+    message: data?.message || "Your access request has been submitted for review.",
+  };
 }
 
 export async function me(): Promise<AuthUser> {

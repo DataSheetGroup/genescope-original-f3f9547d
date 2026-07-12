@@ -31,6 +31,7 @@ def issue_token(user: User, remember: bool = False) -> str:
         "sub": str(user.id),
         "email": user.email,
         "role": user.role,
+        "status": user.status,
         "iat": datetime.utcnow(),
         "exp": datetime.utcnow() + timedelta(hours=exp_hours),
     }
@@ -56,6 +57,10 @@ def require_auth(fn):
         user = db.session.get(User, int(payload["sub"]))
         if not user or not user.is_active:
             return jsonify({"error": "Inactive user"}), 401
+        if user.status == "pending":
+            return jsonify({"error": "Your access request is still pending administrator approval."}), 403
+        if user.status == "denied":
+            return jsonify({"error": "Your access request was denied. Please contact an administrator."}), 403
         request.user = user
         return fn(*args, **kwargs)
 
