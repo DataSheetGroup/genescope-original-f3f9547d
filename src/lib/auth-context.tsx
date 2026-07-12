@@ -40,6 +40,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     try {
       const u = await apiMe();
+      if (u?.status && u.status !== "active") {
+        clearToken();
+        setUser(null);
+        return;
+      }
       setUser(u);
     } catch {
       clearToken();
@@ -56,6 +61,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login: AuthState["login"] = async (email, password, remember = false) => {
     await apiLogin(email, password, remember);
     const u = await apiMe();
+    if (u?.status && u.status !== "active") {
+      clearToken();
+      setUser(null);
+      throw new Error(
+        u.status === "pending"
+          ? "Your access request is still pending administrator approval."
+          : "Your access request was denied. Please contact an administrator.",
+      );
+    }
     setUser(u);
     router.invalidate();
     return u;
