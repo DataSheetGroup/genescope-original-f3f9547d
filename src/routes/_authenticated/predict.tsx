@@ -325,7 +325,50 @@ function PredictPage() {
 
           {/* STEP 2 — Result */}
           <div className="rounded-[2rem] bg-card text-card-foreground p-7 md:p-9 flex flex-col">
-            <StepBadge n={2} label="Your result" />
+            <div className="flex items-start justify-between gap-3 mb-1">
+              <StepBadge n={2} label="Your result" />
+              <div className="flex items-center gap-2 mt-1">
+                <span className="relative flex h-2 w-2">
+                  {activityState === "running" && (
+                    <span className={`absolute inline-flex h-full w-full rounded-full ${dotColor} opacity-70 animate-ping`} />
+                  )}
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${dotColor}`} />
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-card-foreground/70">
+                  {activityState === "running" ? "Live" : activityState === "done" ? "Live" : activityState === "error" ? "Offline" : "Idle"}
+                </span>
+                {runId > 0 && (
+                  <span className="text-[10px] tabular-nums text-card-foreground/50">
+                    · Run #{String(runId).padStart(3, "0")}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Live status line — always reserves height so error/idle transitions don't shift content */}
+            <div className="h-5 mb-4 flex items-center gap-2 text-xs text-card-foreground/70">
+              {mutation.isPending && (
+                <>
+                  <Zap className="h-3 w-3 text-purple animate-pulse" />
+                  <span className="animate-fade-in" key={statusStep}>{statusMessages[statusStep]}</span>
+                </>
+              )}
+              {!mutation.isPending && result && (
+                <>
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-deep" />
+                  <span>
+                    Model computed in {result.elapsed_ms !== undefined ? `${result.elapsed_ms.toFixed(1)}ms` : `${result.roundtrip_ms ?? "—"}ms`}
+                    {result.elapsed_ms !== undefined && result.roundtrip_ms !== undefined ? ` · round-trip ${result.roundtrip_ms}ms` : ""}
+                  </span>
+                </>
+              )}
+              {!mutation.isPending && mutation.isError && (
+                <>
+                  <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+                  <span>Cannot reach model server.</span>
+                </>
+              )}
+            </div>
 
             {!mutation.isPending && !mutation.isError && !result && (
               <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
@@ -334,30 +377,30 @@ function PredictPage() {
                   Fill the form to see your result.
                 </p>
                 <p className="mt-2 text-sm text-card-foreground/55 max-w-xs">
-                  Once all six indicators are set, hit Generate Prediction.
+                  Predictions update automatically once all six indicators are set.
                 </p>
               </div>
             )}
 
-            {mutation.isPending && (
+            {mutation.isPending && !result && (
               <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
                 <Loader2 className="h-10 w-10 animate-spin mb-4" />
-                <p className="text-sm">Running model on local server…</p>
+                <p className="text-sm">Running prediction in real time…</p>
               </div>
             )}
 
-            {mutation.isError && (
+            {mutation.isError && !result && (
               <div className="flex-1 flex items-center"><BackendOfflineNotice onRetry={handleSubmit} /></div>
             )}
 
             {result && (
-              <div className="flex-1 flex flex-col">
+              <div className={`flex-1 flex flex-col ${mutation.isPending ? "opacity-70" : ""} transition-opacity`}>
                 <div className="text-center">
                   <div className="eyebrow text-card-foreground/55 mb-2">Prediction</div>
-                  <div className="font-display text-2xl md:text-3xl leading-tight mb-6">
-                    {result.prediction}
+                  <div className="font-display text-2xl md:text-3xl leading-tight mb-6" key={`label-${runId}`}>
+                    <span className="inline-block animate-fade-in">{result.prediction}</span>
                   </div>
-                  <ConfidenceRing value={result.confidence} />
+                  <ConfidenceRing value={result.confidence} runId={runId} />
                 </div>
 
                 <div className="mt-8">
@@ -378,6 +421,7 @@ function PredictPage() {
                 </div>
               </div>
             )}
+
           </div>
         </div>
 
