@@ -212,6 +212,7 @@ function PredictPage() {
 
   // Auto-predict (debounced) when all six inputs are filled or change.
   useEffect(() => {
+    if (!canRun) return;
     if (!allFilled) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
@@ -221,9 +222,9 @@ function PredictPage() {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.Sex, form.Geographic_Region, form.Location_Type, form.Disease_Category, form.Facility_Type, form.Year, allFilled]);
+  }, [form.Sex, form.Geographic_Region, form.Location_Type, form.Disease_Category, form.Facility_Type, form.Year, allFilled, canRun]);
 
-  const handleSubmit = () => { if (allFilled) mutation.mutate(buildPayload()); };
+  const handleSubmit = () => { if (canRun && allFilled) mutation.mutate(buildPayload()); };
   const handleReset = () => {
     abortRef.current?.abort();
     setForm({});
