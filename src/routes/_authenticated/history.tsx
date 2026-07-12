@@ -27,7 +27,7 @@ function toCsv(items: HistoryItem[]) {
 }
 
 function HistoryPage() {
-  const { items, clear, remove, toggleSave, isLoading } = useHistory();
+  const { items, clear, remove, isLoading } = useHistory();
   const [resultFilter, setResultFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [diseaseFilter, setDiseaseFilter] = useState<string>("all");
