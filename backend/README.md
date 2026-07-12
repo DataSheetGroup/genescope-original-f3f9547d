@@ -86,17 +86,26 @@ bun run dev
 - In `.env` on the server, set `CORS_ORIGINS=https://yourdomain.com`.
 - In the frontend `.env`, set `VITE_API_URL=https://api.yourdomain.com`.
 
-## Access requests (pending / active / denied)
+## Access requests (pending / viewer / denied)
 
-All new registrations are created with `status = 'pending'`. Pending and
-denied users cannot log in or use protected API endpoints. You approve/deny
-them directly in Neon.
+All new registrations are created with `role = 'pending'`. Pending and denied
+users cannot log in or use protected API endpoints. You approve/deny them
+directly in Neon by changing the `role` value.
 
 ### One-time migration for existing databases
 
 ```sql
 ALTER TABLE users
-  ADD COLUMN IF NOT EXISTS status VARCHAR(16) NOT NULL DEFAULT 'active';
+  ADD COLUMN IF NOT EXISTS role VARCHAR(32) NOT NULL DEFAULT 'pending';
+
+ALTER TABLE users
+  ALTER COLUMN role SET DEFAULT 'pending';
+
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS status VARCHAR(16) NOT NULL DEFAULT 'pending';
+
+ALTER TABLE users
+  ALTER COLUMN status SET DEFAULT 'pending';
 ```
 
 ### Reviewing and approving requests
@@ -105,12 +114,12 @@ ALTER TABLE users
 -- See pending access requests
 SELECT id, email, full_name, created_at
 FROM users
-WHERE status = 'pending'
+WHERE role = 'pending'
 ORDER BY created_at DESC;
 
 -- Approve
-UPDATE users SET status = 'active' WHERE email = 'someone@example.com';
+UPDATE users SET role = 'viewer' WHERE email = 'someone@example.com';
 
 -- Deny
-UPDATE users SET status = 'denied' WHERE email = 'someone@example.com';
+UPDATE users SET role = 'denied' WHERE email = 'someone@example.com';
 ```

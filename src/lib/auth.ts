@@ -7,6 +7,7 @@ const API_URL =
 
 const TOKEN_KEY = "genescope.access_token";
 const SESSION_TOKEN_KEY = "genescope.session_token";
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export type LoginResponse = { access_token: string };
 export type AuthUser = {
@@ -28,6 +29,10 @@ export function roleAccessError(role?: string | null): string {
   return role === "denied"
     ? "Your access request was denied. Please contact an administrator."
     : "Your access request is still pending administrator approval.";
+}
+
+export function isValidEmail(email: string): boolean {
+  return EMAIL_RE.test(email.trim()) && email.trim().length <= 255;
 }
 
 async function request<T>(
@@ -87,6 +92,7 @@ export async function login(
   password: string,
   remember = false,
 ): Promise<LoginResponse> {
+  if (!isValidEmail(email)) throw new Error("Please enter a valid email address.");
   const data = await request<LoginResponse & { user?: AuthUser }>("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password, remember }),
@@ -107,6 +113,7 @@ export async function register(input: {
   full_name?: string;
 }): Promise<{ pending: true; message: string }> {
   clearToken();
+  if (!isValidEmail(input.email)) throw new Error("Please enter a valid email address.");
   const data = await request<Partial<LoginResponse> & { pending?: boolean; message?: string }>(
     "/auth/register",
     {

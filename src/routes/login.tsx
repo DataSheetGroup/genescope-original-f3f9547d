@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate, redirect, isRedirect } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
-import { clearToken, isAuthenticated, isPendingRole, me as apiMe } from "@/lib/auth";
+import { clearToken, isAuthenticated, isPendingRole, isValidEmail, me as apiMe } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
@@ -54,6 +54,10 @@ function LoginPage() {
     setError(null);
     if (!email || !password) {
       setError("Please enter both email and password.");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address.");
       return;
     }
     setSubmitting(true);
@@ -147,6 +151,7 @@ function LoginPage() {
               <input
                 id="email"
                 type="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from functools import wraps
+import re
 import secrets
 
 import bcrypt
@@ -10,6 +11,9 @@ from config import Config
 from models import PasswordReset, User, db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+EMAIL_RE = re.compile(r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$")
+APPROVED_ROLES = {"viewer", "client", "developer"}
 
 
 # ---------- helpers ----------
@@ -42,6 +46,20 @@ def decode_token(token: str):
     return jwt.decode(token, Config.JWT_SECRET, algorithms=["HS256"])
 
 
+def is_valid_email(email: str) -> bool:
+    return bool(email and len(email) <= 255 and EMAIL_RE.fullmatch(email))
+
+
+def role_rejection(user: User):
+    if user.role == "denied":
+        return "Your access request was denied. Please contact an administrator.", 403
+    if user.role == "pending":
+        return "Your access request is still pending administrator approval.", 403
+    if user.role not in APPROVED_ROLES:
+        return "Your account role is not approved for access.", 403
+    return None, None
+
+
 def require_auth(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
@@ -57,10 +75,9 @@ def require_auth(fn):
         user = db.session.get(User, int(payload["sub"]))
         if not user or not user.is_active:
             return jsonify({"error": "Inactive user"}), 401
-        if user.role == "pending":
-            return jsonify({"error": "Your access request is still pending administrator approval."}), 403
-        if user.role == "denied":
-            return jsonify({"error": "Your access request was denied. Please contact an administrator."}), 403
+        error, status_code = role_rejection(user)
+        if error:
+            return jsonify({"error": error}), status_code
         request.user = user
         return fn(*args, **kwargs)
 
@@ -78,6 +95,8 @@ def register():
 
     if not email or not password:
         return jsonify({"error": "Email and password required"}), 400
+    if not is_valid_email(email):
+        return jsonify({"error": "Please enter a valid email address."}), 400
     if len(password) < 8:
         return jsonify({"error": "Password must be at least 8 characters"}), 400
     if User.query.filter_by(email=email).first():
@@ -88,6 +107,7 @@ def register():
         password_hash=hash_password(password),
         full_name=full_name,
         role="pending",
+        status="pending",
     )
     db.session.add(user)
     db.session.commit()
@@ -105,15 +125,17 @@ def login():
     password = data.get("password") or ""
     remember = bool(data.get("remember"))
 
+    if not is_valid_email(email):
+        return jsonify({"error": "Please enter a valid email address."}), 400
+
     user = User.query.filter_by(email=email).first()
     if not user or not verify_password(password, user.password_hash):
         return jsonify({"error": "Invalid email or password"}), 401
     if not user.is_active:
         return jsonify({"error": "Account disabled"}), 403
-    if user.role == "pending":
-        return jsonify({"error": "Your access request is still pending administrator approval."}), 403
-    if user.role == "denied":
-        return jsonify({"error": "Your access request was denied. Please contact an administrator."}), 403
+    error, status_code = role_rejection(user)
+    if error:
+        return jsonify({"error": error}), status_code
 
     user.last_login_at = datetime.utcnow()
     db.session.commit()
