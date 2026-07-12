@@ -75,14 +75,26 @@ def register():
         return jsonify({"error": "Email and password required"}), 400
     if len(password) < 8:
         return jsonify({"error": "Password must be at least 8 characters"}), 400
-    if not Config.email_allowed(email):
-        return jsonify({"error": "This email is not authorized to register"}), 403
     if User.query.filter_by(email=email).first():
         return jsonify({"error": "Email already registered"}), 409
 
-    user = User(email=email, password_hash=hash_password(password), full_name=full_name)
+    allowed = Config.email_allowed(email)
+    status = "active" if allowed else "pending"
+
+    user = User(
+        email=email,
+        password_hash=hash_password(password),
+        full_name=full_name,
+        status=status,
+    )
     db.session.add(user)
     db.session.commit()
+
+    if not allowed:
+        return jsonify({
+            "pending": True,
+            "message": "Your access request has been submitted for review. You'll be able to sign in once an administrator approves your account.",
+        }), 202
 
     token = issue_token(user)
     return jsonify({"access_token": token, "user": user.to_public()}), 201
