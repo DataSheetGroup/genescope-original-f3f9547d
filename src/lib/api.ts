@@ -59,11 +59,16 @@ export const postPredict = async (payload: PredictPayload): Promise<PredictRespo
     if (!res.ok) throw new Error(`Predict failed (${res.status})`);
     const data = await res.json();
     if (data?.model && data.model !== "unavailable") {
+      // Backend returns probabilities in 0–1 range; UI expects 0–100.
+      const toPct = (v: unknown) => {
+        const n = Number(v) || 0;
+        return n <= 1 ? n * 100 : n;
+      };
       return {
         prediction: data.prediction,
-        confidence: Number(data.confidence) || 0,
-        probability_comprehensive: Number(data.probability_comprehensive) || 0,
-        probability_targeted: Number(data.probability_targeted) || 0,
+        confidence: toPct(data.confidence),
+        probability_comprehensive: toPct(data.probability_comprehensive),
+        probability_targeted: toPct(data.probability_targeted),
       } as PredictResponse;
     }
     // model unavailable on server → fall back
