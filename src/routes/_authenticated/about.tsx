@@ -221,14 +221,17 @@ function DonutPct({ data, colors }: { data: { name: string; value: number; pct: 
             innerRadius={55}
             outerRadius={90}
             paddingAngle={2}
-            label={(e: { name: string; pct: number }) => `${e.name} · ${e.pct.toFixed(2)}%`}
+            label={((e: unknown) => {
+              const p = e as { name: string; pct: number };
+              return `${p.name} · ${p.pct.toFixed(2)}%`;
+            }) as never}
             labelLine={false}
             stroke="var(--paper)"
             strokeWidth={2}
           >
             {data.map((_, i) => <Cell key={i} fill={colors[i % colors.length]} />)}
           </Pie>
-          <Tooltip contentStyle={tooltipStyle} formatter={(v: number, _n, p) => [`${v} (${(p.payload as { pct: number }).pct.toFixed(2)}%)`, p.payload.name]} />
+          <Tooltip contentStyle={tooltipStyle} formatter={((v: unknown, _n: unknown, p: { payload?: { pct?: number; name?: string } }) => [`${v} (${(p.payload?.pct ?? 0).toFixed(2)}%)`, p.payload?.name ?? ""]) as never} />
         </PieChart>
       </ResponsiveContainer>
     </div>
@@ -243,7 +246,7 @@ function BarsHoriz({ data, color }: { data: { name: string; value: number; pct: 
           <CartesianGrid stroke={GRID} horizontal={false} />
           <XAxis type="number" tick={axisTick} stroke={INK} />
           <YAxis type="category" dataKey="name" tick={axisTick} stroke={INK} width={90} />
-          <Tooltip contentStyle={tooltipStyle} formatter={(v: number, _n, p) => [`${v} (${(p.payload as { pct: number }).pct.toFixed(2)}%)`, "Records"]} />
+          <Tooltip contentStyle={tooltipStyle} formatter={((v: unknown, _n: unknown, p: { payload?: { pct?: number } }) => [`${v} (${(p.payload?.pct ?? 0).toFixed(2)}%)`, "Records"]) as never} />
           <Bar dataKey="value" fill={color} radius={[0, 6, 6, 0]} />
         </BarChart>
       </ResponsiveContainer>
