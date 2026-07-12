@@ -77,7 +77,7 @@ export function Navbar() {
 
           {/* Right */}
           <div className="hidden md:flex items-center gap-5 justify-end">
-            {rightLinks.map((l) => <NavLink key={l.to} {...l} />)}
+            {visibleRight.map((l) => <NavLink key={l.to} to={l.to} label={l.label} />)}
             <span
               className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider"
               style={{
