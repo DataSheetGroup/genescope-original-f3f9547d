@@ -29,6 +29,7 @@ class User(db.Model):
             "organization": self.organization,
             "bio": self.bio,
             "role": self.role,
+            "status": self.status,
         }
 
 
