@@ -66,38 +66,26 @@ def require_auth(fn):
 
 @bp.post("/register")
 def register():
-    """Create an access-request. Never returns a token — admin must approve in Neon."""
     data = request.get_json(force=True) or {}
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
     full_name = (data.get("full_name") or "").strip() or None
-    affiliation = (data.get("affiliation") or "").strip() or None
-    reason = (data.get("reason") or "").strip() or None
 
     if not email or not password:
         return jsonify({"error": "Email and password required"}), 400
     if len(password) < 8:
         return jsonify({"error": "Password must be at least 8 characters"}), 400
+    if not Config.email_allowed(email):
+        return jsonify({"error": "This email is not authorized to register"}), 403
     if User.query.filter_by(email=email).first():
-        return jsonify({"error": "An account with that email already exists"}), 409
+        return jsonify({"error": "Email already registered"}), 409
 
-    user = User(
-        email=email,
-        password_hash=hash_password(password),
-        full_name=full_name,
-        affiliation=affiliation,
-        reason=reason,
-        status="pending",
-        is_active=True,
-    )
+    user = User(email=email, password_hash=hash_password(password), full_name=full_name)
     db.session.add(user)
     db.session.commit()
 
-    return jsonify({
-        "ok": True,
-        "status": "pending",
-        "message": "Access request submitted. An administrator will review it shortly.",
-    }), 201
+    token = issue_token(user)
+    return jsonify({"access_token": token, "user": user.to_public()}), 201
 
 
 @bp.post("/login")
@@ -112,17 +100,8 @@ def login():
         return jsonify({"error": "Invalid email or password"}), 401
     if not user.is_active:
         return jsonify({"error": "Account disabled"}), 403
-
-    # Approval-queue gate
-    status = (user.status or "pending").lower()
-    if status == "pending":
-        return jsonify({"error": "Your account is awaiting administrator approval."}), 403
-    if status == "rejected":
-        return jsonify({"error": "Your access request was not approved. Please contact the administrator."}), 403
-    if status == "disabled":
-        return jsonify({"error": "Your account has been disabled. Please contact the administrator."}), 403
-    if status != "approved":
-        return jsonify({"error": "Your account is not active. Please contact the administrator."}), 403
+    if not Config.email_allowed(email):
+        return jsonify({"error": "This account is no longer authorized"}), 403
 
     user.last_login_at = datetime.utcnow()
     db.session.commit()
