@@ -7,6 +7,7 @@ from config import Config
 from models import db
 import auth
 import predict
+import user_data
 
 
 def create_app() -> Flask:
