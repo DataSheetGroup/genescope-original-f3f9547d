@@ -67,7 +67,6 @@ def add_history():
         input_json=json.dumps(inp),
         prediction=str(res.get("prediction") or "unknown"),
         confidence=float(res.get("confidence") or 0.0),
-        saved=bool(data.get("saved")),
     )
     db.session.add(item)
     db.session.commit()
