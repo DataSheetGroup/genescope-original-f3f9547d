@@ -124,8 +124,8 @@ function HistoryPage() {
           <table className="w-full text-sm">
             <thead className="bg-cream-dim text-xs uppercase tracking-wider text-card-foreground/65">
               <tr>
-                {["No.","Timestamp","Sex","Region","Disease","Facility","Year","Result","Confidence"].map((h) => (
-                  <th key={h} className="text-left px-5 py-3.5 font-semibold">{h}</th>
+                {["No.","Timestamp","Sex","Region","Disease","Facility","Year","Result","Confidence",""].map((h, i) => (
+                  <th key={i} className="text-left px-5 py-3.5 font-semibold">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -153,13 +153,33 @@ function HistoryPage() {
                       </span>
                     </td>
                     <td className="px-5 py-3.5 tabular-nums font-display">{it.result.confidence.toFixed(1)}%</td>
+                    <td className="px-3 py-3.5 whitespace-nowrap">
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => toggleSave(it.id, !it.saved)}
+                          title={it.saved ? "Unsave" : "Save"}
+                          className="p-1.5 rounded-full hover:bg-cream-dim"
+                        >
+                          <Star className={`h-4 w-4 ${it.saved ? "fill-coral text-coral" : "text-card-foreground/40"}`} />
+                        </button>
+                        <button
+                          onClick={() => remove(it.id)}
+                          title="Delete"
+                          className="p-1.5 rounded-full hover:bg-cream-dim text-card-foreground/40 hover:text-card-foreground"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 );
               })}
               {!filtered.length && (
                 <tr>
-                  <td colSpan={9} className="px-5 py-20 text-center text-sm text-card-foreground/60">
-                    {items.length
+                  <td colSpan={10} className="px-5 py-20 text-center text-sm text-card-foreground/60">
+                    {isLoading
+                      ? "Loading history..."
+                      : items.length
                       ? "No records match the current filters."
                       : "No predictions recorded yet. Head to Predict to get started."}
                   </td>
@@ -173,3 +193,4 @@ function HistoryPage() {
     </div>
   );
 }
+
