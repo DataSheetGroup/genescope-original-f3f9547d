@@ -91,14 +91,10 @@ export async function login(
     method: "POST",
     body: JSON.stringify({ email, password, remember }),
   });
-  const status = data?.user?.status;
-  if (status !== "active") {
+  const role = data?.user?.role;
+  if (isPendingRole(role)) {
     clearToken();
-    throw new Error(
-      status === "pending"
-        ? "Your access request is still pending administrator approval."
-        : "Your access request was denied. Please contact an administrator.",
-    );
+    throw new Error(roleAccessError(role));
   }
   if (!data?.access_token) throw new Error("Unexpected response from server.");
   setToken(data.access_token, remember);
