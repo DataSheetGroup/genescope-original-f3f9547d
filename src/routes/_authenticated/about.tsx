@@ -28,12 +28,13 @@ export const Route = createFileRoute("/_authenticated/about")({
   component: AboutPage,
 });
 
-type TabKey = "research" | "compliance" | "viz" | "recs";
+type TabKey = "research" | "compliance" | "viz" | "eval" | "recs";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "research", label: "Research" },
   { key: "compliance", label: "Compliance" },
-  { key: "viz", label: "Visualization" },
+  { key: "viz", label: "Results & Discussion" },
+  { key: "eval", label: "System Evaluation" },
   { key: "recs", label: "Recommendations" },
 ];
 
@@ -85,6 +86,7 @@ function AboutPage() {
         {tab === "research" && <ResearchCard />}
         {tab === "compliance" && <ComplianceCard />}
         {tab === "viz" && <VisualizationCard />}
+        {tab === "eval" && <SystemEvaluationCard />}
         {tab === "recs" && <RecommendationsCard />}
       </div>
     </div>
@@ -273,33 +275,13 @@ function GroupedBars({ data, keys }: { data: Record<string, string | number>[]; 
 }
 
 function VisualizationCard() {
-  const info = modelData.dataset_info;
+  // dataset_info shown inline via CH4.dataset below
   const best = modelData.best_model_name as string;
-  const models = modelData.models as unknown as Record<
-    string,
-    {
-      results: Record<string, number> & { cm: number[][] };
-      cv: { cv_roc_mean: number; cv_roc_std: number; cv_acc_mean: number; cv_acc_std: number };
-      feature_importance: { feature: string; importance: number }[];
-    }
-  >;
-  const rows = Object.entries(models).map(([name, m]) => ({
-    name,
-    accuracy: m.results.Accuracy,
-    precision: m.results.Precision,
-    recall: m.results.Recall,
-    f1: m.results["F1-Score"],
-    roc: m.results["ROC-AUC"],
-  }));
-  const fi = models[best].feature_importance;
-  const cm = models[best].results.cm; // [[TN,FP],[FN,TP]]
-  const fmt = (n: number) => (n * 100).toFixed(1) + "%";
 
   const sections: { id: string; label: string }[] = [
     { id: "sec-dataset", label: "Dataset" },
     { id: "sec-dist", label: "Distributions" },
     { id: "sec-cross", label: "Cross-tabs" },
-    { id: "sec-model", label: "Model" },
   ];
 
   return (
@@ -597,9 +579,71 @@ function VisualizationCard() {
           </ul>
         </FigureCard>
       </div>
+    </div>
+  );
+}
 
-      {/* ───────────── MODEL ───────────── */}
-      <div id="sec-model" className="scroll-mt-24 space-y-6">
+/* ------------------------ System Evaluation (Chapter 4 · §4.5–4.10) ------------------------ */
+
+function SystemEvaluationCard() {
+  const best = modelData.best_model_name as string;
+  const models = modelData.models as unknown as Record<
+    string,
+    {
+      results: Record<string, number> & { cm: number[][] };
+      cv: { cv_roc_mean: number; cv_roc_std: number; cv_acc_mean: number; cv_acc_std: number };
+      feature_importance: { feature: string; importance: number }[];
+    }
+  >;
+  const rows = Object.entries(models).map(([name, m]) => ({
+    name,
+    accuracy: m.results.Accuracy,
+    precision: m.results.Precision,
+    recall: m.results.Recall,
+    f1: m.results["F1-Score"],
+    roc: m.results["ROC-AUC"],
+  }));
+  const fi = models[best].feature_importance;
+  const cm = models[best].results.cm; // [[TN,FP],[FN,TP]]
+  const fmt = (n: number) => (n * 100).toFixed(1) + "%";
+
+  const sections: { id: string; label: string }[] = [
+    { id: "eval-compare", label: "Comparison" },
+    { id: "eval-tuning", label: "Tuning" },
+    { id: "eval-perclass", label: "Per-class" },
+    { id: "eval-importance", label: "Importance" },
+    { id: "eval-cm", label: "Confusion" },
+    { id: "eval-cv", label: "Cross-validation" },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
+        <img src={magnifier} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
+        <div className="eyebrow text-coral mb-2">Chapter 4 · §4.5 – §4.10</div>
+        <h2 className="font-display text-3xl mb-3">
+          System <span className="hl">evaluation</span>
+        </h2>
+        <p className="text-sm leading-relaxed text-card-foreground/80 max-w-2xl mb-5">
+          How the three candidate models were tuned, tested, and compared — with every table and
+          figure from the paper's evaluation sections. The deployed model is{" "}
+          <b>{best}</b>, chosen for its strongest ROC-AUC and stability across folds.
+        </p>
+        <nav className="flex flex-wrap gap-2">
+          {sections.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className="eyebrow text-[11px] px-3 py-1.5 rounded-full bg-cream-dim hover:bg-coral hover:text-card-foreground transition-colors"
+            >
+              {s.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      <div id="eval-compare" className="scroll-mt-24">
         <FigureCard
           ref_="Table 9 · Section 4.10 · Figure 6 (Results)"
           title={<>Model <span className="hl">comparison</span></>}
@@ -645,7 +689,9 @@ function VisualizationCard() {
             </table>
           </div>
         </FigureCard>
+      </div>
 
+      <div id="eval-tuning" className="scroll-mt-24">
         <FigureCard
           ref_="Table 7 · Section 4.5"
           title={<>Optimal <span className="hl">hyperparameters</span></>}
@@ -681,7 +727,9 @@ function VisualizationCard() {
             </table>
           </div>
         </FigureCard>
+      </div>
 
+      <div id="eval-perclass" className="scroll-mt-24">
         <FigureCard
           ref_="Section 4.7.1"
           title={<>Per-class <span className="hl">performance</span></>}
@@ -734,7 +782,9 @@ function VisualizationCard() {
             </table>
           </div>
         </FigureCard>
+      </div>
 
+      <div id="eval-importance" className="scroll-mt-24 space-y-6">
         <FigureCard
           ref_="Table 11 · Section 4.9"
           title={<>Feature importance <span className="hl">across all models</span></>}
@@ -775,8 +825,6 @@ function VisualizationCard() {
           </div>
         </FigureCard>
 
-
-
         <FigureCard
           ref_="Table 11 · Section 4.9"
           title={<>Feature <span className="hl">importance</span></>}
@@ -810,7 +858,9 @@ function VisualizationCard() {
             ))}
           </ul>
         </FigureCard>
+      </div>
 
+      <div id="eval-cm" className="scroll-mt-24">
         <FigureCard
           ref_="Figure 3 (Results) · Section 4.7"
           title={<>Confusion <span className="hl">matrix</span></>}
@@ -869,7 +919,9 @@ function VisualizationCard() {
             </div>
           </div>
         </FigureCard>
+      </div>
 
+      <div id="eval-cv" className="scroll-mt-24">
         <FigureCard
           ref_="Table 8 · Section 4.6"
           title={<>Cross-validation <span className="hl">stability</span></>}
@@ -918,6 +970,7 @@ function VisualizationCard() {
     </div>
   );
 }
+
 
 /* ------------------------ Recommendations (Chapter 6) ------------------------ */
 
