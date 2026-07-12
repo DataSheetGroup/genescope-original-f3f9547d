@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/performance")({
       { name: "description", content: "Comparative evaluation of Binary Logistic Regression, Decision Tree, and Random Forest." },
     ],
   }),
-  component: PerformancePage,
+  component: PerformancePageGated,
 });
 
 const METRIC_KEYS = ["accuracy", "precision", "recall", "f1", "roc_auc"] as const;
@@ -337,5 +337,14 @@ function PerformancePage() {
       </div>
       </div>
     </div>
+  );
+}
+
+import { RoleGate } from "@/components/RoleGate";
+function PerformancePageGated() {
+  return (
+    <RoleGate permission="performance.view" title="Model performance is researcher-only">
+      <PerformancePage />
+    </RoleGate>
   );
 }

@@ -89,9 +89,15 @@ def encode_features(payload: dict) -> list:
     ]
 
 
+RUN_ROLES = {"admin", "researcher", "clinician", "developer"}
+
+
 @bp.post("")
 @require_auth
 def predict():
+    user_role = (getattr(request.user, "role", "") or "").strip().lower()
+    if user_role not in RUN_ROLES:
+        return jsonify({"error": "Your role does not have permission to run predictions."}), 403
     payload = request.get_json(force=True) or {}
     # accept either flat payload or { features: {...} }
     features = payload.get("features") if isinstance(payload.get("features"), dict) else payload

@@ -17,6 +17,8 @@ import {
   type PredictResponse,
 } from "@/lib/api";
 import { useHistory } from "@/hooks/useHistory";
+import { useAuth } from "@/lib/auth-context";
+import { can } from "@/lib/roles";
 import clipboard from "@/assets/illustrations/clipboard.png";
 import safetyGlasses from "@/assets/illustrations/safety-glasses.png";
 import dnaStrand from "@/assets/illustrations/dna-strand.png";
@@ -157,6 +159,8 @@ const KNOWLEDGE = {
 function PredictPage() {
   const [form, setForm] = useState<Form>({});
   const { add } = useHistory();
+  const { user } = useAuth();
+  const canRun = can(user?.role, "predict.run");
   const [saved, setSaved] = useState(false);
   const [runId, setRunId] = useState(0);
   const [statusStep, setStatusStep] = useState(0);
@@ -212,6 +216,7 @@ function PredictPage() {
 
   // Auto-predict (debounced) when all six inputs are filled or change.
   useEffect(() => {
+    if (!canRun) return;
     if (!allFilled) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
@@ -221,9 +226,9 @@ function PredictPage() {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.Sex, form.Geographic_Region, form.Location_Type, form.Disease_Category, form.Facility_Type, form.Year, allFilled]);
+  }, [form.Sex, form.Geographic_Region, form.Location_Type, form.Disease_Category, form.Facility_Type, form.Year, allFilled, canRun]);
 
-  const handleSubmit = () => { if (allFilled) mutation.mutate(buildPayload()); };
+  const handleSubmit = () => { if (canRun && allFilled) mutation.mutate(buildPayload()); };
   const handleReset = () => {
     abortRef.current?.abort();
     setForm({});
@@ -308,11 +313,18 @@ function PredictPage() {
               ))}
             </div>
 
+            {!canRun && (
+              <div className="mb-4 rounded-2xl bg-coral/10 border border-coral/30 px-4 py-3 text-sm text-card-foreground/85">
+                Viewer accounts are read-only. Ask an admin to upgrade your role
+                to <span className="font-semibold">clinician</span> or <span className="font-semibold">researcher</span> to run predictions.
+              </div>
+            )}
             <div className="mt-8 flex flex-wrap gap-3">
               <button
                 onClick={handleSubmit}
-                disabled={!allFilled || mutation.isPending}
+                disabled={!canRun || !allFilled || mutation.isPending}
                 className="pill pill-coral disabled:opacity-50 disabled:cursor-not-allowed"
+                title={!canRun ? "Read-only role" : undefined}
               >
                 {mutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                 Generate Prediction

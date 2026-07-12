@@ -4,19 +4,20 @@ import { UserRound, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { getHealth } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { can, type Permission } from "@/lib/roles";
 
-const leftLinks = [
-  { to: "/predict", label: "Predict" },
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/history", label: "History" },
-] as const;
+type NavItem = { to: string; label: string; permission?: Permission };
 
-const rightLinks = [
-  { to: "/performance", label: "Performance" },
-  { to: "/about", label: "About" },
-] as const;
+const leftLinks: NavItem[] = [
+  { to: "/predict", label: "Predict", permission: "predict.view" },
+  { to: "/dashboard", label: "Dashboard", permission: "dashboard.view" },
+  { to: "/history", label: "History", permission: "history.view" },
+];
 
-const allLinks = [{ to: "/", label: "Home" }, ...leftLinks, ...rightLinks] as const;
+const rightLinks: NavItem[] = [
+  { to: "/performance", label: "Performance", permission: "performance.view" },
+  { to: "/about", label: "About", permission: "about.view" },
+];
 
 function Wordmark() {
   return (
@@ -45,6 +46,11 @@ function NavLink({ to, label, onClick }: { to: string; label: string; onClick?: 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const { user, isAuthenticated } = useAuth();
+  const role = user?.role;
+  const visible = (items: NavItem[]) => items.filter((l) => !l.permission || can(role, l.permission));
+  const visibleLeft = visible(leftLinks);
+  const visibleRight = visible(rightLinks);
+  const allLinks: NavItem[] = [{ to: "/", label: "Home" }, ...visibleLeft, ...visibleRight];
   const { data, isError } = useQuery({
     queryKey: ["health"],
     queryFn: getHealth,
@@ -61,7 +67,7 @@ export function Navbar() {
         <div className="grid grid-cols-[1fr_auto_1fr] items-center h-20 gap-6">
           {/* Left */}
           <nav className="hidden md:flex items-center gap-7 justify-start">
-            {leftLinks.map((l) => <NavLink key={l.to} {...l} />)}
+            {visibleLeft.map((l) => <NavLink key={l.to} to={l.to} label={l.label} />)}
           </nav>
 
           {/* Center wordmark */}
@@ -71,7 +77,7 @@ export function Navbar() {
 
           {/* Right */}
           <div className="hidden md:flex items-center gap-5 justify-end">
-            {rightLinks.map((l) => <NavLink key={l.to} {...l} />)}
+            {visibleRight.map((l) => <NavLink key={l.to} to={l.to} label={l.label} />)}
             <span
               className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider"
               style={{
