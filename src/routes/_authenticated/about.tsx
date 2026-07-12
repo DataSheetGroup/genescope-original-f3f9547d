@@ -154,7 +154,7 @@ function ComplianceCard() {
 
 function VisualizationCard() {
   const info = modelData.dataset_info;
-  const models = modelData.models as Record<
+  const models = modelData.models as unknown as Record<
     string,
     { results: Record<string, number>; cv: Record<string, number>; feature_importance: { feature: string; importance: number }[] }
   >;
