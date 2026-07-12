@@ -231,13 +231,11 @@ function PredictPage() {
     abortRef.current?.abort();
     setForm({});
     mutation.reset();
-    setSaved(false);
   };
   const handleSave = async () => {
     if (!mutation.data) return;
     try {
-      await add(buildPayload(), mutation.data, false);
-      setSaved(true);
+      await add(buildPayload(), mutation.data);
     } catch (e) {
       console.error("[save history] failed:", e);
     }
