@@ -30,14 +30,18 @@ function RegisterPage() {
   const [showPw, setShowPw] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [affiliation, setAffiliation] = useState("");
+  const [reason, setReason] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [successMsg, setSuccessMsg] = useState<string>("");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (submitting) return;
+    if (submitting || submitted) return;
     setError(null);
     if (!email || !password) {
       setError("Please enter both email and password.");
@@ -47,15 +51,33 @@ function RegisterPage() {
       setError("Password must be at least 8 characters.");
       return;
     }
+    if (!reason.trim()) {
+      setError("Please tell us why you need access.");
+      return;
+    }
     if (!agreed) {
       setError("Please agree to the Terms and Conditions.");
       return;
     }
     setSubmitting(true);
     try {
-      await register({ email: email.trim(), password });
-      setSuccess(true);
-      setTimeout(() => navigate({ to: "/" }), 400);
+      const res = await register({
+        email: email.trim(),
+        password,
+        full_name: fullName.trim() || undefined,
+        affiliation: affiliation.trim() || undefined,
+        reason: reason.trim(),
+      });
+      if (res.status === "approved") {
+        // Auto-approved path (legacy) — hop to home.
+        setSuccessMsg("Account approved. Redirecting…");
+        setSubmitted(true);
+        setTimeout(() => navigate({ to: "/" }), 500);
+      } else {
+        setSuccessMsg(res.message || "Access request submitted. An administrator will review it shortly.");
+        setSubmitted(true);
+        setSubmitting(false);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Request failed.");
       setSubmitting(false);
