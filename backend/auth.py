@@ -6,6 +6,7 @@ import secrets
 import bcrypt
 import jwt
 from flask import Blueprint, current_app, jsonify, request
+from sqlalchemy import text
 
 from config import Config
 from models import PasswordReset, User, db
@@ -117,8 +118,11 @@ def register():
     # Force pending after INSERT too, so stale database defaults/triggers cannot
     # accidentally grant access as viewer during registration.
     db.session.flush()
-    user.role = PENDING_ROLE
-    user.status = PENDING_STATUS
+    db.session.execute(
+        text("UPDATE users SET role = :role, status = :status WHERE id = :id"),
+        {"role": PENDING_ROLE, "status": PENDING_STATUS, "id": user.id},
+    )
+    db.session.refresh(user)
     db.session.commit()
 
     return jsonify({
