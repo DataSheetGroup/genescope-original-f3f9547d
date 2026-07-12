@@ -28,12 +28,13 @@ export const Route = createFileRoute("/_authenticated/about")({
   component: AboutPage,
 });
 
-type TabKey = "research" | "compliance" | "viz" | "recs";
+type TabKey = "research" | "compliance" | "viz" | "eval" | "recs";
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: "research", label: "Research" },
   { key: "compliance", label: "Compliance" },
-  { key: "viz", label: "Visualization" },
+  { key: "viz", label: "Results & Discussion" },
+  { key: "eval", label: "System Evaluation" },
   { key: "recs", label: "Recommendations" },
 ];
 
