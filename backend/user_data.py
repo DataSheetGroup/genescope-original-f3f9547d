@@ -21,7 +21,6 @@ class PredictionHistory(db.Model):
     input_json = db.Column(db.Text, nullable=False)
     prediction = db.Column(db.String(128), nullable=False)
     confidence = db.Column(db.Float, nullable=False, default=0.0)
-    saved = db.Column(db.Boolean, default=False, nullable=False)
     note = db.Column(db.Text)
 
     def to_dict(self):
@@ -30,7 +29,6 @@ class PredictionHistory(db.Model):
             "timestamp": self.created_at.isoformat() + "Z",
             "input": json.loads(self.input_json or "{}"),
             "result": {"prediction": self.prediction, "confidence": self.confidence},
-            "saved": self.saved,
             "note": self.note,
         }
 
