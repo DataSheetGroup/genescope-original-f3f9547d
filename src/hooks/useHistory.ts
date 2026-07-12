@@ -49,7 +49,7 @@ export function useHistory() {
     onMutate: async ({ id, saved }) => {
       await qc.cancelQueries({ queryKey });
       const previous = qc.getQueryData<HistoryItem[]>(queryKey);
-      qc.setQueryData(queryKey, (old) =>
+      qc.setQueryData<HistoryItem[]>(queryKey, (old) =>
         old?.map((it) => (it.id === id ? { ...it, saved } : it)) ?? []
       );
       return { previous };
