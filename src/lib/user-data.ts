@@ -1,4 +1,4 @@
-// User data API: prediction history and preferences.
+// User data API: prediction history.
 // Talks to the Flask backend (same base URL as auth).
 import { getToken } from "./auth";
 import type { PredictPayload, PredictResponse } from "./api-types";
@@ -53,10 +53,3 @@ export const updateHistory = (id: string, patch: { note?: string }) =>
     body: JSON.stringify(patch),
   });
 
-export const getPreferences = () => req<Record<string, unknown>>("/preferences");
-
-export const putPreferences = (patch: Record<string, unknown>) =>
-  req<Record<string, unknown>>("/preferences", {
-    method: "PUT",
-    body: JSON.stringify(patch),
-  });
