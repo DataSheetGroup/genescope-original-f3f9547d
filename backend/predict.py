@@ -112,6 +112,7 @@ def predict():
         model = bundle["best_model"]
         scaler = bundle.get("scaler")
 
+        t0 = time.perf_counter()
         x = np.array([encode_features(features)], dtype=float)
         if scaler is not None:
             x = scaler.transform(x)
@@ -124,13 +125,16 @@ def predict():
 
         label = "Comprehensive Profiling" if p_comp >= p_tgt else "Targeted Testing"
         confidence = max(p_comp, p_tgt)
+        elapsed_ms = round((time.perf_counter() - t0) * 1000, 2)
 
         return jsonify({
             "prediction": label,
             "confidence": confidence,
             "probability_comprehensive": p_comp,
             "probability_targeted": p_tgt,
+            "elapsed_ms": elapsed_ms,
             "model": bundle.get("best_model_name", "trained"),
         })
     except Exception as e:
         return jsonify({"error": f"Prediction failed: {e}"}), 400
+
