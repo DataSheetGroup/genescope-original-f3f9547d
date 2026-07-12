@@ -1,4 +1,4 @@
-"""User data endpoints: prediction history, saved analyses, preferences.
+"""User data endpoints: prediction history and preferences.
 
 All routes require auth. Rows are scoped by request.user (set by @require_auth).
 """
@@ -21,7 +21,6 @@ class PredictionHistory(db.Model):
     input_json = db.Column(db.Text, nullable=False)
     prediction = db.Column(db.String(128), nullable=False)
     confidence = db.Column(db.Float, nullable=False, default=0.0)
-    saved = db.Column(db.Boolean, default=False, nullable=False)
     note = db.Column(db.Text)
 
     def to_dict(self):
@@ -30,7 +29,6 @@ class PredictionHistory(db.Model):
             "timestamp": self.created_at.isoformat() + "Z",
             "input": json.loads(self.input_json or "{}"),
             "result": {"prediction": self.prediction, "confidence": self.confidence},
-            "saved": self.saved,
             "note": self.note,
         }
 
@@ -53,11 +51,8 @@ bp = Blueprint("user_data", __name__)
 @bp.get("/history")
 @require_auth
 def list_history():
-    saved_only = request.args.get("saved") == "1"
-    q = PredictionHistory.query.filter_by(user_id=request.user.id)
-    if saved_only:
-        q = q.filter_by(saved=True)
-    items = q.order_by(PredictionHistory.created_at.desc()).limit(500).all()
+    items = PredictionHistory.query.filter_by(user_id=request.user.id)\
+        .order_by(PredictionHistory.created_at.desc()).limit(500).all()
     return jsonify([i.to_dict() for i in items])
 
 
@@ -72,7 +67,6 @@ def add_history():
         input_json=json.dumps(inp),
         prediction=str(res.get("prediction") or "unknown"),
         confidence=float(res.get("confidence") or 0.0),
-        saved=bool(data.get("saved")),
     )
     db.session.add(item)
     db.session.commit()
@@ -105,8 +99,6 @@ def update_history(item_id: int):
     if not item:
         return jsonify({"error": "Not found"}), 404
     data = request.get_json(force=True) or {}
-    if "saved" in data:
-        item.saved = bool(data["saved"])
     if "note" in data:
         item.note = data["note"]
     db.session.commit()

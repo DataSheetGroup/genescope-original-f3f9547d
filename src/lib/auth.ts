@@ -32,6 +32,16 @@ export function roleAccessError(role?: string | null): string {
     : "Your access request is still pending administrator approval.";
 }
 
+export function isPendingAccessError(message: string): boolean {
+  const m = message.toLowerCase();
+  return (
+    m.includes("pending administrator approval") ||
+    m.includes("access request was denied") ||
+    m.includes("access request has been submitted") ||
+    m.includes("not approved yet")
+  );
+}
+
 export function isValidEmail(email: string): boolean {
   return EMAIL_RE.test(email.trim()) && email.trim().length <= 255;
 }

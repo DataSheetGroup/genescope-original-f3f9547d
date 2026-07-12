@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Loader2, RefreshCw, Save, Zap } from "lucide-react";
+import { Loader2, RefreshCw, Zap } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -161,7 +161,6 @@ function PredictPage() {
   const { add } = useHistory();
   const { user } = useAuth();
   const canRun = can(user?.role, "predict.run");
-  const [saved, setSaved] = useState(false);
   const [runId, setRunId] = useState(0);
   const [statusStep, setStatusStep] = useState(0);
   const abortRef = useRef<AbortController | null>(null);
@@ -181,7 +180,6 @@ function PredictPage() {
       return postPredict(payload, { signal: ac.signal });
     },
     onSuccess: () => {
-      setSaved(false);
       setRunId((r) => r + 1);
     },
   });
@@ -233,13 +231,11 @@ function PredictPage() {
     abortRef.current?.abort();
     setForm({});
     mutation.reset();
-    setSaved(false);
   };
   const handleSave = async () => {
     if (!mutation.data) return;
     try {
-      await add(buildPayload(), mutation.data, false);
-      setSaved(true);
+      await add(buildPayload(), mutation.data);
     } catch (e) {
       console.error("[save history] failed:", e);
     }
@@ -431,9 +427,8 @@ function PredictPage() {
                 </div>
 
                 <div className="mt-auto pt-8 flex flex-wrap gap-3 justify-center">
-                  <button onClick={handleSave} disabled={saved} className="pill pill-coral disabled:opacity-60">
-                    <Save className="h-4 w-4" />
-                    {saved ? "Saved" : "Save to History"}
+                  <button onClick={handleSave} className="pill pill-coral">
+                    Save to History
                   </button>
                   <button onClick={handleReset} className="pill bg-green-deep text-cream hover:bg-green-deep/85">
                     New Prediction

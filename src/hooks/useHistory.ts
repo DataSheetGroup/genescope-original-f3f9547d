@@ -6,7 +6,6 @@ import {
   clearHistory,
   deleteHistory,
   listHistory,
-  updateHistory,
   type HistoryItem,
 } from "@/lib/user-data";
 import { useAuth } from "@/lib/auth-context";
@@ -21,7 +20,7 @@ export function useHistory() {
 
   const query = useQuery({
     queryKey,
-    queryFn: () => listHistory(false),
+    queryFn: () => listHistory(),
     enabled,
     staleTime: 0,
     refetchOnMount: "always",
@@ -29,8 +28,8 @@ export function useHistory() {
   });
 
   const addM = useMutation({
-    mutationFn: ({ input, result, saved }: { input: PredictPayload; result: PredictResponse; saved?: boolean }) =>
-      addHistory(input, result, saved),
+    mutationFn: ({ input, result }: { input: PredictPayload; result: PredictResponse }) =>
+      addHistory(input, result),
     onSuccess: () => qc.invalidateQueries({ queryKey }),
   });
 
@@ -44,34 +43,13 @@ export function useHistory() {
     onSuccess: () => qc.invalidateQueries({ queryKey }),
   });
 
-  const toggleSaveM = useMutation({
-    mutationFn: ({ id, saved }: { id: string; saved: boolean }) => updateHistory(id, { saved }),
-    onMutate: async ({ id, saved }) => {
-      await qc.cancelQueries({ queryKey });
-      const previous = qc.getQueryData<HistoryItem[]>(queryKey);
-      qc.setQueryData<HistoryItem[]>(queryKey, (old) =>
-        old?.map((it) => (it.id === id ? { ...it, saved } : it)) ?? []
-      );
-      return { previous };
-    },
-    onError: (err, _vars, context) => {
-      if (context?.previous) qc.setQueryData(queryKey, context.previous);
-      window.alert(`Could not update saved state: ${err instanceof Error ? err.message : String(err)}`);
-    },
-    onSettled: () => qc.invalidateQueries({ queryKey }),
-  });
-
   const add = useCallback(
-    (input: PredictPayload, result: PredictResponse, saved = false) =>
-      addM.mutateAsync({ input, result, saved }),
+    (input: PredictPayload, result: PredictResponse) =>
+      addM.mutateAsync({ input, result }),
     [addM],
   );
   const clear = useCallback(() => clearM.mutate(), [clearM]);
   const remove = useCallback((id: string) => deleteM.mutate(id), [deleteM]);
-  const toggleSave = useCallback(
-    (id: string, saved: boolean) => toggleSaveM.mutate({ id, saved }),
-    [toggleSaveM],
-  );
 
   return {
     items: query.data ?? [],
@@ -80,6 +58,5 @@ export function useHistory() {
     add,
     clear,
     remove,
-    toggleSave,
   };
 }

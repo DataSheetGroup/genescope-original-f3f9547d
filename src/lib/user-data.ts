@@ -1,4 +1,4 @@
-// User data API: prediction history, saved analyses, preferences.
+// User data API: prediction history and preferences.
 // Talks to the Flask backend (same base URL as auth).
 import { getToken } from "./auth";
 import type { PredictPayload, PredictResponse } from "./api-types";
@@ -30,17 +30,15 @@ export type HistoryItem = {
   timestamp: string;
   input: PredictPayload;
   result: PredictResponse;
-  saved?: boolean;
   note?: string | null;
 };
 
-export const listHistory = (savedOnly = false) =>
-  req<HistoryItem[]>(`/history${savedOnly ? "?saved=1" : ""}`);
+export const listHistory = () => req<HistoryItem[]>("/history");
 
-export const addHistory = (input: PredictPayload, result: PredictResponse, saved = false) =>
+export const addHistory = (input: PredictPayload, result: PredictResponse) =>
   req<HistoryItem>("/history", {
     method: "POST",
-    body: JSON.stringify({ input, result, saved }),
+    body: JSON.stringify({ input, result }),
   });
 
 export const deleteHistory = (id: string) =>
@@ -49,7 +47,7 @@ export const deleteHistory = (id: string) =>
 export const clearHistory = () =>
   req<{ ok: true }>("/history/clear", { method: "POST" });
 
-export const updateHistory = (id: string, patch: { saved?: boolean; note?: string }) =>
+export const updateHistory = (id: string, patch: { note?: string }) =>
   req<HistoryItem>(`/history/${id}`, {
     method: "PATCH",
     body: JSON.stringify(patch),
