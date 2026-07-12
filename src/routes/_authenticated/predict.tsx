@@ -17,6 +17,8 @@ import {
   type PredictResponse,
 } from "@/lib/api";
 import { useHistory } from "@/hooks/useHistory";
+import { useAuth } from "@/lib/auth-context";
+import { can } from "@/lib/roles";
 import clipboard from "@/assets/illustrations/clipboard.png";
 import safetyGlasses from "@/assets/illustrations/safety-glasses.png";
 import dnaStrand from "@/assets/illustrations/dna-strand.png";
