@@ -92,12 +92,6 @@ function HistoryPage() {
                 {["Pediatrics","Neurology","Metabolic","Others"].map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
               </SelectContent>
             </Select>
-            <button
-              onClick={() => setSavedOnly((s) => !s)}
-              className={`pill text-xs px-4 py-2 ${savedOnly ? "bg-coral text-card-foreground" : "bg-cream text-card-foreground"}`}
-            >
-              <Star className={`h-3.5 w-3.5 ${savedOnly ? "fill-current" : ""}`} /> Saved only
-            </button>
           </div>
           <div className="flex gap-2">
             <button
