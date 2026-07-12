@@ -1,4 +1,4 @@
-"""User data endpoints: prediction history and preferences.
+"""User data endpoints: prediction history.
 
 All routes require auth. Rows are scoped by request.user (set by @require_auth).
 """
@@ -31,16 +31,6 @@ class PredictionHistory(db.Model):
             "result": {"prediction": self.prediction, "confidence": self.confidence},
             "note": self.note,
         }
-
-
-class UserPreference(db.Model):
-    __tablename__ = "user_preferences"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    key = db.Column(db.String(128), nullable=False)
-    value = db.Column(db.Text, nullable=False)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
-    __table_args__ = (db.UniqueConstraint("user_id", "key", name="uq_user_pref"),)
 
 
 bp = Blueprint("user_data", __name__)
@@ -105,33 +95,3 @@ def update_history(item_id: int):
     return jsonify(item.to_dict())
 
 
-# ---------- preferences ----------
-
-@bp.get("/preferences")
-@require_auth
-def get_preferences():
-    rows = UserPreference.query.filter_by(user_id=request.user.id).all()
-    out = {}
-    for r in rows:
-        try:
-            out[r.key] = json.loads(r.value)
-        except Exception:
-            out[r.key] = r.value
-    return jsonify(out)
-
-
-@bp.put("/preferences")
-@require_auth
-def put_preferences():
-    data = request.get_json(force=True) or {}
-    if not isinstance(data, dict):
-        return jsonify({"error": "Body must be a JSON object"}), 400
-    for k, v in data.items():
-        row = UserPreference.query.filter_by(user_id=request.user.id, key=str(k)[:128]).first()
-        payload = json.dumps(v)
-        if row:
-            row.value = payload
-        else:
-            db.session.add(UserPreference(user_id=request.user.id, key=str(k)[:128], value=payload))
-    db.session.commit()
-    return get_preferences()
