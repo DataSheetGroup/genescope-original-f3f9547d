@@ -313,12 +313,6 @@ function PredictPage() {
               ))}
             </div>
 
-            {!canRun && (
-              <div className="mb-4 rounded-2xl bg-coral/10 border border-coral/30 px-4 py-3 text-sm text-card-foreground/85">
-                Viewer accounts are read-only. Ask an admin to upgrade your role
-                to <span className="font-semibold">clinician</span> or <span className="font-semibold">researcher</span> to run predictions.
-              </div>
-            )}
             <div className="mt-8 flex flex-wrap gap-3">
               <button
                 onClick={handleSubmit}
