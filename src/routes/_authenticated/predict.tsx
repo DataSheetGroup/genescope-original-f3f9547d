@@ -180,7 +180,6 @@ function PredictPage() {
       return postPredict(payload, { signal: ac.signal });
     },
     onSuccess: () => {
-      setSaved(false);
       setRunId((r) => r + 1);
     },
   });
