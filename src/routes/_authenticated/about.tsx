@@ -8,6 +8,11 @@ import petriDish from "@/assets/illustrations/petri-dish.png";
 import magnifier from "@/assets/illustrations/magnifier-strand.png";
 import pillCap from "@/assets/illustrations/pill-capsule.png";
 import modelData from "@/data/model-from-pkl.json";
+import { CH4 } from "@/data/chapter4";
+import {
+  Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart,
+  ResponsiveContainer, Tooltip, XAxis, YAxis,
+} from "recharts";
 
 export const Route = createFileRoute("/_authenticated/about")({
   head: () => ({
