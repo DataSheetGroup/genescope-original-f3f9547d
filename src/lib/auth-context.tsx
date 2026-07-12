@@ -18,7 +18,7 @@ type AuthState = {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string, remember?: boolean) => Promise<AuthUser>;
-  register: (input: { email: string; password: string; full_name?: string }) => Promise<AuthUser>;
+  register: (input: { email: string; password: string; full_name?: string }) => Promise<AuthUser | { pending: true; message: string }>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
   updateProfile: (input: ProfileUpdate) => Promise<AuthUser>;
@@ -62,7 +62,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register: AuthState["register"] = async (input) => {
-    await apiRegister(input);
+    const res = await apiRegister(input);
+    if (!res?.access_token) {
+      return { pending: true, message: res?.message || "Your access request has been submitted for review." };
+    }
     const u = await apiMe();
     setUser(u);
     router.invalidate();

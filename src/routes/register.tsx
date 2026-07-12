@@ -53,7 +53,12 @@ function RegisterPage() {
     }
     setSubmitting(true);
     try {
-      await register({ email: email.trim(), password });
+      const res = await register({ email: email.trim(), password });
+      if (res && "pending" in res) {
+        setError(res.message);
+        setSubmitting(false);
+        return;
+      }
       setSuccess(true);
       setTimeout(() => navigate({ to: "/" }), 400);
     } catch (err) {
