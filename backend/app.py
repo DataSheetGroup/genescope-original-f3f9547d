@@ -12,6 +12,8 @@ import user_data
 
 
 ACCESS_DEFAULT_STATEMENTS = [
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(32) NOT NULL DEFAULT 'pending'",
+    "ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(16) NOT NULL DEFAULT 'pending'",
     "ALTER TABLE users ALTER COLUMN role SET DEFAULT 'pending'",
     "ALTER TABLE users ALTER COLUMN status SET DEFAULT 'pending'",
     """
