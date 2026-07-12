@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-import { Loader2, RefreshCw, Save } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Loader2, RefreshCw, Save, Zap } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -66,10 +66,31 @@ function StepBadge({ n, label }: { n: number; label: string }) {
   );
 }
 
-function ConfidenceRing({ value }: { value: number }) {
+function useCountUp(target: number, duration = 700, deps: unknown[] = []) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    let raf = 0;
+    const start = performance.now();
+    const from = 0;
+    const to = target;
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      setV(from + (to - from) * ease(p));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target, duration, ...deps]);
+  return v;
+}
+
+function ConfidenceRing({ value, runId }: { value: number; runId: number }) {
   const r = 56;
   const c = 2 * Math.PI * r;
-  const offset = c - (value / 100) * c;
+  const animated = useCountUp(value, 700, [runId]);
+  const offset = c - (animated / 100) * c;
   return (
     <div className="relative h-36 w-36 text-card-foreground mx-auto">
       <svg viewBox="0 0 130 130" className="h-full w-full -rotate-90">
@@ -82,11 +103,11 @@ function ConfidenceRing({ value }: { value: number }) {
           strokeDasharray={c}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          style={{ transition: "stroke-dashoffset 0.8s ease" }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="font-display text-3xl tabular-nums">{value.toFixed(1)}%</div>
+        <div className="font-display text-3xl tabular-nums">{animated.toFixed(1)}%</div>
+
         <div className="text-[10px] uppercase tracking-wider opacity-70 mt-1">Confidence</div>
       </div>
     </div>
@@ -137,6 +158,10 @@ function PredictPage() {
   const [form, setForm] = useState<Form>({});
   const { add } = useHistory();
   const [saved, setSaved] = useState(false);
+  const [runId, setRunId] = useState(0);
+  const [statusStep, setStatusStep] = useState(0);
+  const abortRef = useRef<AbortController | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const allFilled = useMemo(
     () => FIELDS.every((f) => form[f.key] !== undefined && form[f.key] !== ""),
@@ -145,9 +170,29 @@ function PredictPage() {
   const filledCount = FIELDS.filter((f) => form[f.key]).length;
 
   const mutation = useMutation({
-    mutationFn: (payload: PredictPayload) => postPredict(payload),
-    onSuccess: () => setSaved(false),
+    mutationFn: (payload: PredictPayload) => {
+      abortRef.current?.abort();
+      const ac = new AbortController();
+      abortRef.current = ac;
+      return postPredict(payload, { signal: ac.signal });
+    },
+    onSuccess: () => {
+      setSaved(false);
+      setRunId((r) => r + 1);
+    },
   });
+
+  // Cycle status line while a request is in flight.
+  useEffect(() => {
+    if (!mutation.isPending) return;
+    setStatusStep(0);
+    const t1 = setTimeout(() => setStatusStep(1), 180);
+    const t2 = setTimeout(() => setStatusStep(2), 420);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [mutation.isPending, runId]);
 
   const fi = useQuery({
     queryKey: ["feature-importance"],
@@ -165,8 +210,26 @@ function PredictPage() {
     Year: Number(form.Year),
   });
 
+  // Auto-predict (debounced) when all six inputs are filled or change.
+  useEffect(() => {
+    if (!allFilled) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      mutation.mutate(buildPayload());
+    }, 350);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.Sex, form.Geographic_Region, form.Location_Type, form.Disease_Category, form.Facility_Type, form.Year, allFilled]);
+
   const handleSubmit = () => { if (allFilled) mutation.mutate(buildPayload()); };
-  const handleReset = () => { setForm({}); mutation.reset(); setSaved(false); };
+  const handleReset = () => {
+    abortRef.current?.abort();
+    setForm({});
+    mutation.reset();
+    setSaved(false);
+  };
   const handleSave = async () => {
     if (!mutation.data) return;
     try {
@@ -179,6 +242,23 @@ function PredictPage() {
 
   const result: PredictResponse | undefined = mutation.data;
   const info = result ? KNOWLEDGE[result.prediction as keyof typeof KNOWLEDGE] : null;
+  const statusMessages = ["Encoding indicators…", "Sending to model…", "Computing probabilities…"];
+  const activityState: "idle" | "running" | "done" | "error" = mutation.isPending
+    ? "running"
+    : mutation.isError
+      ? "error"
+      : result
+        ? "done"
+        : "idle";
+  const dotColor =
+    activityState === "running"
+      ? "bg-purple"
+      : activityState === "error"
+        ? "bg-coral"
+        : activityState === "done"
+          ? "bg-green-deep"
+          : "bg-card-foreground/30";
+
 
   return (
     <div className="relative overflow-hidden">
@@ -245,7 +325,50 @@ function PredictPage() {
 
           {/* STEP 2 — Result */}
           <div className="rounded-[2rem] bg-card text-card-foreground p-7 md:p-9 flex flex-col">
-            <StepBadge n={2} label="Your result" />
+            <div className="flex items-start justify-between gap-3 mb-1">
+              <StepBadge n={2} label="Your result" />
+              <div className="flex items-center gap-2 mt-1">
+                <span className="relative flex h-2 w-2">
+                  {activityState === "running" && (
+                    <span className={`absolute inline-flex h-full w-full rounded-full ${dotColor} opacity-70 animate-ping`} />
+                  )}
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${dotColor}`} />
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-card-foreground/70">
+                  {activityState === "running" ? "Live" : activityState === "done" ? "Live" : activityState === "error" ? "Offline" : "Idle"}
+                </span>
+                {runId > 0 && (
+                  <span className="text-[10px] tabular-nums text-card-foreground/50">
+                    · Run #{String(runId).padStart(3, "0")}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Live status line — always reserves height so error/idle transitions don't shift content */}
+            <div className="h-5 mb-4 flex items-center gap-2 text-xs text-card-foreground/70">
+              {mutation.isPending && (
+                <>
+                  <Zap className="h-3 w-3 text-purple animate-pulse" />
+                  <span className="animate-fade-in" key={statusStep}>{statusMessages[statusStep]}</span>
+                </>
+              )}
+              {!mutation.isPending && result && (
+                <>
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-deep" />
+                  <span>
+                    Model computed in {result.elapsed_ms !== undefined ? `${result.elapsed_ms.toFixed(1)}ms` : `${result.roundtrip_ms ?? "—"}ms`}
+                    {result.elapsed_ms !== undefined && result.roundtrip_ms !== undefined ? ` · round-trip ${result.roundtrip_ms}ms` : ""}
+                  </span>
+                </>
+              )}
+              {!mutation.isPending && mutation.isError && (
+                <>
+                  <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+                  <span>Cannot reach model server.</span>
+                </>
+              )}
+            </div>
 
             {!mutation.isPending && !mutation.isError && !result && (
               <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
@@ -254,30 +377,30 @@ function PredictPage() {
                   Fill the form to see your result.
                 </p>
                 <p className="mt-2 text-sm text-card-foreground/55 max-w-xs">
-                  Once all six indicators are set, hit Generate Prediction.
+                  Predictions update automatically once all six indicators are set.
                 </p>
               </div>
             )}
 
-            {mutation.isPending && (
+            {mutation.isPending && !result && (
               <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
                 <Loader2 className="h-10 w-10 animate-spin mb-4" />
-                <p className="text-sm">Running model on local server…</p>
+                <p className="text-sm">Running prediction in real time…</p>
               </div>
             )}
 
-            {mutation.isError && (
+            {mutation.isError && !result && (
               <div className="flex-1 flex items-center"><BackendOfflineNotice onRetry={handleSubmit} /></div>
             )}
 
             {result && (
-              <div className="flex-1 flex flex-col">
+              <div className={`flex-1 flex flex-col ${mutation.isPending ? "opacity-70" : ""} transition-opacity`}>
                 <div className="text-center">
                   <div className="eyebrow text-card-foreground/55 mb-2">Prediction</div>
-                  <div className="font-display text-2xl md:text-3xl leading-tight mb-6">
-                    {result.prediction}
+                  <div className="font-display text-2xl md:text-3xl leading-tight mb-6" key={`label-${runId}`}>
+                    <span className="inline-block animate-fade-in">{result.prediction}</span>
                   </div>
-                  <ConfidenceRing value={result.confidence} />
+                  <ConfidenceRing value={result.confidence} runId={runId} />
                 </div>
 
                 <div className="mt-8">
@@ -298,6 +421,7 @@ function PredictPage() {
                 </div>
               </div>
             )}
+
           </div>
         </div>
 

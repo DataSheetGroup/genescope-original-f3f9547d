@@ -51,6 +51,8 @@ export type PredictResponse = {
   confidence: number;
   probability_comprehensive: number;
   probability_targeted: number;
+  elapsed_ms?: number;
+  roundtrip_ms?: number;
 };
 
 export type HealthResponse = { status?: string; model?: string } & Record<string, unknown>;

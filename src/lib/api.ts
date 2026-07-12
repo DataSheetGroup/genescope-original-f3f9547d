@@ -46,7 +46,11 @@ const API_URL =
   (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ??
   "http://localhost:5000";
 
-export const postPredict = async (payload: PredictPayload): Promise<PredictResponse> => {
+export const postPredict = async (
+  payload: PredictPayload,
+  opts?: { signal?: AbortSignal },
+): Promise<PredictResponse> => {
+  const t0 = performance.now();
   try {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     const token = getToken();
@@ -55,9 +59,11 @@ export const postPredict = async (payload: PredictPayload): Promise<PredictRespo
       method: "POST",
       headers,
       body: JSON.stringify(payload),
+      signal: opts?.signal,
     });
     if (!res.ok) throw new Error(`Predict failed (${res.status})`);
     const data = await res.json();
+    const roundtrip_ms = Math.round(performance.now() - t0);
     if (data?.model && data.model !== "unavailable") {
       // Backend returns probabilities in 0–1 range; UI expects 0–100.
       const toPct = (v: unknown) => {
@@ -69,11 +75,15 @@ export const postPredict = async (payload: PredictPayload): Promise<PredictRespo
         confidence: toPct(data.confidence),
         probability_comprehensive: toPct(data.probability_comprehensive),
         probability_targeted: toPct(data.probability_targeted),
+        elapsed_ms: Number(data.elapsed_ms) || undefined,
+        roundtrip_ms,
       } as PredictResponse;
     }
     // model unavailable on server → fall back
   } catch (e) {
+    if ((e as any)?.name === "AbortError") throw e;
     console.warn("[predict] backend unavailable, using local fallback", e);
   }
-  return predictLocal(payload);
+  const local = await predictLocal(payload);
+  return { ...local, roundtrip_ms: Math.round(performance.now() - t0) };
 };
