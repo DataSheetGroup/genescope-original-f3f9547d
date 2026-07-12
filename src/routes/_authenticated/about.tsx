@@ -733,7 +733,7 @@ function VisualizationCard() {
                 <CartesianGrid stroke={GRID} vertical={false} />
                 <XAxis dataKey="name" tick={axisTick} stroke={INK} />
                 <YAxis domain={[0.6, 1]} tick={axisTick} stroke={INK} tickFormatter={(v) => v.toFixed(2)} />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => v.toFixed(3)} />
+                <Tooltip contentStyle={tooltipStyle} formatter={((v: unknown) => (typeof v === "number" ? v.toFixed(3) : String(v))) as never} />
                 <Legend wrapperStyle={legendStyle} />
                 <Bar dataKey="Binary Logistic Regression" fill={PURPLE} radius={[4, 4, 0, 0]} />
                 <Bar dataKey="Decision Tree" fill={TEAL} radius={[4, 4, 0, 0]} />
