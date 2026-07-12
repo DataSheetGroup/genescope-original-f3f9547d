@@ -1,20 +1,38 @@
-## Plan
+## Goal
+Use `role` as the single access gate. New accounts get `role = "pending"` by default. Editing the row in Neon to `viewer` / `client` / `developer` grants login access. No more `status` column involved in the decision.
 
-1. **Stop pending registrations from being treated as logged in**
-   - Ensure `/register` clears any existing token before creating a new access request.
-   - If the backend returns `202 pending`, show the pending message and keep the user on the request-access page instead of redirecting.
+## Backend (`backend/`)
 
-2. **Strengthen the auth gate**
-   - Update protected-route access so it does not trust only “a token exists”.
-   - Use the authenticated user state when available, so a stale/old token cannot immediately open the dashboard after a pending registration.
+**`auth.py` — `register`:**
+- Create user with `role="pending"` (drop the `status="pending"` line).
+- Keep the 202 pending response.
 
-3. **Block pending/denied users even if they already have an old token**
-   - Update the backend auth check used by protected endpoints so `pending` and `denied` users are rejected, not just login/register.
-   - This prevents old sessions from continuing after you change a user to pending/denied in Neon.
+**`auth.py` — `login`:**
+- Replace all `user.status` checks with a single check:
+  - If `user.role == "pending"` → 403 "Your access request is still pending administrator approval."
+  - If `user.role == "denied"` → 403 "Your access request was denied…"
+  - Allow login for any other role (`viewer`, `client`, `developer`, or future roles).
 
-4. **Clean up outdated allowlist wording**
-   - Remove old frontend/backend text that still says “approved partner emails/domain only,” because the new rule is: every account starts pending until approved.
+**`auth.py` — `require_auth`:**
+- Same swap: gate on `user.role in {"pending","denied"}` instead of `status`.
 
-5. **Add clear deployment/database reminder**
-   - Keep the code compatible with the current Neon `status` column.
-   - After applying, you will still need to redeploy the Flask backend on Render and make sure new rows show `status = 'pending'` in Neon.
+**`models.py`:**
+- Change `role` default to `"pending"`.
+- Leave the `status` column in place (harmless) so existing rows don't break; it's just no longer consulted.
+
+**Token payload:** keep `role` (already there); it will now reflect the pending/granted value.
+
+## Frontend
+
+- `src/lib/auth.ts` / `src/lib/auth-context.tsx` / `_authenticated/route.tsx` / `login.tsx` / `register.tsx`: replace `user.status !== "active"` checks with `user.role === "pending" || user.role === "denied"` → treat as not-approved. Any other role = approved.
+- No UI/copy redesign; just the predicate swap.
+
+## How you grant access in Neon
+```sql
+UPDATE users SET role = 'viewer' WHERE email = 'someone@example.com';
+-- or 'client' / 'developer'
+```
+To revoke: `UPDATE users SET role = 'denied' …` or back to `'pending'`.
+
+## Deployment note
+Render backend must be redeployed for the server-side gate to switch from `status` to `role`. Until then, the frontend predicate change alone will block pending users on the client, but the API would still accept the old `status`-based logic.
