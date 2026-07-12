@@ -157,6 +157,8 @@ const KNOWLEDGE = {
 function PredictPage() {
   const [form, setForm] = useState<Form>({});
   const { add } = useHistory();
+  const { user } = useAuth();
+  const canRun = can(user?.role, "predict.run");
   const [saved, setSaved] = useState(false);
   const [runId, setRunId] = useState(0);
   const [statusStep, setStatusStep] = useState(0);
