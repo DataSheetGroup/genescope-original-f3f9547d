@@ -99,8 +99,6 @@ def update_history(item_id: int):
     if not item:
         return jsonify({"error": "Not found"}), 404
     data = request.get_json(force=True) or {}
-    if "saved" in data:
-        item.saved = bool(data["saved"])
     if "note" in data:
         item.note = data["note"]
     db.session.commit()
