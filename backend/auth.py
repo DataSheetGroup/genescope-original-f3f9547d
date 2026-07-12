@@ -25,13 +25,14 @@ def verify_password(pw: str, pw_hash: bytes) -> bool:
         return False
 
 
-def issue_token(user: User) -> str:
+def issue_token(user: User, remember: bool = False) -> str:
+    exp_hours = Config.JWT_REMEMBER_EXPIRES_HOURS if remember else Config.JWT_EXPIRES_HOURS
     payload = {
         "sub": str(user.id),
         "email": user.email,
         "role": user.role,
         "iat": datetime.utcnow(),
-        "exp": datetime.utcnow() + timedelta(hours=Config.JWT_EXPIRES_HOURS),
+        "exp": datetime.utcnow() + timedelta(hours=exp_hours),
     }
     return jwt.encode(payload, Config.JWT_SECRET, algorithm="HS256")
 
