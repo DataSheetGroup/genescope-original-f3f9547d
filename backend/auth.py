@@ -61,6 +61,8 @@ def require_auth(fn):
             return jsonify({"error": "Your access request is still pending administrator approval."}), 403
         if user.status == "denied":
             return jsonify({"error": "Your access request was denied. Please contact an administrator."}), 403
+        if user.status != "active":
+            return jsonify({"error": "Your account is not approved yet."}), 403
         request.user = user
         return fn(*args, **kwargs)
 
@@ -114,6 +116,8 @@ def login():
         return jsonify({"error": "Your access request is still pending administrator approval."}), 403
     if user.status == "denied":
         return jsonify({"error": "Your access request was denied. Please contact an administrator."}), 403
+    if user.status != "active":
+        return jsonify({"error": "Your account is not approved yet."}), 403
 
     user.last_login_at = datetime.utcnow()
     db.session.commit()

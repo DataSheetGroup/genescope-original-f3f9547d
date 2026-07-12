@@ -24,7 +24,7 @@ export const Route = createFileRoute("/login")({
     if (typeof window === "undefined" || !isAuthenticated()) return;
     try {
       const user = await apiMe();
-      if (!user?.status || user.status === "active") {
+      if (user?.status === "active") {
         throw redirect({ to: (search as Search).redirect ?? "/" });
       }
       clearToken();

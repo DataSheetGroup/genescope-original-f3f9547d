@@ -77,10 +77,19 @@ export async function login(
   password: string,
   remember = false,
 ): Promise<LoginResponse> {
-  const data = await request<LoginResponse>("/auth/login", {
+  const data = await request<LoginResponse & { user?: AuthUser }>("/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password, remember }),
   });
+  const status = data?.user?.status;
+  if (status !== "active") {
+    clearToken();
+    throw new Error(
+      status === "pending"
+        ? "Your access request is still pending administrator approval."
+        : "Your access request was denied. Please contact an administrator.",
+    );
+  }
   if (!data?.access_token) throw new Error("Unexpected response from server.");
   setToken(data.access_token, remember);
   return data;
