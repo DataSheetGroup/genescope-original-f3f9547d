@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     try {
       const u = await apiMe();
-      if (u?.status && u.status !== "active") {
+      if (u?.status !== "active") {
         clearToken();
         setUser(null);
         return;
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login: AuthState["login"] = async (email, password, remember = false) => {
     await apiLogin(email, password, remember);
     const u = await apiMe();
-    if (u?.status && u.status !== "active") {
+    if (u?.status !== "active") {
       clearToken();
       setUser(null);
       throw new Error(

@@ -19,7 +19,7 @@ export const Route = createFileRoute("/register")({
     if (typeof window === "undefined" || !isAuthenticated()) return;
     try {
       const user = await apiMe();
-      if (!user?.status || user.status === "active") {
+      if (user?.status === "active") {
         throw redirect({ to: "/" });
       }
       clearToken();

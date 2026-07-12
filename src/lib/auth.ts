@@ -81,7 +81,7 @@ export async function login(
     method: "POST",
     body: JSON.stringify({ email, password, remember }),
   });
-  if (data?.user?.status && data.user.status !== "active") {
+  if (data?.user?.status !== "active") {
     clearToken();
     throw new Error(
       data.user.status === "pending"

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated")({
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split(".")[1] || ""));
-        blockedByStatus = Boolean(payload?.status && payload.status !== "active");
+        blockedByStatus = payload?.status !== "active";
       } catch (error) {
         blockedByStatus = false;
       }
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_authenticated")({
 
     try {
       const user = await apiMe();
-      blockedByStatus = blockedByStatus || Boolean(user?.status && user.status !== "active");
+      blockedByStatus = blockedByStatus || user?.status !== "active";
     } catch {
       clearToken();
       throw redirect({ to: "/login", search: { redirect: location.href } });
