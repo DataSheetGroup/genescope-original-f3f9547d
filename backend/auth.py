@@ -13,7 +13,7 @@ from models import PasswordReset, User, db
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 EMAIL_RE = re.compile(r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$")
-APPROVED_ROLES = {"viewer", "client", "developer"}
+APPROVED_ROLES = {"admin", "researcher", "clinician", "viewer"}
 
 
 # ---------- helpers ----------
