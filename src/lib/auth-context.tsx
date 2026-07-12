@@ -13,12 +13,25 @@ import {
   type ProfileUpdate,
 } from "@/lib/auth";
 
+type RegisterInput = {
+  email: string;
+  password: string;
+  full_name?: string;
+  affiliation?: string;
+  reason?: string;
+};
+
+type RegisterResult = {
+  status: "pending" | "approved" | "rejected" | "disabled";
+  message: string;
+};
+
 type AuthState = {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string, remember?: boolean) => Promise<AuthUser>;
-  register: (input: { email: string; password: string; full_name?: string }) => Promise<AuthUser>;
+  register: (input: RegisterInput) => Promise<RegisterResult>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
   updateProfile: (input: ProfileUpdate) => Promise<AuthUser>;
@@ -62,11 +75,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register: AuthState["register"] = async (input) => {
-    await apiRegister(input);
-    const u = await apiMe();
-    setUser(u);
-    router.invalidate();
-    return u;
+    const res = await apiRegister(input);
+    // If the backend auto-approved and returned a token, hydrate the user.
+    if (res?.access_token) {
+      const u = await apiMe();
+      setUser(u);
+      router.invalidate();
+      return { status: "approved", message: res.message ?? "Account approved." };
+    }
+    return {
+      status: res?.status ?? "pending",
+      message: res?.message ?? "Access request submitted. An administrator will review it shortly.",
+    };
   };
 
   const logout = async () => {
