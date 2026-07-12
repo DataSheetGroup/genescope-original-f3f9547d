@@ -28,8 +28,12 @@ FEATURE_COLUMNS = [
 
 def _default_model_path():
     here = os.path.dirname(os.path.abspath(__file__))
-    candidate = os.path.join(here, "my_trained_model.pkl")
-    return candidate if os.path.exists(candidate) else ""
+    # Prefer genescope.pkl; fall back to the legacy filename if present.
+    for name in ("genescope.pkl", "my_trained_model.pkl"):
+        candidate = os.path.join(here, name)
+        if os.path.exists(candidate):
+            return candidate
+    return ""
 
 
 def load_bundle():
