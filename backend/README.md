@@ -85,3 +85,32 @@ bun run dev
 - Point `yourdomain.com` at the frontend (Lovable publish or your host).
 - In `.env` on the server, set `CORS_ORIGINS=https://yourdomain.com`.
 - In the frontend `.env`, set `VITE_API_URL=https://api.yourdomain.com`.
+
+## Access requests (pending / active / denied)
+
+Registrations from emails **not** on `ALLOWED_EMAILS` are now created with
+`status = 'pending'` instead of being rejected. Pending and denied users
+cannot log in. You approve/deny them directly in Neon.
+
+### One-time migration for existing databases
+
+```sql
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS status VARCHAR(16) NOT NULL DEFAULT 'active';
+```
+
+### Reviewing and approving requests
+
+```sql
+-- See pending access requests
+SELECT id, email, full_name, created_at
+FROM users
+WHERE status = 'pending'
+ORDER BY created_at DESC;
+
+-- Approve
+UPDATE users SET status = 'active' WHERE email = 'someone@example.com';
+
+-- Deny
+UPDATE users SET status = 'denied' WHERE email = 'someone@example.com';
+```
