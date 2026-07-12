@@ -186,7 +186,7 @@ function FigureCard({
   title: React.ReactNode;
   subtitle?: string;
   children: React.ReactNode;
-  interpretation: React.ReactNode;
+  interpretation?: React.ReactNode;
 }) {
   return (
     <div className="rounded-3xl bg-card text-card-foreground p-6 md:p-8 relative overflow-hidden scroll-mt-24">
