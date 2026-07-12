@@ -4,19 +4,20 @@ import { UserRound, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { getHealth } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { can, type Permission } from "@/lib/roles";
 
-const leftLinks = [
-  { to: "/predict", label: "Predict" },
-  { to: "/dashboard", label: "Dashboard" },
-  { to: "/history", label: "History" },
-] as const;
+type NavItem = { to: string; label: string; permission?: Permission };
 
-const rightLinks = [
-  { to: "/performance", label: "Performance" },
-  { to: "/about", label: "About" },
-] as const;
+const leftLinks: NavItem[] = [
+  { to: "/predict", label: "Predict", permission: "predict.view" },
+  { to: "/dashboard", label: "Dashboard", permission: "dashboard.view" },
+  { to: "/history", label: "History", permission: "history.view" },
+];
 
-const allLinks = [{ to: "/", label: "Home" }, ...leftLinks, ...rightLinks] as const;
+const rightLinks: NavItem[] = [
+  { to: "/performance", label: "Performance", permission: "performance.view" },
+  { to: "/about", label: "About", permission: "about.view" },
+];
 
 function Wordmark() {
   return (
