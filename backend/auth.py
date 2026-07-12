@@ -110,12 +110,10 @@ def login():
         return jsonify({"error": "Invalid email or password"}), 401
     if not user.is_active:
         return jsonify({"error": "Account disabled"}), 403
-    if user.status == "pending":
+    if user.role == "pending":
         return jsonify({"error": "Your access request is still pending administrator approval."}), 403
-    if user.status == "denied":
+    if user.role == "denied":
         return jsonify({"error": "Your access request was denied. Please contact an administrator."}), 403
-    if user.status != "active":
-        return jsonify({"error": "Your account is not approved yet."}), 403
 
     user.last_login_at = datetime.utcnow()
     db.session.commit()
