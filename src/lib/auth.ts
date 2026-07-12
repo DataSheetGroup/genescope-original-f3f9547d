@@ -85,15 +85,26 @@ export async function login(
   return data;
 }
 
+export type RegisterResponse = {
+  ok?: boolean;
+  status?: "pending" | "approved" | "rejected" | "disabled";
+  message?: string;
+  access_token?: string;
+};
+
 export async function register(input: {
   email: string;
   password: string;
   full_name?: string;
-}): Promise<LoginResponse> {
-  const data = await request<LoginResponse>("/auth/register", {
+  affiliation?: string;
+  reason?: string;
+}): Promise<RegisterResponse> {
+  const data = await request<RegisterResponse>("/auth/register", {
     method: "POST",
     body: JSON.stringify(input),
   });
+  // Approval-queue flow: no token issued at register time. Only set a token
+  // if the backend explicitly returned one (legacy / auto-approve modes).
   if (data?.access_token) setToken(data.access_token, true);
   return data;
 }
