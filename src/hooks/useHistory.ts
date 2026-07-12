@@ -46,7 +46,25 @@ export function useHistory() {
 
   const toggleSaveM = useMutation({
     mutationFn: ({ id, saved }: { id: string; saved: boolean }) => updateHistory(id, { saved }),
-    onSuccess: () => qc.invalidateQueries({ queryKey }),
+    onMutate: async ({ id, saved }) => {
+      await qc.cancelQueries({ queryKey });
+      const prev = qc.getQueryData<HistoryItem[]>(queryKey);
+      if (prev) {
+        qc.setQueryData<HistoryItem[]>(
+          queryKey,
+          prev.map((it) => (String(it.id) === String(id) ? { ...it, saved } : it)),
+        );
+      }
+      return { prev };
+    },
+    onError: (err, _vars, ctx) => {
+      if (ctx?.prev) qc.setQueryData(queryKey, ctx.prev);
+      console.error("[toggleSave] failed:", err);
+      if (typeof window !== "undefined") {
+        window.alert(`Could not update saved state: ${(err as Error).message}`);
+      }
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey }),
   });
 
   const add = useCallback(
