@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
-import { clearToken, isAuthenticated } from "@/lib/auth";
+import { clearToken, isAuthenticated, me as apiMe } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
@@ -15,9 +15,17 @@ export const Route = createFileRoute("/register")({
       { name: "description", content: "Request access to the GeneScope clinical decision-support workspace." },
     ],
   }),
-  beforeLoad: () => {
-    if (typeof window !== "undefined" && isAuthenticated()) {
-      throw redirect({ to: "/" });
+  beforeLoad: async () => {
+    if (typeof window === "undefined" || !isAuthenticated()) return;
+    try {
+      const user = await apiMe();
+      if (!user?.status || user.status === "active") {
+        throw redirect({ to: "/" });
+      }
+      clearToken();
+    } catch (error) {
+      if (error && typeof error === "object" && "href" in error) throw error;
+      clearToken();
     }
   },
   ssr: false,
