@@ -6,9 +6,10 @@ export const Route = createFileRoute("/_authenticated")({
   beforeLoad: ({ location }) => {
     if (typeof window === "undefined") return;
     if (!isAuthenticated()) {
+      const isRoot = location.pathname === "/" && !location.searchStr;
       throw redirect({
         to: "/login",
-        search: { redirect: location.href },
+        search: isRoot ? {} : { redirect: location.href },
       });
     }
   },
