@@ -13,8 +13,8 @@ class User(db.Model):
     phone = db.Column(db.String(64))
     organization = db.Column(db.String(255))
     bio = db.Column(db.Text)
-    role = db.Column(db.String(32), default="viewer", nullable=False)  # developer | client | viewer
-    status = db.Column(db.String(16), default="active", nullable=False)  # active | pending | denied
+    role = db.Column(db.String(32), default="pending", nullable=False)  # pending | denied | viewer | client | developer
+    status = db.Column(db.String(16), default="active", nullable=False)  # legacy; access gate is `role`
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     last_login_at = db.Column(db.DateTime)
