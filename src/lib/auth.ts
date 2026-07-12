@@ -6,6 +6,7 @@ const API_URL =
   "http://localhost:5000";
 
 const TOKEN_KEY = "genescope.access_token";
+const SESSION_TOKEN_KEY = "genescope.session_token";
 
 export type LoginResponse = { access_token: string };
 export type AuthUser = {
@@ -70,13 +71,17 @@ function unwrapUser(payload: any): AuthUser {
   return u as AuthUser;
 }
 
-export async function login(email: string, password: string): Promise<LoginResponse> {
+export async function login(
+  email: string,
+  password: string,
+  remember = false,
+): Promise<LoginResponse> {
   const data = await request<LoginResponse>("/auth/login", {
     method: "POST",
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, remember }),
   });
   if (!data?.access_token) throw new Error("Unexpected response from server.");
-  setToken(data.access_token);
+  setToken(data.access_token, remember);
   return data;
 }
 
@@ -89,7 +94,7 @@ export async function register(input: {
     method: "POST",
     body: JSON.stringify(input),
   });
-  if (data?.access_token) setToken(data.access_token);
+  if (data?.access_token) setToken(data.access_token, true);
   return data;
 }
 
@@ -146,9 +151,16 @@ export async function resetPassword(token: string, password: string): Promise<vo
   });
 }
 
-export function setToken(token: string) {
+export function setToken(token: string, remember = false) {
+  if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(TOKEN_KEY, token);
+    if (remember) {
+      localStorage.setItem(TOKEN_KEY, token);
+      sessionStorage.removeItem(SESSION_TOKEN_KEY);
+    } else {
+      sessionStorage.setItem(SESSION_TOKEN_KEY, token);
+      localStorage.removeItem(TOKEN_KEY);
+    }
   } catch {
     /* storage unavailable */
   }
@@ -157,15 +169,17 @@ export function setToken(token: string) {
 export function getToken(): string | null {
   if (typeof window === "undefined") return null;
   try {
-    return localStorage.getItem(TOKEN_KEY);
+    return sessionStorage.getItem(SESSION_TOKEN_KEY) || localStorage.getItem(TOKEN_KEY);
   } catch {
     return null;
   }
 }
 
 export function clearToken() {
+  if (typeof window === "undefined") return;
   try {
     localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(SESSION_TOKEN_KEY);
   } catch {
     /* noop */
   }

@@ -15,6 +15,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET = os.getenv("JWT_SECRET", "dev-secret-change-me")
     JWT_EXPIRES_HOURS = int(os.getenv("JWT_EXPIRES_HOURS", "12"))
+    JWT_REMEMBER_EXPIRES_HOURS = int(os.getenv("JWT_REMEMBER_EXPIRES_HOURS", "720"))
     CORS_ORIGINS = [
         o.strip()
         for o in os.getenv("CORS_ORIGINS", "http://localhost:8080").split(",")

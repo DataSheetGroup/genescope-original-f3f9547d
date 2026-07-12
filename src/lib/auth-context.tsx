@@ -17,7 +17,7 @@ type AuthState = {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<AuthUser>;
+  login: (email: string, password: string, remember?: boolean) => Promise<AuthUser>;
   register: (input: { email: string; password: string; full_name?: string }) => Promise<AuthUser>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
@@ -53,8 +53,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadMe();
   }, [loadMe]);
 
-  const login: AuthState["login"] = async (email, password) => {
-    await apiLogin(email, password);
+  const login: AuthState["login"] = async (email, password, remember = false) => {
+    await apiLogin(email, password, remember);
     const u = await apiMe();
     setUser(u);
     router.invalidate();

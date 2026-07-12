@@ -25,13 +25,14 @@ def verify_password(pw: str, pw_hash: bytes) -> bool:
         return False
 
 
-def issue_token(user: User) -> str:
+def issue_token(user: User, remember: bool = False) -> str:
+    exp_hours = Config.JWT_REMEMBER_EXPIRES_HOURS if remember else Config.JWT_EXPIRES_HOURS
     payload = {
         "sub": str(user.id),
         "email": user.email,
         "role": user.role,
         "iat": datetime.utcnow(),
-        "exp": datetime.utcnow() + timedelta(hours=Config.JWT_EXPIRES_HOURS),
+        "exp": datetime.utcnow() + timedelta(hours=exp_hours),
     }
     return jwt.encode(payload, Config.JWT_SECRET, algorithm="HS256")
 
@@ -92,6 +93,7 @@ def login():
     data = request.get_json(force=True) or {}
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
+    remember = bool(data.get("remember"))
 
     user = User.query.filter_by(email=email).first()
     if not user or not verify_password(password, user.password_hash):
@@ -104,7 +106,7 @@ def login():
     user.last_login_at = datetime.utcnow()
     db.session.commit()
 
-    token = issue_token(user)
+    token = issue_token(user, remember=remember)
     return jsonify({"access_token": token, "user": user.to_public()})
 
 

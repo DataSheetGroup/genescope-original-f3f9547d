@@ -36,6 +36,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -49,7 +50,7 @@ function LoginPage() {
     }
     setSubmitting(true);
     try {
-      await login(email.trim(), password);
+      await login(email.trim(), password, rememberMe);
       setSuccess(true);
       const target = search.redirect ?? "/";
       setTimeout(() => navigate({ to: target }), 400);
@@ -177,7 +178,13 @@ function LoginPage() {
 
               <div className="flex items-center justify-between mt-3">
                 <label className="flex items-center gap-2 text-sm cursor-pointer select-none" style={{ color: "color-mix(in oklab, var(--ink) 78%, transparent)" }}>
-                  <input type="checkbox" className="h-4 w-4 rounded accent-[var(--ink)]" />
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    disabled={submitting || success}
+                    className="h-4 w-4 rounded accent-[var(--ink)]"
+                  />
                   Keep me signed in
                 </label>
                 <Link to="/forgot-password" className="text-sm font-semibold hover:underline underline-offset-4" style={{ color: "var(--ink)" }}>
