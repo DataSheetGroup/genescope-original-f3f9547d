@@ -1,4 +1,4 @@
-"""User data endpoints: prediction history, saved analyses, preferences.
+"""User data endpoints: prediction history and preferences.
 
 All routes require auth. Rows are scoped by request.user (set by @require_auth).
 """
