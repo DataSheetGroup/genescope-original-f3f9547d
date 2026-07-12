@@ -275,7 +275,7 @@ function GroupedBars({ data, keys }: { data: Record<string, string | number>[]; 
 }
 
 function VisualizationCard() {
-  const info = modelData.dataset_info;
+  // dataset_info shown inline via CH4.dataset below
   const best = modelData.best_model_name as string;
 
   const sections: { id: string; label: string }[] = [
