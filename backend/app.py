@@ -29,6 +29,10 @@ def create_app() -> Flask:
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(predict.bp)
+    app.register_blueprint(user_data.bp)
+
+    with app.app_context():
+        db.create_all()
 
     @app.get("/health")
     def health():
