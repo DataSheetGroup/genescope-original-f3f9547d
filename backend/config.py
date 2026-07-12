@@ -21,21 +21,4 @@ class Config:
         for o in os.getenv("CORS_ORIGINS", "http://localhost:8080").split(",")
         if o.strip()
     ]
-    ALLOWED_EMAILS = [
-        e.strip().lower()
-        for e in os.getenv("ALLOWED_EMAILS", "").split(",")
-        if e.strip()
-    ]
     MODEL_PATH = os.getenv("MODEL_PATH", "")
-
-    @staticmethod
-    def email_allowed(email: str) -> bool:
-        if not Config.ALLOWED_EMAILS:
-            return True  # if no allowlist configured, allow all (dev only)
-        email = (email or "").lower()
-        for rule in Config.ALLOWED_EMAILS:
-            if rule.startswith("@") and email.endswith(rule):
-                return True
-            if rule == email:
-                return True
-        return False
