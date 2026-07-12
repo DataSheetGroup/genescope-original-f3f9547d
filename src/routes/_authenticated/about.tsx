@@ -625,7 +625,7 @@ function SystemEvaluationCard() {
         <img src={magnifier} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
         <div className="eyebrow text-coral mb-2">Chapter 4 · §4.5 – §4.10</div>
         <h2 className="font-display text-3xl mb-3">
-          System <span className="hl">evaluation</span>
+          Model <span className="hl">evaluation</span>
         </h2>
         <p className="text-sm leading-relaxed text-card-foreground/80 max-w-2xl mb-5">
           How the three candidate models were tuned, tested, and compared — with every table and
