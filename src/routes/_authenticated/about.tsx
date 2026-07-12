@@ -277,31 +277,11 @@ function GroupedBars({ data, keys }: { data: Record<string, string | number>[]; 
 function VisualizationCard() {
   const info = modelData.dataset_info;
   const best = modelData.best_model_name as string;
-  const models = modelData.models as unknown as Record<
-    string,
-    {
-      results: Record<string, number> & { cm: number[][] };
-      cv: { cv_roc_mean: number; cv_roc_std: number; cv_acc_mean: number; cv_acc_std: number };
-      feature_importance: { feature: string; importance: number }[];
-    }
-  >;
-  const rows = Object.entries(models).map(([name, m]) => ({
-    name,
-    accuracy: m.results.Accuracy,
-    precision: m.results.Precision,
-    recall: m.results.Recall,
-    f1: m.results["F1-Score"],
-    roc: m.results["ROC-AUC"],
-  }));
-  const fi = models[best].feature_importance;
-  const cm = models[best].results.cm; // [[TN,FP],[FN,TP]]
-  const fmt = (n: number) => (n * 100).toFixed(1) + "%";
 
   const sections: { id: string; label: string }[] = [
     { id: "sec-dataset", label: "Dataset" },
     { id: "sec-dist", label: "Distributions" },
     { id: "sec-cross", label: "Cross-tabs" },
-    { id: "sec-model", label: "Model" },
   ];
 
   return (
