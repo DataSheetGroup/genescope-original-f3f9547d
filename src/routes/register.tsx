@@ -30,14 +30,18 @@ function RegisterPage() {
   const [showPw, setShowPw] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [affiliation, setAffiliation] = useState("");
+  const [reason, setReason] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [successMsg, setSuccessMsg] = useState<string>("");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (submitting) return;
+    if (submitting || submitted) return;
     setError(null);
     if (!email || !password) {
       setError("Please enter both email and password.");
@@ -47,15 +51,33 @@ function RegisterPage() {
       setError("Password must be at least 8 characters.");
       return;
     }
+    if (!reason.trim()) {
+      setError("Please tell us why you need access.");
+      return;
+    }
     if (!agreed) {
       setError("Please agree to the Terms and Conditions.");
       return;
     }
     setSubmitting(true);
     try {
-      await register({ email: email.trim(), password });
-      setSuccess(true);
-      setTimeout(() => navigate({ to: "/" }), 400);
+      const res = await register({
+        email: email.trim(),
+        password,
+        full_name: fullName.trim() || undefined,
+        affiliation: affiliation.trim() || undefined,
+        reason: reason.trim(),
+      });
+      if (res.status === "approved") {
+        // Auto-approved path (legacy) — hop to home.
+        setSuccessMsg("Account approved. Redirecting…");
+        setSubmitted(true);
+        setTimeout(() => navigate({ to: "/" }), 500);
+      } else {
+        setSuccessMsg(res.message || "Access request submitted. An administrator will review it shortly.");
+        setSubmitted(true);
+        setSubmitting(false);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Request failed.");
       setSubmitting(false);
@@ -128,10 +150,27 @@ function RegisterPage() {
             Create <span className="hl">account</span>.
           </h2>
           <p className="mt-4 text-sm lg:text-base" style={{ color: "color-mix(in oklab, var(--ink) 68%, transparent)" }}>
-            Approved partner emails only.
+            Submit a request — an administrator will review it.
           </p>
 
           <form onSubmit={handleSubmit} noValidate className="mt-8 lg:mt-10 space-y-5">
+            <div>
+              <label htmlFor="fullName" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
+                Full name
+              </label>
+              <input
+                id="fullName"
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                autoComplete="name"
+                disabled={submitting || submitted}
+                placeholder="Dr. Jane Cruz"
+                className="w-full rounded-xl bg-white px-4 py-3.5 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
+                style={{ border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" }}
+              />
+            </div>
+
             <div>
               <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
                 Email
@@ -142,9 +181,42 @@ function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                disabled={submitting || success}
+                disabled={submitting || submitted}
                 placeholder="you@partner.org"
                 className="w-full rounded-xl bg-white px-4 py-3.5 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
+                style={{ border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" }}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="affiliation" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
+                Affiliation
+              </label>
+              <input
+                id="affiliation"
+                type="text"
+                value={affiliation}
+                onChange={(e) => setAffiliation(e.target.value)}
+                autoComplete="organization"
+                disabled={submitting || submitted}
+                placeholder="Hospital, university, or organization"
+                className="w-full rounded-xl bg-white px-4 py-3.5 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
+                style={{ border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" }}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="reason" className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "color-mix(in oklab, var(--ink) 75%, transparent)" }}>
+                Reason for access
+              </label>
+              <textarea
+                id="reason"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                disabled={submitting || submitted}
+                placeholder="Briefly describe how you'll use GeneScope."
+                rows={3}
+                className="w-full rounded-xl bg-white px-4 py-3 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60 resize-none"
                 style={{ border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" }}
               />
             </div>
@@ -160,7 +232,7 @@ function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete="new-password"
-                  disabled={submitting || success}
+                  disabled={submitting || submitted}
                   placeholder="At least 8 characters"
                   className="w-full rounded-xl bg-white px-4 py-3.5 pr-11 text-[var(--ink)] placeholder:text-[color-mix(in_oklab,var(--ink)_35%,transparent)] outline-none transition focus:ring-2 focus:ring-[var(--ink)] disabled:opacity-60"
                   style={{ border: "1.5px solid color-mix(in oklab, var(--ink) 15%, transparent)" }}
@@ -181,7 +253,7 @@ function RegisterPage() {
                 type="checkbox"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
-                disabled={submitting || success}
+                disabled={submitting || submitted}
                 className="mt-0.5 h-4 w-4 rounded accent-[var(--ink)] shrink-0"
               />
               <span>
@@ -194,13 +266,13 @@ function RegisterPage() {
 
             <button
               type="submit"
-              disabled={submitting || success}
+              disabled={submitting || submitted}
               className="group w-full rounded-full py-4 font-display uppercase tracking-wider text-sm transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               style={{ background: "var(--ink)", color: "var(--cream)" }}
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-              {submitting ? "Creating…" : success ? "Success" : "Create account"}
-              {!submitting && !success && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />}
+              {submitting ? "Submitting…" : submitted ? "Submitted" : "Request access"}
+              {!submitting && !submitted && <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />}
             </button>
           </form>
 
@@ -211,10 +283,10 @@ function RegisterPage() {
                 <span>{error}</span>
               </div>
             )}
-            {success && (
+            {submitted && (
               <div role="status" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm" style={{ background: "color-mix(in oklab, var(--teal) 15%, transparent)", color: "var(--teal-deep)", border: "1px solid color-mix(in oklab, var(--teal) 35%, transparent)" }}>
                 <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>Account created. Redirecting…</span>
+                <span>{successMsg}</span>
               </div>
             )}
           </div>
