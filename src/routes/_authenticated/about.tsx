@@ -88,6 +88,7 @@ function AboutPage() {
         {tab === "compliance" && <ComplianceCard />}
         {tab === "viz" && <VisualizationCard />}
         {tab === "eval" && <SystemEvaluationCard />}
+        {tab === "sysval" && <SurveyEvaluationCard />}
         {tab === "recs" && <RecommendationsCard />}
       </div>
     </div>
