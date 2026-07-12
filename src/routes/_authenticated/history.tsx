@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Download, Trash2, X } from "lucide-react";
+import { Download, Star, Trash2, X } from "lucide-react";
 import { useHistory, type HistoryItem } from "@/hooks/useHistory";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -27,7 +27,7 @@ function toCsv(items: HistoryItem[]) {
 }
 
 function HistoryPage() {
-  const { items, clear, remove, isLoading } = useHistory();
+  const { items, clear, remove, toggleSave, isLoading } = useHistory();
   const [resultFilter, setResultFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [diseaseFilter, setDiseaseFilter] = useState<string>("all");
@@ -146,6 +146,15 @@ function HistoryPage() {
                     </td>
                     <td className="px-5 py-3.5 tabular-nums font-display">{it.result.confidence.toFixed(1)}%</td>
                     <td className="px-3 py-3.5 whitespace-nowrap">
+                      <button
+                        onClick={() => toggleSave(it.id, !it.saved)}
+                        title={it.saved ? "Unstar" : "Star"}
+                        className={`p-1.5 rounded-full hover:bg-cream-dim transition-colors ${
+                          it.saved ? "text-coral" : "text-card-foreground/40 hover:text-card-foreground"
+                        }`}
+                      >
+                        <Star className="h-4 w-4" fill={it.saved ? "currentColor" : "none"} />
+                      </button>
                       <button
                         onClick={() => remove(it.id)}
                         title="Delete"
