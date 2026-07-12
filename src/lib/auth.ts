@@ -81,10 +81,11 @@ export async function login(
     method: "POST",
     body: JSON.stringify({ email, password, remember }),
   });
-  if (data?.user?.status !== "active") {
+  const status = data?.user?.status;
+  if (status !== "active") {
     clearToken();
     throw new Error(
-      data.user.status === "pending"
+      status === "pending"
         ? "Your access request is still pending administrator approval."
         : "Your access request was denied. Please contact an administrator.",
     );
