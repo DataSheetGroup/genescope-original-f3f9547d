@@ -19,7 +19,7 @@ source .venv/bin/activate
 
 pip install -r requirements.txt
 cp .env.example .env       # Windows: copy .env.example .env
-# then edit .env and set DATABASE_URL, JWT_SECRET, ALLOWED_EMAILS, CORS_ORIGINS
+# then edit .env and set DATABASE_URL, JWT_SECRET, CORS_ORIGINS
 ```
 
 ## 3. Create the database
@@ -68,7 +68,7 @@ bun run dev
 
 | Method | Path                   | Auth | Purpose                     |
 |--------|------------------------|------|-----------------------------|
-| POST   | /auth/register         | no   | Create account (allowlist)  |
+| POST   | /auth/register         | no   | Create pending access request |
 | POST   | /auth/login            | no   | Get JWT                     |
 | GET    | /auth/me               | yes  | Current user                |
 | POST   | /auth/logout           | yes  | Client-side token discard   |
@@ -88,9 +88,9 @@ bun run dev
 
 ## Access requests (pending / active / denied)
 
-Registrations from emails **not** on `ALLOWED_EMAILS` are now created with
-`status = 'pending'` instead of being rejected. Pending and denied users
-cannot log in. You approve/deny them directly in Neon.
+All new registrations are created with `status = 'pending'`. Pending and
+denied users cannot log in or use protected API endpoints. You approve/deny
+them directly in Neon.
 
 ### One-time migration for existing databases
 
