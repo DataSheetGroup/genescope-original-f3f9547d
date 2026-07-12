@@ -427,9 +427,8 @@ function PredictPage() {
                 </div>
 
                 <div className="mt-auto pt-8 flex flex-wrap gap-3 justify-center">
-                  <button onClick={handleSave} disabled={saved} className="pill pill-coral disabled:opacity-60">
-                    <Save className="h-4 w-4" />
-                    {saved ? "Saved" : "Save to History"}
+                  <button onClick={handleSave} className="pill pill-coral">
+                    Save to History
                   </button>
                   <button onClick={handleReset} className="pill bg-green-deep text-cream hover:bg-green-deep/85">
                     New Prediction
