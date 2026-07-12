@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     try {
       const u = await apiMe();
-      if (u?.status !== "active") {
+      if (isPendingRole(u?.role)) {
         clearToken();
         setUser(null);
         return;
