@@ -13,8 +13,6 @@ import { useAuth } from "@/lib/auth-context";
 
 export type { HistoryItem };
 
-const KEY = ["history"] as const;
-
 export function useHistory() {
   const qc = useQueryClient();
   const { user, isLoading: authLoading } = useAuth();
