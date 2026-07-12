@@ -53,7 +53,7 @@ async function request<T>(
       res.status === 401
         ? "Invalid email or password."
         : res.status === 403
-        ? "Your email domain is not authorized to access this system."
+        ? "Your account is not approved yet."
         : res.status === 404
         ? "Account not found."
         : res.status === 409

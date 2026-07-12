@@ -60,7 +60,7 @@ export function AuthShell({
                 access portal
               </div>
               <p className="mt-6 text-base text-cream/75 leading-relaxed">
-                Access is limited to authorized partner clinicians and the GeneScope development team.
+                Access is limited to approved clinicians and the GeneScope development team.
                 Unauthorized use is prohibited under RA 10173.
               </p>
             </div>

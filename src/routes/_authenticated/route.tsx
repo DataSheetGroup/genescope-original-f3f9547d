@@ -17,14 +17,16 @@ export const Route = createFileRoute("/_authenticated")({
     const localToken = window.localStorage.getItem("genescope.access_token");
     const token = sessionToken || localToken;
     if (token) {
+      let blockedByStatus = false;
       try {
         const payload = JSON.parse(atob(token.split(".")[1] || ""));
-        if (payload?.status && payload.status !== "active") {
-          clearToken();
-          throw redirect({ to: "/login", search: { redirect: location.href } });
-        }
+        blockedByStatus = Boolean(payload?.status && payload.status !== "active");
       } catch (error) {
-        if (error && typeof error === "object" && "href" in error) throw error;
+        blockedByStatus = false;
+      }
+      if (blockedByStatus) {
+        clearToken();
+        throw redirect({ to: "/login", search: { redirect: location.href } });
       }
     }
   },

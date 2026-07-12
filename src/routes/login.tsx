@@ -94,8 +94,7 @@ function LoginPage() {
             the guesswork.
           </h1>
           <p className="mt-6 max-w-sm text-sm leading-relaxed opacity-80">
-            Sign in to access the restricted workspace for authorized partner
-            clinicians and developers.
+            Sign in after your account has been approved by an administrator.
           </p>
         </div>
 
