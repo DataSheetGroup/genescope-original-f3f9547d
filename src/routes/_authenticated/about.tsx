@@ -157,11 +157,128 @@ function ComplianceCard() {
 
 /* ------------------------ Visualization (Chapter 4) ------------------------ */
 
+// Chart tokens (card body is on cream, so use dark ink + brand accents)
+const INK = "var(--ink)";
+const PURPLE = "var(--purple)";
+const TEAL = "var(--teal)";
+const MUSTARD = "var(--mustard)";
+const GRID = "color-mix(in oklab, var(--ink) 10%, transparent)";
+const tooltipStyle = {
+  background: "var(--paper)",
+  color: INK,
+  border: "1px solid color-mix(in oklab, var(--ink) 14%, transparent)",
+  borderRadius: 10,
+  fontSize: 12,
+  padding: "8px 12px",
+  fontFamily: "Poppins, sans-serif",
+};
+const axisTick = { fontSize: 11, fill: INK, opacity: 0.65, fontFamily: "Poppins, sans-serif" };
+const legendStyle = { fontSize: 12, color: INK, fontFamily: "Poppins, sans-serif" };
+
+function FigureCard({
+  ref_, title, subtitle, children, interpretation,
+}: {
+  ref_: string;
+  title: React.ReactNode;
+  subtitle?: string;
+  children: React.ReactNode;
+  interpretation: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-3xl bg-card text-card-foreground p-6 md:p-8 relative overflow-hidden scroll-mt-24">
+      <div className="flex items-baseline justify-between gap-4 mb-4 flex-wrap">
+        <div>
+          <div className="eyebrow text-coral text-[11px] mb-1">{ref_}</div>
+          <h3 className="font-display text-xl md:text-2xl leading-tight">{title}</h3>
+          {subtitle && <p className="text-xs text-card-foreground/60 mt-1">{subtitle}</p>}
+        </div>
+      </div>
+      <div className="rounded-2xl bg-cream-dim p-4 md:p-5 mb-4">{children}</div>
+      <p className="text-sm leading-relaxed text-card-foreground/80">{interpretation}</p>
+    </div>
+  );
+}
+
+function StatTile({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) {
+  return (
+    <div className="rounded-2xl bg-cream-dim px-5 py-4">
+      <div className="eyebrow text-card-foreground/60 text-[10px]">{label}</div>
+      <div className="text-lg font-semibold mt-1">{value}</div>
+      {sub && <div className="text-xs text-card-foreground/60 mt-0.5">{sub}</div>}
+    </div>
+  );
+}
+
+function DonutPct({ data, colors }: { data: { name: string; value: number; pct: number }[]; colors: string[] }) {
+  return (
+    <div className="h-64 w-full">
+      <ResponsiveContainer>
+        <PieChart>
+          <Pie
+            data={data}
+            dataKey="value"
+            nameKey="name"
+            innerRadius={55}
+            outerRadius={90}
+            paddingAngle={2}
+            label={(e: { name: string; pct: number }) => `${e.name} · ${e.pct.toFixed(2)}%`}
+            labelLine={false}
+            stroke="var(--paper)"
+            strokeWidth={2}
+          >
+            {data.map((_, i) => <Cell key={i} fill={colors[i % colors.length]} />)}
+          </Pie>
+          <Tooltip contentStyle={tooltipStyle} formatter={(v: number, _n, p) => [`${v} (${(p.payload as { pct: number }).pct.toFixed(2)}%)`, p.payload.name]} />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function BarsHoriz({ data, color }: { data: { name: string; value: number; pct: number }[]; color: string }) {
+  return (
+    <div className="h-64 w-full">
+      <ResponsiveContainer>
+        <BarChart data={data} layout="vertical" margin={{ top: 4, right: 40, bottom: 4, left: 20 }}>
+          <CartesianGrid stroke={GRID} horizontal={false} />
+          <XAxis type="number" tick={axisTick} stroke={INK} />
+          <YAxis type="category" dataKey="name" tick={axisTick} stroke={INK} width={90} />
+          <Tooltip contentStyle={tooltipStyle} formatter={(v: number, _n, p) => [`${v} (${(p.payload as { pct: number }).pct.toFixed(2)}%)`, "Records"]} />
+          <Bar dataKey="value" fill={color} radius={[0, 6, 6, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function GroupedBars({ data, keys }: { data: Record<string, string | number>[]; keys: [string, string] }) {
+  return (
+    <div className="h-64 w-full">
+      <ResponsiveContainer>
+        <BarChart data={data} margin={{ top: 4, right: 16, bottom: 4, left: 0 }}>
+          <CartesianGrid stroke={GRID} vertical={false} />
+          <XAxis dataKey="name" tick={axisTick} stroke={INK} />
+          <YAxis tick={axisTick} stroke={INK} />
+          <Tooltip contentStyle={tooltipStyle} />
+          <Legend wrapperStyle={legendStyle} />
+          <Bar dataKey={keys[0]} fill={PURPLE} radius={[6, 6, 0, 0]} />
+          <Bar dataKey={keys[1]} fill={TEAL} radius={[6, 6, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
 function VisualizationCard() {
   const info = modelData.dataset_info;
+  const best = modelData.best_model_name as string;
   const models = modelData.models as unknown as Record<
     string,
-    { results: Record<string, number>; cv: Record<string, number>; feature_importance: { feature: string; importance: number }[] }
+    {
+      results: Record<string, number> & { cm: number[][] };
+      cv: { cv_roc_mean: number; cv_roc_std: number; cv_acc_mean: number; cv_acc_std: number };
+      feature_importance: { feature: string; importance: number }[];
+    }
   >;
   const rows = Object.entries(models).map(([name, m]) => ({
     name,
@@ -171,109 +288,457 @@ function VisualizationCard() {
     f1: m.results["F1-Score"],
     roc: m.results["ROC-AUC"],
   }));
-  const best = modelData.best_model_name as string;
   const fi = models[best].feature_importance;
-
+  const cm = models[best].results.cm; // [[TN,FP],[FN,TP]]
   const fmt = (n: number) => (n * 100).toFixed(1) + "%";
 
-  const edaCallouts = [
-    { k: "Total records", v: `${info.total_records}` },
-    { k: "Year coverage", v: "2021 – 2025" },
-    { k: "Train / Test split", v: `${info.train_records} / ${info.test_records}` },
-    { k: "Engineered features", v: `${info.n_features}` },
-    { k: "Private facilities", v: "99.11%" },
-    { k: "Luzon share", v: "87.70%" },
-    { k: "Volume growth", v: "19 → 134 (2021–2025)" },
-    { k: "Best model", v: best },
+  const sections: { id: string; label: string }[] = [
+    { id: "sec-dataset", label: "Dataset" },
+    { id: "sec-dist", label: "Distributions" },
+    { id: "sec-cross", label: "Cross-tabs" },
+    { id: "sec-model", label: "Model" },
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Header */}
       <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
         <img src={testTube} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
         <div className="eyebrow text-coral mb-2">Chapter 4</div>
-        <h2 className="font-display text-3xl mb-6">
-          Results at <span className="hl">a glance</span>
+        <h2 className="font-display text-3xl mb-3">
+          Results & <span className="hl">discussion</span>
         </h2>
-        <p className="text-sm leading-relaxed text-card-foreground/80 mb-6 max-w-2xl">
-          Key findings from the paper's Results and Discussion. Live, interactive charts are on the Dashboard —
-          this view mirrors the static figures cited in the manuscript.
+        <p className="text-sm leading-relaxed text-card-foreground/80 max-w-2xl mb-5">
+          The paper's Chapter 4 figures and tables, each with its own interpretation. Numbers are
+          sourced from the manuscript and verified against the 447-record anonymized dataset used to
+          train the model.
         </p>
-        <ul className="grid sm:grid-cols-2 gap-3">
-          {edaCallouts.map((c) => (
-            <li key={c.k} className="rounded-2xl bg-cream-dim px-5 py-4">
-              <div className="eyebrow text-card-foreground/60 text-[10px]">{c.k}</div>
-              <div className="text-sm font-medium mt-1">{c.v}</div>
-            </li>
+        <nav className="flex flex-wrap gap-2">
+          {sections.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className="eyebrow text-[11px] px-3 py-1.5 rounded-full bg-cream-dim hover:bg-coral hover:text-card-foreground transition-colors"
+            >
+              {s.label}
+            </a>
           ))}
-        </ul>
+        </nav>
       </div>
 
-      <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
-        <img src={petriDish} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
-        <div className="eyebrow text-coral mb-2">Section 4.10</div>
-        <h2 className="font-display text-3xl mb-6">
-          Model <span className="hl">comparison</span>
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left border-b border-card-foreground/10">
-                <th className="py-3 pr-4 eyebrow text-card-foreground/60">Model</th>
-                <th className="py-3 pr-4 eyebrow text-card-foreground/60">Accuracy</th>
-                <th className="py-3 pr-4 eyebrow text-card-foreground/60">Precision</th>
-                <th className="py-3 pr-4 eyebrow text-card-foreground/60">Recall</th>
-                <th className="py-3 pr-4 eyebrow text-card-foreground/60">F1</th>
-                <th className="py-3 pr-0 eyebrow text-card-foreground/60">ROC-AUC</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.name} className="border-b border-card-foreground/10 last:border-b-0">
-                  <td className="py-3 pr-4 font-medium">
-                    {r.name}
-                    {r.name === best && (
-                      <span className="ml-2 text-[10px] eyebrow text-coral">Best</span>
-                    )}
-                  </td>
-                  <td className="py-3 pr-4">{fmt(r.accuracy)}</td>
-                  <td className="py-3 pr-4">{fmt(r.precision)}</td>
-                  <td className="py-3 pr-4">{fmt(r.recall)}</td>
-                  <td className="py-3 pr-4">{fmt(r.f1)}</td>
-                  <td className="py-3 pr-0">{fmt(r.roc)}</td>
+      {/* ───────────── DATASET ───────────── */}
+      <div id="sec-dataset" className="scroll-mt-24">
+        <FigureCard
+          ref_="Section 4.1 · Table 5"
+          title={<>Dataset composition & <span className="hl">class balance</span></>}
+          interpretation={
+            <>
+              The study analyzed <b>{CH4.dataset.total}</b> anonymized records spanning{" "}
+              <b>{CH4.dataset.years}</b> with <b>{CH4.dataset.features}</b> engineered features,
+              split <b>{CH4.dataset.train}/{CH4.dataset.test}</b> for training and testing. The
+              target variable is imbalanced — <b>Comprehensive testing</b> dominates
+              ({CH4.dataset.balance.Comprehensive} vs {CH4.dataset.balance.Targeted}), which
+              motivated ROC-AUC and F1 as primary evaluation metrics rather than raw accuracy.
+            </>
+          }
+        >
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <StatTile label="Total records" value={CH4.dataset.total} />
+            <StatTile label="Year coverage" value={CH4.dataset.years} />
+            <StatTile label="Train / Test" value={`${CH4.dataset.train} / ${CH4.dataset.test}`} />
+            <StatTile label="Features" value={CH4.dataset.features} sub="after one-hot encoding" />
+            <StatTile label="Comprehensive" value={CH4.dataset.balance.Comprehensive} sub="75.84%" />
+            <StatTile label="Targeted" value={CH4.dataset.balance.Targeted} sub="24.16%" />
+            <StatTile label="Location" value="Urban" sub="100% (single stratum)" />
+            <StatTile label="Best model" value={best} />
+          </div>
+        </FigureCard>
+      </div>
+
+      {/* ───────────── DISTRIBUTIONS ───────────── */}
+      <div id="sec-dist" className="scroll-mt-24 space-y-6">
+        <FigureCard
+          ref_="Figure 1 (Results) · Section 4.1"
+          title={<>Test type <span className="hl">distribution</span></>}
+          subtitle="Comprehensive vs Targeted profiling — the classifier's target variable"
+          interpretation={
+            <>
+              Comprehensive profiling accounts for <b>75.84%</b> of records and Targeted testing for{" "}
+              <b>24.16%</b>. This ≈3:1 imbalance is why per-class recall is reported alongside
+              overall accuracy in Section 4.7.1.
+            </>
+          }
+        >
+          <DonutPct data={[...CH4.testType]} colors={[PURPLE, TEAL]} />
+        </FigureCard>
+
+        <FigureCard
+          ref_="Figure 2 (Results) · Table 6 · Section 4.2.5"
+          title={<>Annual testing <span className="hl">volume</span> (2021 – 2025)</>}
+          interpretation={
+            <>
+              Testing volume grew from <b>19</b> records in 2021 to <b>134</b> in 2025 — a{" "}
+              <b>~7×</b> increase. The steepest jump is 2022 → 2023 (53 → 115) coinciding with
+              post-pandemic clinical activity resuming. The cumulative curve reaches 447 by 2025.
+            </>
+          }
+        >
+          <div className="h-64 w-full">
+            <ResponsiveContainer>
+              <LineChart data={[...CH4.annual]} margin={{ top: 8, right: 24, bottom: 4, left: 0 }}>
+                <CartesianGrid stroke={GRID} vertical={false} />
+                <XAxis dataKey="year" tick={axisTick} stroke={INK} />
+                <YAxis tick={axisTick} stroke={INK} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Legend wrapperStyle={legendStyle} />
+                <Line type="monotone" dataKey="count" name="Yearly count" stroke={PURPLE} strokeWidth={3} dot={{ r: 4, fill: PURPLE }} />
+                <Line type="monotone" dataKey="cumulative" name="Cumulative" stroke={TEAL} strokeWidth={2} strokeDasharray="4 4" dot={{ r: 3, fill: TEAL }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </FigureCard>
+
+        <FigureCard
+          ref_="Section 4.2.5"
+          title={<>Yearly volume by <span className="hl">test type</span></>}
+          interpretation={
+            <>
+              Comprehensive profiling has driven the growth (11 → 105), while Targeted testing has
+              stayed roughly flat around 27–33 per year since 2023. This widening gap is a key
+              structural feature the model has to learn from.
+            </>
+          }
+        >
+          <GroupedBars data={[...CH4.yearByTest]} keys={["Comprehensive", "Targeted"]} />
+        </FigureCard>
+
+        <FigureCard
+          ref_="Section 4.2.2"
+          title={<>Geographic <span className="hl">region</span></>}
+          interpretation={
+            <>
+              Luzon accounts for <b>87.70%</b> of records (392 of 447), Visayas 10.51%, and
+              Mindanao just 1.79%. The paper flags this as a <b>representational bias</b> in the
+              training data (Section 4.12.2) — model behavior outside Luzon should be interpreted
+              with caution.
+            </>
+          }
+        >
+          <BarsHoriz data={[...CH4.region]} color={PURPLE} />
+        </FigureCard>
+
+        <FigureCard
+          ref_="Section 4.2.3"
+          title={<>Disease <span className="hl">category</span></>}
+          interpretation={
+            <>
+              Pediatric indications dominate at <b>72.26%</b>, followed by Neurology (20.36%). This
+              distribution mirrors real referral patterns for genetic testing in the Philippines
+              and turns out to be the strongest predictor of test type (Section 4.9).
+            </>
+          }
+        >
+          <BarsHoriz data={[...CH4.disease]} color={TEAL} />
+        </FigureCard>
+
+        <FigureCard
+          ref_="Section 4.2.4"
+          title={<>Facility <span className="hl">type</span></>}
+          interpretation={
+            <>
+              <b>99.11%</b> of records come from private facilities. The paper treats this as a
+              fairness caveat (Section 4.12.3): the model's public-facility behavior is
+              extrapolated from only 4 records and should not be used to make institutional
+              decisions.
+            </>
+          }
+        >
+          <DonutPct data={[...CH4.facility]} colors={[PURPLE, MUSTARD]} />
+        </FigureCard>
+
+        <FigureCard
+          ref_="Section 4.2.1"
+          title={<>Sex <span className="hl">distribution</span></>}
+          interpretation={
+            <>
+              Male <b>54.59%</b>, Female <b>45.41%</b> — approximately balanced. Sex is a weak
+              predictor in Table 10 (OR ≈ 1.12, not statistically significant).
+            </>
+          }
+        >
+          <DonutPct data={[...CH4.sex]} colors={[TEAL, PURPLE]} />
+        </FigureCard>
+      </div>
+
+      {/* ───────────── CROSS-TABS ───────────── */}
+      <div id="sec-cross" className="scroll-mt-24 space-y-6">
+        <FigureCard
+          ref_="Cross-tab · Section 4.2.2"
+          title={<>Region × <span className="hl">test type</span></>}
+          interpretation={
+            <>
+              In Luzon, Comprehensive dominates (315 vs 77). In Visayas and Mindanao the pattern
+              inverts — Targeted testing is <i>more</i> common than Comprehensive. This regional
+              inversion is what produces the <b>OR ≈ 0.46</b> interaction term for Mindanao ×
+              Neurology in Table 10.
+            </>
+          }
+        >
+          <GroupedBars data={[...CH4.regionXTest]} keys={["Comprehensive", "Targeted"]} />
+        </FigureCard>
+
+        <FigureCard
+          ref_="Cross-tab · Section 4.2.3"
+          title={<>Disease category × <span className="hl">test type</span></>}
+          interpretation={
+            <>
+              Pediatrics is overwhelmingly Comprehensive (296 vs 27). Neurology is nearly split
+              (39 vs 52). Metabolic is <b>100% Targeted</b> in this dataset, and "Others" leans
+              Targeted (14 of 18). Clinical referral pathway therefore carries most of the
+              predictive signal.
+            </>
+          }
+        >
+          <GroupedBars data={[...CH4.diseaseXTest]} keys={["Comprehensive", "Targeted"]} />
+        </FigureCard>
+
+        <FigureCard
+          ref_="Cross-tab · Section 4.2.1"
+          title={<>Sex × <span className="hl">test type</span></>}
+          interpretation={
+            <>
+              Male: 179 Comprehensive / 65 Targeted. Female: 160 / 43. The ratios are close, which
+              is consistent with sex being a weak predictor in the logistic regression.
+            </>
+          }
+        >
+          <GroupedBars data={[...CH4.sexXTest]} keys={["Comprehensive", "Targeted"]} />
+        </FigureCard>
+
+        <FigureCard
+          ref_="Table 10 · Section 4.8"
+          title={<>Logistic regression <span className="hl">coefficients</span></>}
+          subtitle="Selected coefficients and odds ratios from the primary Binary Logistic Regression model"
+          interpretation={
+            <>
+              Positive coefficients push predictions toward Comprehensive profiling; negative
+              coefficients push toward Targeted. Pediatric disease category has the strongest
+              positive effect (OR ≈ 11.14). Interaction terms for Mindanao × Neurology (OR ≈ 0.46)
+              and Visayas × Neurology (OR ≈ 0.48) show these regional neurology cases are far less
+              likely to receive Comprehensive testing — a key equity finding.
+            </>
+          }
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left border-b border-card-foreground/15">
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">Feature</th>
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">Coefficient</th>
+                  <th className="py-2 pr-0 eyebrow text-card-foreground/60 text-[10px]">Odds Ratio</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {CH4.coefficients.map((c) => (
+                  <tr key={c.feature} className="border-b border-card-foreground/10 last:border-b-0">
+                    <td className="py-2 pr-4 font-medium">{c.feature}</td>
+                    <td className={"py-2 pr-4 tabular-nums " + (c.coef < 0 ? "text-coral" : "")}>
+                      {c.coef > 0 ? "+" : ""}{c.coef.toFixed(2)}
+                    </td>
+                    <td className="py-2 pr-0 tabular-nums">{c.or.toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FigureCard>
       </div>
 
-      <div className="rounded-3xl bg-card text-card-foreground p-8 md:p-10 relative overflow-hidden">
-        <img src={magnifier} alt="" className="hidden md:block absolute right-6 top-6 w-20 object-contain opacity-90" />
-        <div className="eyebrow text-coral mb-2">Section 4.9</div>
-        <h2 className="font-display text-3xl mb-6">
-          Feature <span className="hl">importance</span>
-        </h2>
-        <p className="text-sm text-card-foreground/70 mb-5 max-w-2xl">
-          Clinical referral pathways (Disease Category) dominate predictive signal across all three models — the
-          strongest driver of test-type selection reported in Chapter 4.
-        </p>
-        <ul className="space-y-3">
-          {fi.map((f) => (
-            <li key={f.feature}>
-              <div className="flex items-center justify-between text-xs mb-1">
-                <span className="font-medium">{f.feature}</span>
-                <span className="text-card-foreground/60">{(f.importance * 100).toFixed(1)}%</span>
+      {/* ───────────── MODEL ───────────── */}
+      <div id="sec-model" className="scroll-mt-24 space-y-6">
+        <FigureCard
+          ref_="Table 9 · Section 4.10 · Figure 6 (Results)"
+          title={<>Model <span className="hl">comparison</span></>}
+          subtitle="Test-set performance on 90 held-out records"
+          interpretation={
+            <>
+              All three models cluster in the 81–84% accuracy band. Decision Tree edges out on
+              accuracy and recall; <b>Random Forest</b> is selected as the deployed model for its
+              strongest <b>ROC-AUC (0.796)</b> and most stable feature-importance profile. Binary
+              Logistic Regression remains the primary interpretive model (Table 10).
+            </>
+          }
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left border-b border-card-foreground/15">
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">Model</th>
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">Accuracy</th>
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">Precision</th>
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">Recall</th>
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">F1</th>
+                  <th className="py-2 pr-0 eyebrow text-card-foreground/60 text-[10px]">ROC-AUC</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr key={r.name} className="border-b border-card-foreground/10 last:border-b-0">
+                    <td className="py-2 pr-4 font-medium">
+                      {r.name}
+                      {r.name === best && (
+                        <span className="ml-2 text-[10px] eyebrow text-coral">Deployed</span>
+                      )}
+                    </td>
+                    <td className="py-2 pr-4 tabular-nums">{fmt(r.accuracy)}</td>
+                    <td className="py-2 pr-4 tabular-nums">{fmt(r.precision)}</td>
+                    <td className="py-2 pr-4 tabular-nums">{fmt(r.recall)}</td>
+                    <td className="py-2 pr-4 tabular-nums">{fmt(r.f1)}</td>
+                    <td className="py-2 pr-0 tabular-nums">{fmt(r.roc)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FigureCard>
+
+        <FigureCard
+          ref_="Table 11 · Section 4.9"
+          title={<>Feature <span className="hl">importance</span></>}
+          subtitle={`Ranked from ${best} — the deployed model`}
+          interpretation={
+            <>
+              <b>Disease Category</b> is the dominant predictor across all three models,
+              consistent with the cross-tabs in Section 4.2.3. Year and Region × Disease
+              interactions provide meaningful secondary signal; Sex and Facility Type are
+              near-zero. This ranking is what justifies focusing recommendations on{" "}
+              <i>clinical referral pathway</i> as the primary lever (Chapter 6).
+            </>
+          }
+        >
+          <ul className="space-y-3">
+            {fi.map((f) => (
+              <li key={f.feature}>
+                <div className="flex items-center justify-between text-xs mb-1">
+                  <span className="font-medium">{f.feature}</span>
+                  <span className="text-card-foreground/60 tabular-nums">
+                    {(f.importance * 100).toFixed(1)}%
+                  </span>
+                </div>
+                <div className="h-2 rounded-full bg-card-foreground/10 overflow-hidden">
+                  <div
+                    className="h-full bg-coral"
+                    style={{ width: `${Math.max(2, f.importance * 100)}%` }}
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </FigureCard>
+
+        <FigureCard
+          ref_="Figure 3 (Results) · Section 4.7"
+          title={<>Confusion <span className="hl">matrix</span></>}
+          subtitle={`${best} on the 90-record test set`}
+          interpretation={
+            <>
+              The model correctly classifies <b>{cm[0][0]}</b> Targeted and <b>{cm[1][1]}</b>{" "}
+              Comprehensive cases. It misses <b>{cm[1][0]}</b> Comprehensive cases (predicted
+              Targeted) and misclassifies <b>{cm[0][1]}</b> Targeted cases as Comprehensive. The
+              paper notes minority-class recall (Targeted) as the main improvement target — see
+              Section 4.7.1.
+            </>
+          }
+        >
+          <div className="max-w-md mx-auto">
+            <div className="grid grid-cols-[auto_1fr_1fr] gap-2 text-xs">
+              <div />
+              <div className="eyebrow text-card-foreground/60 text-center text-[10px]">
+                Pred. Targeted
               </div>
-              <div className="h-2 rounded-full bg-cream-dim overflow-hidden">
-                <div
-                  className="h-full bg-coral"
-                  style={{ width: `${Math.max(2, f.importance * 100)}%` }}
-                />
+              <div className="eyebrow text-card-foreground/60 text-center text-[10px]">
+                Pred. Comprehensive
               </div>
-            </li>
-          ))}
-        </ul>
+
+              <div className="eyebrow text-card-foreground/60 text-[10px] flex items-center">
+                Actual Targeted
+              </div>
+              <div className="rounded-xl bg-teal p-4 text-center">
+                <div className="text-2xl font-semibold text-[var(--ink)]">{cm[0][0]}</div>
+                <div className="text-[10px] text-[var(--ink)]/70 uppercase tracking-wider">
+                  True Neg.
+                </div>
+              </div>
+              <div className="rounded-xl bg-card-foreground/10 p-4 text-center">
+                <div className="text-2xl font-semibold">{cm[0][1]}</div>
+                <div className="text-[10px] text-card-foreground/60 uppercase tracking-wider">
+                  False Pos.
+                </div>
+              </div>
+
+              <div className="eyebrow text-card-foreground/60 text-[10px] flex items-center">
+                Actual Compreh.
+              </div>
+              <div className="rounded-xl bg-card-foreground/10 p-4 text-center">
+                <div className="text-2xl font-semibold">{cm[1][0]}</div>
+                <div className="text-[10px] text-card-foreground/60 uppercase tracking-wider">
+                  False Neg.
+                </div>
+              </div>
+              <div className="rounded-xl bg-coral p-4 text-center">
+                <div className="text-2xl font-semibold text-card-foreground">{cm[1][1]}</div>
+                <div className="text-[10px] text-card-foreground/80 uppercase tracking-wider">
+                  True Pos.
+                </div>
+              </div>
+            </div>
+          </div>
+        </FigureCard>
+
+        <FigureCard
+          ref_="Table 8 · Section 4.6"
+          title={<>Cross-validation <span className="hl">stability</span></>}
+          subtitle="5-fold ROC-AUC on the training set"
+          interpretation={
+            <>
+              All models converge to a similar cross-validated ROC-AUC of ~0.82–0.83 with modest
+              variance (± 0.06 – 0.08). The overlap across folds indicates the ranking between
+              models is not driven by a single fortunate split — supporting the choice of Random
+              Forest as the deployed model.
+            </>
+          }
+        >
+          <div className="h-64 w-full">
+            <ResponsiveContainer>
+              <BarChart
+                data={Object.entries(CH4.cvFolds).flatMap(([m, folds]) =>
+                  folds.map((v, i) => ({ name: `F${i + 1}`, [m]: v }))
+                    .reduce((acc, r) => {
+                      const found = acc.find((x) => x.name === r.name);
+                      if (found) Object.assign(found, r);
+                      else acc.push(r);
+                      return acc;
+                    }, [] as Record<string, string | number>[])
+                ).reduce((acc, r) => {
+                  const found = acc.find((x) => x.name === r.name);
+                  if (found) Object.assign(found, r);
+                  else acc.push(r);
+                  return acc;
+                }, [] as Record<string, string | number>[])}
+                margin={{ top: 4, right: 16, bottom: 4, left: 0 }}
+              >
+                <CartesianGrid stroke={GRID} vertical={false} />
+                <XAxis dataKey="name" tick={axisTick} stroke={INK} />
+                <YAxis domain={[0.6, 1]} tick={axisTick} stroke={INK} tickFormatter={(v) => v.toFixed(2)} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => v.toFixed(3)} />
+                <Legend wrapperStyle={legendStyle} />
+                <Bar dataKey="Binary Logistic Regression" fill={PURPLE} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Decision Tree" fill={TEAL} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Random Forest" fill={MUSTARD} radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </FigureCard>
       </div>
     </div>
   );
