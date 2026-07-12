@@ -57,12 +57,10 @@ def require_auth(fn):
         user = db.session.get(User, int(payload["sub"]))
         if not user or not user.is_active:
             return jsonify({"error": "Inactive user"}), 401
-        if user.status == "pending":
+        if user.role == "pending":
             return jsonify({"error": "Your access request is still pending administrator approval."}), 403
-        if user.status == "denied":
+        if user.role == "denied":
             return jsonify({"error": "Your access request was denied. Please contact an administrator."}), 403
-        if user.status != "active":
-            return jsonify({"error": "Your account is not approved yet."}), 403
         request.user = user
         return fn(*args, **kwargs)
 
@@ -89,7 +87,7 @@ def register():
         email=email,
         password_hash=hash_password(password),
         full_name=full_name,
-        status="pending",
+        role="pending",
     )
     db.session.add(user)
     db.session.commit()
@@ -112,12 +110,10 @@ def login():
         return jsonify({"error": "Invalid email or password"}), 401
     if not user.is_active:
         return jsonify({"error": "Account disabled"}), 403
-    if user.status == "pending":
+    if user.role == "pending":
         return jsonify({"error": "Your access request is still pending administrator approval."}), 403
-    if user.status == "denied":
+    if user.role == "denied":
         return jsonify({"error": "Your access request was denied. Please contact an administrator."}), 403
-    if user.status != "active":
-        return jsonify({"error": "Your account is not approved yet."}), 403
 
     user.last_login_at = datetime.utcnow()
     db.session.commit()

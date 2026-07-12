@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate, redirect, isRedirect } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
-import { clearToken, isAuthenticated, me as apiMe } from "@/lib/auth";
+import { clearToken, isAuthenticated, isPendingRole, me as apiMe } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 
 import logo from "@/assets/genescope-logo.png";
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/login")({
     if (typeof window === "undefined" || !isAuthenticated()) return;
     try {
       const user = await apiMe();
-      if (user?.status === "active") {
+      if (!isPendingRole(user?.role)) {
         throw redirect({ to: (search as Search).redirect ?? "/" });
       }
       clearToken();

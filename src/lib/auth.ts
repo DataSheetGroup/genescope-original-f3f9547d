@@ -12,13 +12,23 @@ export type LoginResponse = { access_token: string };
 export type AuthUser = {
   id: string | number;
   email: string;
-  role: "developer" | "client" | string;
+  role: "pending" | "denied" | "viewer" | "client" | "developer" | string;
   full_name?: string | null;
   phone?: string | null;
   organization?: string | null;
   bio?: string | null;
-  status?: "active" | "pending" | "denied" | string;
+  status?: string;
 };
+
+export function isPendingRole(role?: string | null): boolean {
+  return role === "pending" || role === "denied" || !role;
+}
+
+export function roleAccessError(role?: string | null): string {
+  return role === "denied"
+    ? "Your access request was denied. Please contact an administrator."
+    : "Your access request is still pending administrator approval.";
+}
 
 async function request<T>(
   path: string,
@@ -81,14 +91,10 @@ export async function login(
     method: "POST",
     body: JSON.stringify({ email, password, remember }),
   });
-  const status = data?.user?.status;
-  if (status !== "active") {
+  const role = data?.user?.role;
+  if (isPendingRole(role)) {
     clearToken();
-    throw new Error(
-      status === "pending"
-        ? "Your access request is still pending administrator approval."
-        : "Your access request was denied. Please contact an administrator.",
-    );
+    throw new Error(roleAccessError(role));
   }
   if (!data?.access_token) throw new Error("Unexpected response from server.");
   setToken(data.access_token, remember);

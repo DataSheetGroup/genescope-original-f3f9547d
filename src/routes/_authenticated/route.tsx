@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { clearToken, isAuthenticated, me as apiMe } from "@/lib/auth";
+import { clearToken, isAuthenticated, isPendingRole, me as apiMe } from "@/lib/auth";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -13,28 +13,28 @@ export const Route = createFileRoute("/_authenticated")({
       });
     }
 
-    let blockedByStatus = false;
+    let blocked = false;
     const sessionToken = window.sessionStorage.getItem("genescope.session_token");
     const localToken = window.localStorage.getItem("genescope.access_token");
     const token = sessionToken || localToken;
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split(".")[1] || ""));
-        blockedByStatus = payload?.status !== "active";
-      } catch (error) {
-        blockedByStatus = false;
+        blocked = isPendingRole(payload?.role);
+      } catch {
+        blocked = false;
       }
     }
 
     try {
       const user = await apiMe();
-      blockedByStatus = blockedByStatus || user?.status !== "active";
+      blocked = blocked || isPendingRole(user?.role);
     } catch {
       clearToken();
       throw redirect({ to: "/login", search: { redirect: location.href } });
     }
 
-    if (blockedByStatus) {
+    if (blocked) {
       clearToken();
       throw redirect({ to: "/login", search: { redirect: location.href } });
     }
