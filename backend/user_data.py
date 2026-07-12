@@ -51,11 +51,8 @@ bp = Blueprint("user_data", __name__)
 @bp.get("/history")
 @require_auth
 def list_history():
-    saved_only = request.args.get("saved") == "1"
-    q = PredictionHistory.query.filter_by(user_id=request.user.id)
-    if saved_only:
-        q = q.filter_by(saved=True)
-    items = q.order_by(PredictionHistory.created_at.desc()).limit(500).all()
+    items = PredictionHistory.query.filter_by(user_id=request.user.id)\
+        .order_by(PredictionHistory.created_at.desc()).limit(500).all()
     return jsonify([i.to_dict() for i in items])
 
 
