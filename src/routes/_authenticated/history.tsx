@@ -27,19 +27,17 @@ function toCsv(items: HistoryItem[]) {
 }
 
 function HistoryPage() {
-  const { items, clear, remove, toggleSave, isLoading } = useHistory();
+  const { items, clear, remove, isLoading } = useHistory();
   const [resultFilter, setResultFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [diseaseFilter, setDiseaseFilter] = useState<string>("all");
-  const [savedOnly, setSavedOnly] = useState(false);
 
   const filtered = useMemo(() => items.filter((it) => {
-    if (savedOnly && !it.saved) return false;
     if (resultFilter !== "all" && it.result.prediction !== resultFilter) return false;
     if (yearFilter !== "all" && String(it.input.Year) !== yearFilter) return false;
     if (diseaseFilter !== "all" && it.input.Disease_Category !== diseaseFilter) return false;
     return true;
-  }), [items, resultFilter, yearFilter, diseaseFilter, savedOnly]);
+  }), [items, resultFilter, yearFilter, diseaseFilter]);
 
   const handleExport = () => {
     const blob = new Blob([toCsv(filtered)], { type: "text/csv" });
