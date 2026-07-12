@@ -89,11 +89,14 @@ export async function register(input: {
   email: string;
   password: string;
   full_name?: string;
-}): Promise<LoginResponse> {
-  const data = await request<LoginResponse>("/auth/register", {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
+}): Promise<LoginResponse & { pending?: boolean; message?: string }> {
+  const data = await request<LoginResponse & { pending?: boolean; message?: string }>(
+    "/auth/register",
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+    },
+  );
   if (data?.access_token) setToken(data.access_token, true);
   return data;
 }
