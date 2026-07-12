@@ -46,6 +46,11 @@ function NavLink({ to, label, onClick }: { to: string; label: string; onClick?: 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const { user, isAuthenticated } = useAuth();
+  const role = user?.role;
+  const visible = (items: NavItem[]) => items.filter((l) => !l.permission || can(role, l.permission));
+  const visibleLeft = visible(leftLinks);
+  const visibleRight = visible(rightLinks);
+  const allLinks: NavItem[] = [{ to: "/", label: "Home" }, ...visibleLeft, ...visibleRight];
   const { data, isError } = useQuery({
     queryKey: ["health"],
     queryFn: getHealth,
