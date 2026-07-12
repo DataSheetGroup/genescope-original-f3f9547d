@@ -67,7 +67,7 @@ export function Navbar() {
         <div className="grid grid-cols-[1fr_auto_1fr] items-center h-20 gap-6">
           {/* Left */}
           <nav className="hidden md:flex items-center gap-7 justify-start">
-            {leftLinks.map((l) => <NavLink key={l.to} {...l} />)}
+            {visibleLeft.map((l) => <NavLink key={l.to} to={l.to} label={l.label} />)}
           </nav>
 
           {/* Center wordmark */}
