@@ -1,4 +1,4 @@
-// User data API: prediction history, saved analyses, preferences.
+// User data API: prediction history and preferences.
 // Talks to the Flask backend (same base URL as auth).
 import { getToken } from "./auth";
 import type { PredictPayload, PredictResponse } from "./api-types";
