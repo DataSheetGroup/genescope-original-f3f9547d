@@ -13,7 +13,9 @@ from models import PasswordReset, User, db
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 EMAIL_RE = re.compile(r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$")
-APPROVED_ROLES = {"admin", "researcher", "clinician", "viewer"}
+PENDING_ROLE = "pending"
+PENDING_STATUS = "pending"
+APPROVED_ROLES = {"admin", "researcher", "clinician", "viewer", "client", "developer"}
 
 
 # ---------- helpers ----------
@@ -51,11 +53,12 @@ def is_valid_email(email: str) -> bool:
 
 
 def role_rejection(user: User):
-    if user.role == "denied":
+    role = (user.role or "").strip().lower()
+    if role == "denied":
         return "Your access request was denied. Please contact an administrator.", 403
-    if user.role == "pending":
+    if role == PENDING_ROLE:
         return "Your access request is still pending administrator approval.", 403
-    if user.role not in APPROVED_ROLES:
+    if role not in APPROVED_ROLES:
         return "Your account role is not approved for access.", 403
     return None, None
 
@@ -106,10 +109,16 @@ def register():
         email=email,
         password_hash=hash_password(password),
         full_name=full_name,
-        role="pending",
-        status="pending",
+        role=PENDING_ROLE,
+        status=PENDING_STATUS,
     )
     db.session.add(user)
+
+    # Force pending after INSERT too, so stale database defaults/triggers cannot
+    # accidentally grant access as viewer during registration.
+    db.session.flush()
+    user.role = PENDING_ROLE
+    user.status = PENDING_STATUS
     db.session.commit()
 
     return jsonify({

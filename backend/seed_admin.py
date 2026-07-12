@@ -28,9 +28,13 @@ def main():
             email=email,
             password_hash=hash_password(password),
             full_name=full_name,
-            role="developer",
+            role="pending",
+            status="pending",
         )
         db.session.add(user)
+        db.session.flush()
+        user.role = "developer"
+        user.status = "active"
         db.session.commit()
         print(f"Created developer account: {email}")
 

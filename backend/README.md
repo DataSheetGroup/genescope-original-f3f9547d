@@ -106,6 +106,24 @@ ALTER TABLE users
 
 ALTER TABLE users
   ALTER COLUMN status SET DEFAULT 'pending';
+
+CREATE OR REPLACE FUNCTION public.force_new_user_pending()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  NEW.role := 'pending';
+  NEW.status := 'pending';
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS users_force_pending_on_insert ON users;
+
+CREATE TRIGGER users_force_pending_on_insert
+BEFORE INSERT ON users
+FOR EACH ROW
+EXECUTE FUNCTION public.force_new_user_pending();
 ```
 
 ### Reviewing and approving requests
@@ -117,8 +135,11 @@ FROM users
 WHERE role = 'pending'
 ORDER BY created_at DESC;
 
--- Approve
+-- Approve as viewer
 UPDATE users SET role = 'viewer' WHERE email = 'someone@example.com';
+
+-- Approve as researcher / clinician / client / developer / admin
+UPDATE users SET role = 'researcher', status = 'active' WHERE email = 'someone@example.com';
 
 -- Deny
 UPDATE users SET role = 'denied' WHERE email = 'someone@example.com';

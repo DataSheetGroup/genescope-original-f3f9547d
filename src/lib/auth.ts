@@ -13,7 +13,7 @@ export type LoginResponse = { access_token: string };
 export type AuthUser = {
   id: string | number;
   email: string;
-  role: "pending" | "denied" | "viewer" | "client" | "developer" | string;
+  role: "pending" | "denied" | "admin" | "researcher" | "clinician" | "viewer" | "client" | "developer" | string;
   full_name?: string | null;
   phone?: string | null;
   organization?: string | null;
@@ -22,11 +22,12 @@ export type AuthUser = {
 };
 
 export function isPendingRole(role?: string | null): boolean {
-  return role === "pending" || role === "denied" || !role;
+  const normalizedRole = role?.trim().toLowerCase();
+  return normalizedRole === "pending" || normalizedRole === "denied" || !normalizedRole;
 }
 
 export function roleAccessError(role?: string | null): string {
-  return role === "denied"
+  return role?.trim().toLowerCase() === "denied"
     ? "Your access request was denied. Please contact an administrator."
     : "Your access request is still pending administrator approval.";
 }
