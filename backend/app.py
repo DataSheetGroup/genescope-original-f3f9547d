@@ -12,8 +12,6 @@ import user_data
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    from flask_cors import CORS
-    CORS(app, origins=["https://*.netlify.app", "http://localhost:8080", "http://genescope.online/", "http://www.genescope.online/", "genescope.online", "www.genescope.online", "https://genescope.online/", "https://www.genescope.online/"], supports_credentials=True)
     app.config.from_object(Config)
 
     db.init_app(app)
@@ -24,7 +22,7 @@ def create_app() -> Flask:
         resources={r"/*": {"origins": Config.CORS_ORIGINS}},
         supports_credentials=False,
         allow_headers=["Content-Type", "Authorization"],
-        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     )
 
     app.register_blueprint(auth.bp)
