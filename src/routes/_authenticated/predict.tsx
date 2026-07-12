@@ -379,12 +379,26 @@ function PredictPage() {
             {!mutation.isPending && !mutation.isError && !result && (
               <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
                 <img src={safetyGlasses} alt="" className="w-28 mb-5 opacity-90" />
-                <p className="font-display text-xl text-card-foreground/75">
-                  Fill the form to see your result.
-                </p>
-                <p className="mt-2 text-sm text-card-foreground/55 max-w-xs">
-                  Predictions update automatically once all six indicators are set.
-                </p>
+                {!canRun ? (
+                  <>
+                    <p className="font-display text-xl text-card-foreground/75">
+                      Read-only preview
+                    </p>
+                    <div className="mt-4 rounded-2xl bg-purple/10 border border-purple/30 px-5 py-3 text-sm text-card-foreground/85 max-w-xs">
+                      Viewer accounts are read-only. Ask an admin to upgrade your role
+                      to <span className="font-semibold">clinician</span> or <span className="font-semibold">researcher</span> to run predictions.
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-display text-xl text-card-foreground/75">
+                      Fill the form to see your result.
+                    </p>
+                    <p className="mt-2 text-sm text-card-foreground/55 max-w-xs">
+                      Predictions update automatically once all six indicators are set.
+                    </p>
+                  </>
+                )}
               </div>
             )}
 
