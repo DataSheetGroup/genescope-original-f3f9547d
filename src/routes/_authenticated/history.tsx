@@ -116,7 +116,7 @@ function HistoryPage() {
           <table className="w-full text-sm">
             <thead className="bg-cream-dim text-xs uppercase tracking-wider text-card-foreground/65">
               <tr>
-                {["No.","Timestamp","Sex","Region","Disease","Facility","Year","Result","Confidence",""].map((h, i) => (
+                {["No.","Timestamp","Sex","Region","Disease","Facility","Year","Result","Confidence","Actions"].map((h, i) => (
                   <th key={i} className="text-left px-5 py-3.5 font-semibold">{h}</th>
                 ))}
               </tr>
