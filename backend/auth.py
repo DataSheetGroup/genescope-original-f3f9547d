@@ -78,26 +78,19 @@ def register():
     if User.query.filter_by(email=email).first():
         return jsonify({"error": "Email already registered"}), 409
 
-    allowed = Config.email_allowed(email)
-    status = "active" if allowed else "pending"
-
     user = User(
         email=email,
         password_hash=hash_password(password),
         full_name=full_name,
-        status=status,
+        status="pending",
     )
     db.session.add(user)
     db.session.commit()
 
-    if not allowed:
-        return jsonify({
-            "pending": True,
-            "message": "Your access request has been submitted for review. You'll be able to sign in once an administrator approves your account.",
-        }), 202
-
-    token = issue_token(user)
-    return jsonify({"access_token": token, "user": user.to_public()}), 201
+    return jsonify({
+        "pending": True,
+        "message": "Your access request has been submitted for review. You'll be able to sign in once an administrator approves your account.",
+    }), 202
 
 
 @bp.post("/login")
