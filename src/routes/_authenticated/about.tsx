@@ -198,7 +198,7 @@ function FigureCard({
         </div>
       </div>
       <div className="rounded-2xl bg-cream-dim p-4 md:p-5 mb-4">{children}</div>
-      <p className="text-sm leading-relaxed text-card-foreground/80">{interpretation}</p>
+      {interpretation && <p className="text-sm leading-relaxed text-card-foreground/80">{interpretation}</p>}
     </div>
   );
 }
