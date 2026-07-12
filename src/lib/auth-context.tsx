@@ -63,14 +63,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login: AuthState["login"] = async (email, password, remember = false) => {
     await apiLogin(email, password, remember);
     const u = await apiMe();
-    if (u?.status !== "active") {
+    if (isPendingRole(u?.role)) {
       clearToken();
       setUser(null);
-      throw new Error(
-        u.status === "pending"
-          ? "Your access request is still pending administrator approval."
-          : "Your access request was denied. Please contact an administrator.",
-      );
+      throw new Error(roleAccessError(u?.role));
     }
     setUser(u);
     router.invalidate();
