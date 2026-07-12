@@ -87,7 +87,7 @@ def register():
         email=email,
         password_hash=hash_password(password),
         full_name=full_name,
-        status="pending",
+        role="pending",
     )
     db.session.add(user)
     db.session.commit()
