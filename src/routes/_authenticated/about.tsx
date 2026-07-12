@@ -647,6 +647,137 @@ function VisualizationCard() {
         </FigureCard>
 
         <FigureCard
+          ref_="Table 7 · Section 4.5"
+          title={<>Optimal <span className="hl">hyperparameters</span></>}
+          subtitle="Selected by GridSearchCV with 5-fold stratified CV and ROC-AUC as the scoring metric"
+          interpretation={
+            <>
+              All three models were tuned on the training partition only. Logistic Regression's L1
+              penalty automatically zeros out weak predictors, and its <i>balanced</i> class-weight
+              setting compensates for the 75.8 / 24.2 imbalance. The three best CV ROC-AUC scores
+              lie within 0.004 of each other, confirming a genuine — but modest — predictive
+              signal.
+            </>
+          }
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left border-b border-card-foreground/15">
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">Model</th>
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">Best parameters</th>
+                  <th className="py-2 pr-0 eyebrow text-card-foreground/60 text-[10px]">CV ROC-AUC</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CH4.hyperparameters.map((h) => (
+                  <tr key={h.model} className="border-b border-card-foreground/10 last:border-b-0">
+                    <td className="py-2 pr-4 font-medium">{h.model}</td>
+                    <td className="py-2 pr-4 text-card-foreground/80">{h.params}</td>
+                    <td className="py-2 pr-0 tabular-nums">{(h.cvRoc * 100).toFixed(2)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FigureCard>
+
+        <FigureCard
+          ref_="Section 4.7.1"
+          title={<>Per-class <span className="hl">performance</span></>}
+          subtitle="Precision, recall, and F1 broken out by class on the 90-record test set"
+          interpretation={
+            <>
+              Aggregate accuracy hides an imbalance in minority-class handling. Decision Tree posts
+              the highest recall on Comprehensive (0.9559) but only <b>0.50 recall on Targeted</b>,
+              missing half of the minority-class cases. Logistic Regression provides the most
+              symmetric behaviour (Targeted recall 0.6364) and the highest <b>macro F1 (0.7594)</b>,
+              which weights both classes equally. This is why the paper reports the full metric
+              suite rather than headline accuracy.
+            </>
+          }
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs md:text-sm">
+              <thead>
+                <tr className="text-left border-b border-card-foreground/15">
+                  <th rowSpan={2} className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px] align-bottom">Model</th>
+                  <th colSpan={3} className="py-1 pr-4 eyebrow text-card-foreground/60 text-[10px] text-center border-l border-card-foreground/10">Comprehensive</th>
+                  <th colSpan={3} className="py-1 pr-4 eyebrow text-card-foreground/60 text-[10px] text-center border-l border-card-foreground/10">Targeted</th>
+                  <th rowSpan={2} className="py-2 pr-2 eyebrow text-card-foreground/60 text-[10px] align-bottom border-l border-card-foreground/10">Macro F1</th>
+                  <th rowSpan={2} className="py-2 pr-0 eyebrow text-card-foreground/60 text-[10px] align-bottom">Weighted F1</th>
+                </tr>
+                <tr className="text-left border-b border-card-foreground/15">
+                  <th className="py-1 pr-3 eyebrow text-card-foreground/50 text-[10px] border-l border-card-foreground/10">P</th>
+                  <th className="py-1 pr-3 eyebrow text-card-foreground/50 text-[10px]">R</th>
+                  <th className="py-1 pr-4 eyebrow text-card-foreground/50 text-[10px]">F1</th>
+                  <th className="py-1 pr-3 eyebrow text-card-foreground/50 text-[10px] border-l border-card-foreground/10">P</th>
+                  <th className="py-1 pr-3 eyebrow text-card-foreground/50 text-[10px]">R</th>
+                  <th className="py-1 pr-4 eyebrow text-card-foreground/50 text-[10px]">F1</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CH4.perClass.map((r) => (
+                  <tr key={r.model} className="border-b border-card-foreground/10 last:border-b-0">
+                    <td className="py-2 pr-4 font-medium">{r.model}</td>
+                    <td className="py-2 pr-3 tabular-nums border-l border-card-foreground/10">{r.comprehensive.precision.toFixed(3)}</td>
+                    <td className="py-2 pr-3 tabular-nums">{r.comprehensive.recall.toFixed(3)}</td>
+                    <td className="py-2 pr-4 tabular-nums">{r.comprehensive.f1.toFixed(3)}</td>
+                    <td className="py-2 pr-3 tabular-nums border-l border-card-foreground/10">{r.targeted.precision.toFixed(3)}</td>
+                    <td className="py-2 pr-3 tabular-nums">{r.targeted.recall.toFixed(3)}</td>
+                    <td className="py-2 pr-4 tabular-nums">{r.targeted.f1.toFixed(3)}</td>
+                    <td className="py-2 pr-2 tabular-nums border-l border-card-foreground/10">{r.macroF1.toFixed(3)}</td>
+                    <td className="py-2 pr-0 tabular-nums">{r.weightedF1.toFixed(3)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FigureCard>
+
+        <FigureCard
+          ref_="Table 11 · Section 4.9"
+          title={<>Feature importance <span className="hl">across all models</span></>}
+          subtitle="Absolute coefficients (LR) and built-in importance (DT, RF), averaged for consensus ranking"
+          interpretation={
+            <>
+              Disease Category variables occupy the top four positions on the mean ranking, exactly
+              matching the coefficient story in Table 10. <b>Mindanao × Neurology</b> reaches the
+              third spot because Logistic Regression's L1 penalty preserves it while zeroing out
+              the standalone regional coefficients — evidence that the region effect is
+              conditional on clinical specialty rather than uniform.
+            </>
+          }
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left border-b border-card-foreground/15">
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">Feature</th>
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">LR</th>
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">DT</th>
+                  <th className="py-2 pr-4 eyebrow text-card-foreground/60 text-[10px]">RF</th>
+                  <th className="py-2 pr-0 eyebrow text-card-foreground/60 text-[10px]">Mean</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CH4.featureImportanceAll.map((f) => (
+                  <tr key={f.feature} className="border-b border-card-foreground/10 last:border-b-0">
+                    <td className="py-2 pr-4 font-medium">{f.feature}</td>
+                    <td className="py-2 pr-4 tabular-nums">{f.lr.toFixed(4)}</td>
+                    <td className="py-2 pr-4 tabular-nums">{f.dt.toFixed(4)}</td>
+                    <td className="py-2 pr-4 tabular-nums">{f.rf.toFixed(4)}</td>
+                    <td className="py-2 pr-0 tabular-nums font-semibold">{f.mean.toFixed(4)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FigureCard>
+
+
+
+        <FigureCard
           ref_="Table 11 · Section 4.9"
           title={<>Feature <span className="hl">importance</span></>}
           subtitle={`Ranked from ${best} — the deployed model`}
