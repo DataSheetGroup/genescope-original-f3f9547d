@@ -555,6 +555,47 @@ function VisualizationCard() {
             </table>
           </div>
         </FigureCard>
+
+        <FigureCard
+          ref_="Figure 5 · Section 4.9"
+          title={<>Correlation <span className="hl">matrix</span></>}
+          subtitle="Key associations between encoded predictors and the target variable"
+          interpretation={
+            <>
+              The strongest correlation with the target is <b>Pediatrics (r = 0.60)</b>, confirming
+              disease category as the dominant predictor. Interaction terms correlate with their
+              parent variables (Mindanao × Neurology ↔ Mindanao at 0.93) as expected — the paper
+              notes this is a mathematical artifact, not a modeling problem, and L1 regularization
+              in Logistic Regression handles the redundancy through coefficient shrinkage. The
+              −0.82 between Pediatrics and Neurology is a one-hot encoding artifact (a record
+              cannot belong to both).
+            </>
+          }
+        >
+          <ul className="space-y-2">
+            {CH4.correlations.map((c) => {
+              const width = Math.min(100, Math.abs(c.r) * 100);
+              const positive = c.r >= 0;
+              return (
+                <li key={c.pair} className="rounded-xl bg-card-foreground/5 px-4 py-3">
+                  <div className="flex items-center justify-between text-xs mb-1.5 gap-4">
+                    <span className="font-medium truncate">{c.pair}</span>
+                    <span className={"tabular-nums font-semibold shrink-0 " + (positive ? "text-teal-600" : "text-coral")}>
+                      {c.r > 0 ? "+" : ""}{c.r.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-card-foreground/10 overflow-hidden">
+                    <div
+                      className={"h-full " + (positive ? "bg-teal" : "bg-coral")}
+                      style={{ width: `${width}%` }}
+                    />
+                  </div>
+                  <div className="text-[11px] text-card-foreground/60 mt-1.5">{c.note}</div>
+                </li>
+              );
+            })}
+          </ul>
+        </FigureCard>
       </div>
 
       {/* ───────────── MODEL ───────────── */}
