@@ -18,7 +18,7 @@ type AuthState = {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string, remember?: boolean) => Promise<AuthUser>;
-  register: (input: { email: string; password: string; full_name?: string }) => Promise<AuthUser>;
+  register: (input: { email: string; password: string; full_name?: string }) => Promise<AuthUser | { pending: true; message: string }>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
   updateProfile: (input: ProfileUpdate) => Promise<AuthUser>;
