@@ -6,7 +6,6 @@ import {
   clearHistory,
   deleteHistory,
   listHistory,
-  updateHistory,
   type HistoryItem,
 } from "@/lib/user-data";
 import { useAuth } from "@/lib/auth-context";
