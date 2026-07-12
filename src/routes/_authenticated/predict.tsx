@@ -161,7 +161,6 @@ function PredictPage() {
   const { add } = useHistory();
   const { user } = useAuth();
   const canRun = can(user?.role, "predict.run");
-  const [saved, setSaved] = useState(false);
   const [runId, setRunId] = useState(0);
   const [statusStep, setStatusStep] = useState(0);
   const abortRef = useRef<AbortController | null>(null);
