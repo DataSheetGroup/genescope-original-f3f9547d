@@ -1,50 +1,50 @@
+
 ## Goal
 
-Panelists want the system to visibly show it is processing in real time. Right now a user fills 6 dropdowns, clicks Generate, waits ~1s, and a static result appears — nothing on screen communicates "the model is working right now." We'll make prediction feel alive by (a) auto-running the prediction as inputs change and (b) adding visible real-time activity cues around the result.
+Add the panelist-required **Visualization (Chapter 4)** and **Recommendation (Chapter 6)** content directly inside `/about` — no new top-level nav tab, no new route. Everything stays in the same editorial card style already used on About (Research Information + Compliance).
 
-## What changes
+## Where it goes
 
-### 1. Auto-predict as inputs change (`src/routes/_authenticated/predict.tsx`)
-- When all 6 fields are filled, trigger `postPredict` automatically (debounced ~350ms).
-- Changing any field after that immediately re-runs → panelists see the result update in real time.
-- Keep the **Generate Prediction** button as a manual re-run trigger (some users want the click).
-- Every request bumps a `runId` counter shown as `Run #007` next to the result — makes it obvious the model just ran again.
+Single file: `src/routes/_authenticated/about.tsx`. Two new cards appended below the existing ones, matching current styling (rounded-3xl bg-card, eyebrow + display heading, sticker illustration in the corner, cream-dim inner tiles).
 
-### 2. Live processing indicators
-- **Activity pulse dot** near "Your Result" that pulses cyan while a request is in-flight, green when complete, coral on error.
-- Replace static "Running model on local server…" with a **live status line** that cycles through real steps as they happen:
-  - "Encoding indicators…" → "Sending to model…" → "Computing probabilities…" → "Done in 428ms"
-- Show the actual round-trip time (measured client-side) after each run — proves the model really ran.
+To keep the page from getting long, add a small in-page tab switcher at the top of the About page: **Research · Compliance · Visualization · Recommendations**. Same look as the eyebrow chips already in the design; clicking scrolls to / reveals the matching section. No new routes, no new nav item.
 
-### 3. Animated result values
-- Confidence % **counts up** from 0 → final value over ~600ms (using `requestAnimationFrame`) instead of snapping in.
-- Probability bar widths animate from 0 → target on every new prediction (already partly there, but reset properly per run).
-- Confidence ring stroke animates on each new run.
+## Section 1 — Visualization (from Chapter 4)
 
-### 4. "Live" badge in the header of the result card
-- Small pill: `● LIVE` (pulsing green dot) that stays visible whenever auto-predict is active — signals to panelists that this panel is reactive, not static.
+Compact, read-only summary of the paper's key results. Pulled straight from the PDF, not a live re-computation (dashboard already handles live charts).
 
-### 5. Backend timing (`backend/predict.py`)
-- Include `elapsed_ms` in the JSON response so the frontend can display real server-side compute time (e.g. "Model computed in 12ms").
+Content blocks:
+- **Dataset composition** — 447 records, 2021→2025, 14 engineered features, 357 train / 90 test
+- **Class distribution** — Comprehensive vs Targeted split (from Section 4.1)
+- **Model comparison table** — Accuracy, Precision, Recall, F1, ROC-AUC for the three models (numbers already in `src/data/model-from-pkl.json`)
+- **Feature importance ranking** — top 6 features (Disease Category dominant), rendered as horizontal bars using the existing tokens
+- **Key EDA callouts** — 99.11% private facilities, 87.70% Luzon, temporal growth 19 → 134
+
+All numeric values come from the parsed paper (Chapter 4) and the existing `model-from-pkl.json`. No new dependencies; reuse `ChartCard` or plain divs with tokens.
+
+## Section 2 — Recommendations (from Chapter 6)
+
+Four grouped cards, one per audience, using the same cream-dim tile pattern as the Compliance list:
+
+1. **For Healthcare Providers** — clinical guidelines for neurology/pediatrics; targeted support for Mindanao/Visayas (OR=0.46 finding)
+2. **For Healthcare Institutions** — expand public/regional partnerships; capacity-building in Mindanao/Visayas
+3. **For Policymakers** — Rare Disease Act expansion; publicly funded programs; national registry inclusion
+4. **For Researchers** — 5 sub-items: Dataset expansion, Feature expansion, Modeling improvements, System refinement, Deployment extension
+
+Each item shows a short 1-2 line summary drawn verbatim-ish from Chapter 6, with the paper section reference (e.g. "Section 4.12.2") as a small muted caption for traceability.
+
+Stickers reused from existing About assets (`heartPulse`, `clipboard`, `fireFlask`, `testTube`, `petriDish`, `magnifier`, `pillCap`) — no new image generation.
 
 ## Technical notes
 
-- Debounce via a simple `setTimeout` in a `useEffect` watching the form.
-- Cancel stale requests with `AbortController` so the last-typed value wins.
-- Count-up uses `requestAnimationFrame` with `easeOutCubic`.
-- No new dependencies.
+- One file changed: `src/routes/_authenticated/about.tsx`.
+- Add a small local `useState` for the active tab (`"research" | "compliance" | "viz" | "recs"`), default `"research"`. Renders one section at a time to keep the page short — matches the user's "don't overload the UI" ask.
+- All content typed inline as constants in the component file — no backend, no new data files, no PDF parsing at runtime.
+- Head metadata title/description updated to reflect the expanded scope ("About · Research, results, and recommendations").
+- No changes to Navbar, routes, or backend.
 
 ## Out of scope
 
-- WebSockets / true server-push (not needed — model runs in ~20ms server-side, HTTP is already "real-time" enough).
-- Changing the prediction logic or model.
-- Layout redesign of the predict page.
-
-## Files touched
-
-- `src/routes/_authenticated/predict.tsx` — auto-run, count-up, status line, LIVE badge, run counter
-- `backend/predict.py` — add `elapsed_ms` to response
-- `src/lib/api-types.ts` — add optional `elapsed_ms` field
-- `src/lib/api.ts` — pass `elapsed_ms` through, measure round-trip
-
-After approval I'll implement and you can demo it live to panelists on genescope.online.
+- No new route or nav tab.
+- No live chart re-implementation (dashboard already covers live charts; this is the paper's static reference figures).
+- No PDF viewer embed.
