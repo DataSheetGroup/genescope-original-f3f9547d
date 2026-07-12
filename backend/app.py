@@ -2,6 +2,7 @@ import os
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
+from sqlalchemy import text
 
 from config import Config
 from models import db
@@ -31,6 +32,13 @@ def create_app() -> Flask:
 
     with app.app_context():
         db.create_all()
+        try:
+            db.session.execute(text("ALTER TABLE users ALTER COLUMN role SET DEFAULT 'pending'"))
+            db.session.execute(text("ALTER TABLE users ALTER COLUMN status SET DEFAULT 'pending'"))
+            db.session.commit()
+        except Exception as exc:
+            db.session.rollback()
+            app.logger.warning("Could not sync user access defaults: %s", exc)
 
     @app.get("/health")
     def health():
