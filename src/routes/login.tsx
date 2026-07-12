@@ -219,7 +219,15 @@ function LoginPage() {
 
           <div className="mt-5 min-h-[58px]">
             {error && (
-              <div role="alert" className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm" style={{ background: "color-mix(in oklab, var(--destructive) 12%, transparent)", color: "var(--destructive)", border: "1px solid color-mix(in oklab, var(--destructive) 35%, transparent)" }}>
+              <div
+                role="alert"
+                className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm"
+                style={
+                  isPendingAccessError(error)
+                    ? { background: "color-mix(in oklab, var(--warning) 18%, transparent)", color: "var(--warning-foreground)", border: "1px solid color-mix(in oklab, var(--warning) 45%, transparent)" }
+                    : { background: "color-mix(in oklab, var(--destructive) 12%, transparent)", color: "var(--destructive)", border: "1px solid color-mix(in oklab, var(--destructive) 35%, transparent)" }
+                }
+              >
                 <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
                 <span>{error}</span>
               </div>
