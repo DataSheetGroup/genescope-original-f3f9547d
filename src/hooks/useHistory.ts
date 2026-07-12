@@ -13,39 +13,40 @@ import { useAuth } from "@/lib/auth-context";
 
 export type { HistoryItem };
 
-const KEY = ["history"] as const;
-
 export function useHistory() {
   const qc = useQueryClient();
-  const { user } = useAuth();
-  const enabled = Boolean(user);
+  const { user, isLoading: authLoading } = useAuth();
+  const queryKey = ["history", user?.id ?? "signed-out"] as const;
+  const enabled = !authLoading && Boolean(user);
 
   const query = useQuery({
-    queryKey: KEY,
+    queryKey,
     queryFn: () => listHistory(false),
     enabled,
-    staleTime: 30_000,
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
   const addM = useMutation({
     mutationFn: ({ input, result, saved }: { input: PredictPayload; result: PredictResponse; saved?: boolean }) =>
       addHistory(input, result, saved),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
+    onSuccess: () => qc.invalidateQueries({ queryKey }),
   });
 
   const clearM = useMutation({
     mutationFn: () => clearHistory(),
-    onSuccess: () => qc.setQueryData(KEY, []),
+    onSuccess: () => qc.setQueryData(queryKey, []),
   });
 
   const deleteM = useMutation({
     mutationFn: (id: string) => deleteHistory(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
+    onSuccess: () => qc.invalidateQueries({ queryKey }),
   });
 
   const toggleSaveM = useMutation({
     mutationFn: ({ id, saved }: { id: string; saved: boolean }) => updateHistory(id, { saved }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
+    onSuccess: () => qc.invalidateQueries({ queryKey }),
   });
 
   const add = useCallback(
