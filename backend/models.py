@@ -15,6 +15,13 @@ class User(db.Model):
     bio = db.Column(db.Text)
     role = db.Column(db.String(32), default="viewer", nullable=False)  # developer | client | viewer
     is_active = db.Column(db.Boolean, default=True, nullable=False)
+    # Admin approval queue
+    status = db.Column(db.String(16), default="pending", nullable=False)  # pending | approved | rejected | disabled
+    affiliation = db.Column(db.String(255))
+    reason = db.Column(db.Text)
+    requested_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    reviewed_at = db.Column(db.DateTime)
+    reviewed_by = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     last_login_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
@@ -28,6 +35,7 @@ class User(db.Model):
             "organization": self.organization,
             "bio": self.bio,
             "role": self.role,
+            "status": self.status,
         }
 
 
