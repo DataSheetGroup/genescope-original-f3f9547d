@@ -1,50 +1,66 @@
-
 ## Goal
 
-Add the panelist-required **Visualization (Chapter 4)** and **Recommendation (Chapter 6)** content directly inside `/about` — no new top-level nav tab, no new route. Everything stays in the same editorial card style already used on About (Research Information + Compliance).
+Rebuild the **Visualization** tab in `/about` so it faithfully reproduces Chapter 4 "Results and Discussion" from the paper — every table, chart, and figure — each paired with the paper's own interpretation paragraph. No invented numbers, no summarized-away findings.
 
-## Where it goes
+## Source of truth
 
-Single file: `src/routes/_authenticated/about.tsx`. Two new cards appended below the existing ones, matching current styling (rounded-3xl bg-card, eyebrow + display heading, sticker illustration in the corner, cream-dim inner tiles).
+Re-parse `DataSheet_Genescope.docx.pdf` with `document--parse_document` and extract Chapter 4 verbatim (Sections 4.1 → 4.12). Every label, number, and caption in the UI comes from that parse. Model-metric tables (4.12) continue to read from `src/data/model-from-pkl.json`, which already matches the paper.
 
-To keep the page from getting long, add a small in-page tab switcher at the top of the About page: **Research · Compliance · Visualization · Recommendations**. Same look as the eyebrow chips already in the design; clicking scrolls to / reveals the matching section. No new routes, no new nav item.
+## Chapter 4 sections to render (paper order)
 
-## Section 1 — Visualization (from Chapter 4)
+Each block = **Figure/Table X.Y title** → the visual → the paper's interpretation directly below.
 
-Compact, read-only summary of the paper's key results. Pulled straight from the PDF, not a live re-computation (dashboard already handles live charts).
+1. **4.1 Dataset overview** — 447 records, 2021–2025, 14 engineered features, 357/90 split. Small stat grid + narrative.
+2. **4.2 Test Type distribution** — Comprehensive vs Targeted. Donut + text.
+3. **4.3 Annual testing volume 2021–2025** — line/bar (19 → 134 growth). Chart + interpretation.
+4. **4.4 Yearly volume by test type** — stacked bars per year + text.
+5. **4.5 Disease Category distribution** — Neurology / Pediatrics / Others (/ Metabolic). Horizontal bars + text.
+6. **4.6 Geographic Region distribution** — Luzon 87.70%, Visayas, Mindanao + interpretation on Luzon dominance.
+7. **4.7 Sex distribution** — Male vs Female. Donut + text.
+8. **4.8 Facility Type distribution** — Private 99.11% vs Public + text on private-sector reliance.
+9. **4.9 Cross-tab: Region × Test Type** — grouped bars + commentary (incl. OR ≈ 0.46 Mindanao/Visayas).
+10. **4.10 Cross-tab: Disease Category × Test Type** — grouped bars + text.
+11. **4.11 Correlation / feature association matrix** — heatmap (if present in paper) + text.
+12. **4.12 Model results**
+    - **4.12.1 Model comparison table** — Accuracy, Precision, Recall, F1, ROC-AUC for BLR / Decision Tree / Random Forest.
+    - **4.12.2 Feature importance** — horizontal bars for the best model + "Disease Category dominant, clinical referral pathway strongest predictor" text.
+    - **4.12.3 Confusion matrix** — 2×2 grid + text.
+    - **4.12.4 Cross-validation** — CV mean ± std / fold list + text.
 
-Content blocks:
-- **Dataset composition** — 447 records, 2021→2025, 14 engineered features, 357 train / 90 test
-- **Class distribution** — Comprehensive vs Targeted split (from Section 4.1)
-- **Model comparison table** — Accuracy, Precision, Recall, F1, ROC-AUC for the three models (numbers already in `src/data/model-from-pkl.json`)
-- **Feature importance ranking** — top 6 features (Disease Category dominant), rendered as horizontal bars using the existing tokens
-- **Key EDA callouts** — 99.11% private facilities, 87.70% Luzon, temporal growth 19 → 134
+If the PDF parse shows a listed section doesn't exist, drop it; if there's one we missed, add it. The final tab mirrors the paper's actual figure list.
 
-All numeric values come from the parsed paper (Chapter 4) and the existing `model-from-pkl.json`. No new dependencies; reuse `ChartCard` or plain divs with tokens.
+## UI/UX rules (consistent, not overloaded)
 
-## Section 2 — Recommendations (from Chapter 6)
+- Stays inside the existing Visualization tab — no new routes, no new nav.
+- One vertical stack of "figure cards", each with:
+  - eyebrow `Figure 4.x` / `Table 4.x`
+  - card title (paper caption)
+  - the visual
+  - muted-caption interpretation quoting/paraphrasing the paper
+- Reuse existing tokens + `ChartCard`. Charts use Recharts (already in project) with `--chart-1..5`; no new chart libs.
+- Small sticky sub-nav at the top of the tab: `Dataset · Distributions · Cross-tabs · Model` (anchor links) so panelists can jump.
+- Research / Compliance / Recommendations tabs untouched.
 
-Four grouped cards, one per audience, using the same cream-dim tile pattern as the Compliance list:
+## Data wiring
 
-1. **For Healthcare Providers** — clinical guidelines for neurology/pediatrics; targeted support for Mindanao/Visayas (OR=0.46 finding)
-2. **For Healthcare Institutions** — expand public/regional partnerships; capacity-building in Mindanao/Visayas
-3. **For Policymakers** — Rare Disease Act expansion; publicly funded programs; national registry inclusion
-4. **For Researchers** — 5 sub-items: Dataset expansion, Feature expansion, Modeling improvements, System refinement, Deployment extension
+- 4.1–4.11 values live inline as a typed `chapter4` constants object sourced from the parsed PDF. No backend calls, no runtime PDF parsing.
+- 4.12 continues to read from `src/data/model-from-pkl.json`.
+- No backend / route / other-page changes.
 
-Each item shows a short 1-2 line summary drawn verbatim-ish from Chapter 6, with the paper section reference (e.g. "Section 4.12.2") as a small muted caption for traceability.
+## Files touched
 
-Stickers reused from existing About assets (`heartPulse`, `clipboard`, `fireFlask`, `testTube`, `petriDish`, `magnifier`, `pillCap`) — no new image generation.
-
-## Technical notes
-
-- One file changed: `src/routes/_authenticated/about.tsx`.
-- Add a small local `useState` for the active tab (`"research" | "compliance" | "viz" | "recs"`), default `"research"`. Renders one section at a time to keep the page short — matches the user's "don't overload the UI" ask.
-- All content typed inline as constants in the component file — no backend, no new data files, no PDF parsing at runtime.
-- Head metadata title/description updated to reflect the expanded scope ("About · Research, results, and recommendations").
-- No changes to Navbar, routes, or backend.
+- `src/routes/_authenticated/about.tsx` — replace the current Visualization tab body.
+- Optional `src/data/chapter4.ts` — extract constants only if the block gets long.
 
 ## Out of scope
 
-- No new route or nav tab.
-- No live chart re-implementation (dashboard already covers live charts; this is the paper's static reference figures).
-- No PDF viewer embed.
+- Chapter 6 Recommendations tab (already done).
+- Live re-computation from the CSV — dashboard already handles live charts.
+- New illustrations/stickers.
+
+## Implementation order
+
+1. Parse the PDF, capture Chapter 4 numbers + interpretation text.
+2. Draft the `chapter4` constants.
+3. Rebuild the tab section-by-section, verifying each figure against the paper.
+4. Visual pass to match existing About styling.
