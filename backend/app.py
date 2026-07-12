@@ -11,6 +11,31 @@ import predict
 import user_data
 
 
+ACCESS_DEFAULT_STATEMENTS = [
+    "ALTER TABLE users ALTER COLUMN role SET DEFAULT 'pending'",
+    "ALTER TABLE users ALTER COLUMN status SET DEFAULT 'pending'",
+    """
+    CREATE OR REPLACE FUNCTION public.force_new_user_pending()
+    RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        NEW.role := 'pending';
+        NEW.status := 'pending';
+        RETURN NEW;
+    END;
+    $$
+    """,
+    "DROP TRIGGER IF EXISTS users_force_pending_on_insert ON users",
+    """
+    CREATE TRIGGER users_force_pending_on_insert
+    BEFORE INSERT ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION public.force_new_user_pending()
+    """,
+]
+
+
 def create_app() -> Flask:
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -33,8 +58,8 @@ def create_app() -> Flask:
     with app.app_context():
         db.create_all()
         try:
-            db.session.execute(text("ALTER TABLE users ALTER COLUMN role SET DEFAULT 'pending'"))
-            db.session.execute(text("ALTER TABLE users ALTER COLUMN status SET DEFAULT 'pending'"))
+            for statement in ACCESS_DEFAULT_STATEMENTS:
+                db.session.execute(text(statement))
             db.session.commit()
         except Exception as exc:
             db.session.rollback()

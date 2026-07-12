@@ -20,6 +20,25 @@ STATEMENTS = [
     "ALTER TABLE users ALTER COLUMN role SET DEFAULT 'pending'",
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(16) NOT NULL DEFAULT 'pending'",
     "ALTER TABLE users ALTER COLUMN status SET DEFAULT 'pending'",
+    """
+    CREATE OR REPLACE FUNCTION public.force_new_user_pending()
+    RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        NEW.role := 'pending';
+        NEW.status := 'pending';
+        RETURN NEW;
+    END;
+    $$
+    """,
+    "DROP TRIGGER IF EXISTS users_force_pending_on_insert ON users",
+    """
+    CREATE TRIGGER users_force_pending_on_insert
+    BEFORE INSERT ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION public.force_new_user_pending()
+    """,
     "ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW() NOT NULL",
 ]
 
